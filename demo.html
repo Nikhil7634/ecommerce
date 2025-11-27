@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TinyWow Background Remover</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    .loading-spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gray-50">
+  <?php include 'includes/navbar.php'; ?>
+  <div class="container px-4 py-8 mx-auto">
+    <!-- Header -->
+    <header class="mb-12 text-center">
+      <h1 class="mb-2 text-3xl font-bold text-gray-800">
+        Remove the Background From an Image
+      </h1>
+      <h2 class="text-xl font-semibold text-blue-600">
+        TinyWow Background Remover
+      </h2>
+    </header>
+
+    <div class="max-w-4xl mx-auto">
+      <!-- Main content -->
+      <div class="p-6 mb-8 bg-white rounded-lg shadow-md">
+        <h3 class="mb-6 text-2xl font-semibold text-gray-800">
+          How To Remove the Background from an Image
+        </h3>
+
+        <div class="grid gap-8 md:grid-cols-2">
+          <!-- Steps section -->
+          <div>
+            <h4 class="mb-4 text-xl font-medium text-gray-700">
+              How to Remove the Background from an Image
+            </h4>
+
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <div
+                  class="flex items-center justify-center flex-shrink-0 w-8 h-8 mt-1 mr-3 text-blue-800 bg-blue-100 rounded-full">
+                  1
+                </div>
+                <div>
+                  <p class="font-medium text-gray-800">
+                    Select an image to modify and upload it
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div
+                  class="flex items-center justify-center flex-shrink-0 w-8 h-8 mt-1 mr-3 text-blue-800 bg-blue-100 rounded-full">
+                  2
+                </div>
+                <div>
+                  <p class="font-medium text-gray-800">
+                    Choose a new background color or leave transparent
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div
+                  class="flex items-center justify-center flex-shrink-0 w-8 h-8 mt-1 mr-3 text-blue-800 bg-blue-100 rounded-full">
+                  3
+                </div>
+                <div>
+                  <p class="font-medium text-gray-800">
+                    Download the processed image
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div
+                  class="flex items-center justify-center flex-shrink-0 w-8 h-8 mt-1 mr-3 text-blue-800 bg-blue-100 rounded-full">
+                  4
+                </div>
+                <div>
+                  <p class="text-gray-600">
+                    TinyWow provides free online conversion, editing, and
+                    other handy tools to help you work with files of all
+                    types. All processed and unprocessed files are deleted
+                    after 24 hours.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upload area -->
+          <div class="flex flex-col items-center justify-center p-6 border-2 border-gray-300 border-dashed rounded-lg">
+            <div id="preview" class="mb-4 text-center">
+              <img id="previewImage" src="" alt="Preview" class="hidden max-w-full rounded max-h-48" />
+              <p id="uploadPrompt" class="text-gray-500">No image selected</p>
+            </div>
+
+            <i class="mb-3 text-4xl text-blue-500 fas fa-cloud-upload-alt"></i>
+            <p class="mb-4 text-gray-600">
+              Drag & drop your image here or click to browse
+            </p>
+            <input type="file" id="fileInput" accept="image/*" class="hidden" />
+            <button onclick="document.getElementById('fileInput').click()"
+              class="px-4 py-2 text-white transition bg-blue-600 rounded-md hover:bg-blue-700">
+              Select Image
+            </button>
+
+            <div id="bgOptions" class="hidden w-full mt-4">
+              <label class="block mb-2 text-gray-700">Background:</label>
+              <div class="flex flex-wrap gap-2">
+                <button data-color="transparent"
+                  class="px-3 py-1 bg-gray-200 border border-gray-300 rounded hover:bg-gray-300 bg-option active">
+                  Transparent
+                </button>
+                <button data-color="#ffffff"
+                  class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 bg-option">
+                  White
+                </button>
+                <button data-color="#000000"
+                  class="px-3 py-1 text-white bg-black border border-gray-300 rounded hover:bg-gray-800 bg-option">
+                  Black
+                </button>
+                <button data-color="#f3f4f6"
+                  class="px-3 py-1 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 bg-option">
+                  Gray
+                </button>
+              </div>
+
+              <button id="processBtn"
+                class="flex items-center justify-center w-full px-4 py-2 mt-4 text-white transition bg-green-600 rounded-md hover:bg-green-700">
+                <span id="processText">Remove Background</span>
+                <div id="spinner" class="hidden ml-2 loading-spinner"></div>
+              </button>
+
+              <a id="downloadBtn" href="#" download="background-removed.png"
+                class="hidden w-full px-4 py-2 mt-4 text-center text-white transition bg-blue-600 rounded-md hover:bg-blue-700">
+                Download Processed Image
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tools navigation -->
+      <div class="p-6 bg-white rounded-lg shadow-md">
+        <h4 class="mb-4 text-xl font-medium text-gray-700">Navigate Tools</h4>
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Home</a>
+          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Privacy Policy</a>
+          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Terms</a>
+          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Contact</a>
+          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Manage</a>
+          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Edit PDF</a>
+          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">PDF to JPG</a>
+          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">JPG to PDF</a>
+          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Upscale Image</a>
+          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Compress PDF</a>
+          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Remove Watermark</a>
+          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Image to Text</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ 
+  <script>
+    // API configuration
+    const API_KEY = "GxGi4zwMGoiz1viZFGxM7tgd";
+    const API_URL = "https://api.remove.bg/v1.0/removebg";
+
+    // DOM elements
+    const fileInput = document.getElementById("fileInput");
+    const previewImage = document.getElementById("previewImage");
+    const uploadPrompt = document.getElementById("uploadPrompt");
+    const bgOptions = document.getElementById("bgOptions");
+    const processBtn = document.getElementById("processBtn");
+    const processText = document.getElementById("processText");
+    const spinner = document.getElementById("spinner");
+    const downloadBtn = document.getElementById("downloadBtn");
+    let selectedBgColor = "transparent";
+
+    // Handle file selection
+    fileInput.addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          previewImage.src = event.target.result;
+          previewImage.classList.remove("hidden");
+          uploadPrompt.classList.add("hidden");
+
+          // Show background options
+          bgOptions.classList.remove("hidden");
+          downloadBtn.classList.add("hidden");
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Background color selection
+    document.querySelectorAll(".bg-option").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        // Update active state
+        document
+          .querySelectorAll(".bg-option")
+          .forEach((b) => b.classList.remove("active"));
+        this.classList.add("active");
+
+        // Store selected color
+        selectedBgColor = this.dataset.color;
+      });
+    });
+
+    // Process button click
+    processBtn.addEventListener("click", async function () {
+      if (!fileInput.files[0]) {
+        alert("Please select an image first");
+        return;
+      }
+
+      // Show loading state
+      processText.textContent = "Processing...";
+      spinner.classList.remove("hidden");
+      processBtn.disabled = true;
+
+      try {
+        // Prepare form data
+        const formData = new FormData();
+        formData.append("image_file", fileInput.files[0]);
+        formData.append("size", "auto");
+
+        // Add background color if not transparent
+        if (selectedBgColor !== "transparent") {
+          formData.append("bg_color", selectedBgColor.substring(1)); // Remove #
+        }
+
+        // Call Remove.bg API
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "X-Api-Key": API_KEY,
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        // Get the result image
+        const blob = await response.blob();
+        const resultUrl = URL.createObjectURL(blob);
+
+        // Show download button
+        downloadBtn.href = resultUrl;
+        downloadBtn.classList.remove("hidden");
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Failed to remove background. Please try again.");
+      } finally {
+        // Reset button state
+        processText.textContent = "Remove Background";
+        spinner.classList.add("hidden");
+        processBtn.disabled = false;
+      }
+    });
+
+    // Drag and drop functionality
+    const uploadArea = document.querySelector(".border-dashed");
+
+    uploadArea.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      uploadArea.classList.add("border-blue-400", "bg-blue-50");
+    });
+
+    uploadArea.addEventListener("dragleave", () => {
+      uploadArea.classList.remove("border-blue-400", "bg-blue-50");
+    });
+
+    uploadArea.addEventListener("drop", (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove("border-blue-400", "bg-blue-50");
+
+      if (e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        const event = new Event("change");
+        fileInput.dispatchEvent(event);
+      }
+    });
+  </script>
+</body>
+
+</html>
