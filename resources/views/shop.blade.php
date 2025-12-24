@@ -1,1492 +1,716 @@
- 
- <x-header 
-    title="Profile Information -  eCommerce"
+<x-header 
+    title="Products - eCommerce"
     description="Shop the latest electronics, fashion, and home essentials at Valtara with fast delivery and best prices."
     keywords="Valtara, online store, eCommerce, electronics, clothing, deals"
     ogImage="{{ asset('assets/images/banner/home-og.jpg') }}"
 >
-    
-    
 </x-header>
-
- 
 
 <x-navbar />
 
-
-   
-    <section class="page_banner" style="background: url('{{ asset('assets/images/page_banner_bg.jpg') }}');">
-        <div class="page_banner_overlay">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="page_banner_text wow fadeInUp">
-                            <h1>Shop</h1>
-                            <ul>
-                                <li><a href="#"><i class="fal fa-home-lg"></i> Home</a></li>
-                                <li><a href="#">Shop</a></li>
-                            </ul>
-                        </div>
+<section class="page_banner" style="background: url('{{ asset('assets/images/page_banner_bg.jpg') }}');">
+    <div class="page_banner_overlay">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page_banner_text wow fadeInUp">
+                        <h1>Shop</h1>
+                        <ul>
+                            <li><a href="{{ url('/') }}"><i class="fal fa-home-lg"></i> Home</a></li>
+                            <li><a href="{{ route('shop') }}">Shop</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <!--=========================
-        PAGE BANNER START
-    ==========================-->
+    </div>
+</section>
 
-
-     <!--============================
-        SHOP PAGE START
-    =============================-->
-    <section class="shop_page mt_100 mb_100">
-        <div class="container">
-            <div class="row">
-                <div class="col-xxl-2 col-lg-4 col-xl-3">
-                    <div id="sticky_sidebar">
-                        <div class="shop_filter_btn d-lg-none"> Filter </div>
+<section class="shop_page mt_100 mb_100">
+    <div class="container">
+        <div class="row">
+            <div class="col-xxl-2 col-lg-4 col-xl-3">
+                <div id="sticky_sidebar">
+                    <div class="shop_filter_btn d-lg-none"> Filter </div>
+                    <form method="GET" action="{{ route('shop') }}" id="filter-form">
+                        @csrf
                         <div class="shop_filter_area">
+                            <!-- Price Range Filter -->
                             <div class="sidebar_range">
                                 <h3>Price Range</h3>
-                                <div class="range_slider"></div>
+                                <div class="range_slider_wrapper">
+                                    <div id="price-range"></div>
+                                    <div class="mt-3 price-inputs d-flex justify-content-between">
+                                        <input type="number" name="min_price" id="min-price" 
+                                               value="{{ request('min_price', 0) }}" min="0" class="form-control form-control-sm" placeholder="Min">
+                                        <span class="mx-2">-</span>
+                                        <input type="number" name="max_price" id="max-price" 
+                                               value="{{ request('max_price', 10000) }}" min="0" class="form-control form-control-sm" placeholder="Max">
+                                    </div>
+                                </div>
                             </div>
+
+                            <!-- Product Status Filter -->
                             <div class="sidebar_status">
                                 <h3>Product Status</h3>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <input class="form-check-input" type="checkbox" name="on_sale" value="1" 
+                                           id="flexCheckDefault" {{ request('on_sale') ? 'checked' : '' }}>
                                     <label class="form-check-label" for="flexCheckDefault">
                                         On sale
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                                    <input class="form-check-input" type="checkbox" name="in_stock" value="1" 
+                                           id="flexCheckChecked" {{ request('in_stock') ? 'checked' : '' }}>
                                     <label class="form-check-label" for="flexCheckChecked">
                                         In Stock
                                     </label>
                                 </div>
                             </div>
+
+                            <!-- Categories Filter -->
                             <div class="sidebar_category">
                                 <h3>Categories</h3>
                                 <ul>
-                                    <li>
-                                        <a href="#">
-                                            Men’s Fashion
-                                            <span>20</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            western wear
-                                            <span>09</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            skin care
-                                            <span>04</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            sport wear
-                                            <span>13</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            fashion jewellery
-                                            <span>36</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            beauty Care
-                                            <span>22</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            Makeoup Tools
-                                            <span>16</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            Winter collention
-                                            <span>27</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            Men’s Fashion
-                                            <span>20</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            western wear
-                                            <span>09</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            skin care
-                                            <span>04</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            sport wear
-                                            <span>13</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            fashion jewellery
-                                            <span>36</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            beauty Care
-                                            <span>22</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            Makeoup Tools
-                                            <span>16</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            Winter collention
-                                            <span>27</span>
-                                        </a>
-                                    </li>
+                                    @foreach($categories as $category)
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input category-checkbox" type="checkbox" 
+                                                       name="categories[]" value="{{ $category->id }}" 
+                                                       id="category-{{ $category->id }}"
+                                                       {{ in_array($category->id, request('categories', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="category-{{ $category->id }}">
+                                                    {{ $category->name }}
+                                                    <span>{{ $category->products_count ?? 0 }}</span>
+                                                </label>
+                                            </div>
+                                        </li>
+                                        @if($category->children->count() > 0)
+                                            @foreach($category->children as $child)
+                                                <li style="padding-left: 20px;">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input category-checkbox" type="checkbox" 
+                                                               name="categories[]" value="{{ $child->id }}" 
+                                                               id="category-{{ $child->id }}"
+                                                               {{ in_array($child->id, request('categories', [])) ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="category-{{ $child->id }}">
+                                                            {{ $child->name }}
+                                                            <span>{{ $child->products_count ?? 0 }}</span>
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                            @endforeach
+                                        @endif
+                                    @endforeach
                                 </ul>
                             </div>
-                            
+
+                            <!-- Rating Filter -->
                             <div class="sidebar_rating">
                                 <h3>Rating</h3>
-
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck4">
-                                    <label class="form-check-label" for="defaultCheck4">
+                                    <input class="form-check-input" type="radio" name="rating" value="5" 
+                                           id="rating5" {{ request('rating') == '5' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="rating5">
                                         <i class="fas fa-star" aria-hidden="true"></i>
                                         5 star
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck5">
-                                    <label class="form-check-label" for="defaultCheck5">
+                                    <input class="form-check-input" type="radio" name="rating" value="4" 
+                                           id="rating4" {{ request('rating') == '4' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="rating4">
                                         <i class="fas fa-star" aria-hidden="true"></i>
                                         4 star or above
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck6">
-                                    <label class="form-check-label" for="defaultCheck6">
+                                    <input class="form-check-input" type="radio" name="rating" value="3" 
+                                           id="rating3" {{ request('rating') == '3' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="rating3">
                                         <i class="fas fa-star" aria-hidden="true"></i>
                                         3 star or above
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck7">
-                                    <label class="form-check-label" for="defaultCheck7">
+                                    <input class="form-check-input" type="radio" name="rating" value="2" 
+                                           id="rating2" {{ request('rating') == '2' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="rating2">
                                         <i class="fas fa-star" aria-hidden="true"></i>
                                         2 star or above
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck8">
-                                    <label class="form-check-label" for="defaultCheck8">
+                                    <input class="form-check-input" type="radio" name="rating" value="1" 
+                                           id="rating1" {{ request('rating') == '1' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="rating1">
                                         <i class="fas fa-star" aria-hidden="true"></i>
                                         1 star or above
                                     </label>
                                 </div>
                             </div>
+
+                            <!-- Top Rated Products -->
                             <div class="sidebar_related_product">
                                 <h3>Top Rated Products</h3>
                                 <ul>
-                                    <li>
-                                        <a href="shop_details.html" class="img">
-                                            <img src="assets/images/product_18.png" alt="Product" class="img-fluid">
-                                        </a>
-                                        <div class="text">
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(29)</span>
-                                            </p>
-                                            <a class="title" href="shop_details.html">Kid's Western Party Dress</a>
-                                            <p class="price">$59.00</p>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <a href="shop_details.html" class="img">
-                                            <img src="assets/images/product_23.png" alt="Product" class="img-fluid">
-                                        </a>
-                                        <div class="text">
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(12)</span>
-                                            </p>
-                                            <a class="title" href="shop_details.html">Kid's dresses for summer</a>
-                                            <p class="price">$54.00</p>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <a href="shop_details.html" class="img">
-                                            <img src="assets/images/product_13.png" alt="Product" class="img-fluid">
-                                        </a>
-                                        <div class="text">
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(09)</span>
-                                            </p>
-                                            <a class="title" href="shop_details.html">Sharee Petticoat For Women</a>
-                                            <p class="price">$28.00</p>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <a href="shop_details.html" class="img">
-                                            <img src="assets/images/product_7.png" alt="Product" class="img-fluid">
-                                        </a>
-                                        <div class="text">
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(35)</span>
-                                            </p>
-                                            <a class="title" href="shop_details.html">Denim 2 Quarter Pant</a>
-                                            <p class="price">$54.00</p>
-                                        </div>
-                                    </li>
+                                    @foreach($topRatedProducts as $product)
+                                        @php
+                                            $primaryImage = $product->images->where('is_primary', true)->first();
+                                            if (!$primaryImage && $product->images->count() > 0) {
+                                                $primaryImage = $product->images->first();
+                                            }
+                                        @endphp
+                                        <li>
+                                            <a href="{{ route('product.show', $product->slug) }}" class="img">
+                                                @if($primaryImage)
+                                                    <img src="{{ asset('storage/' . $primaryImage->image_path) }}" 
+                                                         alt="{{ $product->name }}" class="img-fluid">
+                                                @else
+                                                    <img src="https://placehold.co/100x100?text=No+Image" 
+                                                         alt="No Image" class="img-fluid">
+                                                @endif
+                                            </a>
+                                            <div class="text">
+                                                <p class="rating">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        @if($i <= floor($product->avg_rating ?? 0))
+                                                            <i class="fas fa-star"></i>
+                                                        @elseif($i == ceil($product->avg_rating ?? 0) && fmod($product->avg_rating ?? 0, 1) > 0)
+                                                            <i class="fas fa-star-half-alt"></i>
+                                                        @else
+                                                            <i class="far fa-star"></i>
+                                                        @endif
+                                                    @endfor
+                                                    <span>({{ $product->reviews_count ?? 0 }})</span>
+                                                </p>
+                                                <a class="title" href="{{ route('product.show', $product->slug) }}">
+                                                    {{ Str::limit($product->name, 30) }}
+                                                </a>
+                                                <p class="price">
+                                                    @if($product->sale_price)
+                                                        <span class="text-danger">₹{{ number_format($product->sale_price, 2) }}</span>
+                                                        <span class="text-decoration-line-through">₹{{ number_format($product->base_price, 2) }}</span>
+                                                    @else
+                                                        ₹{{ number_format($product->base_price, 2) }}
+                                                    @endif
+                                                </p>
+                                            </div>
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </div>
+
+                            <!-- Filter Buttons -->
+                            <div class="mt-4 filter-buttons">
+                                <button type="submit" class="mb-2 btn btn-primary w-100">
+                                    <i class="fas fa-filter me-2"></i> Apply Filters
+                                </button>
+                                <a href="{{ route('shop') }}" class="btn btn-outline-secondary w-100">
+                                    <i class="fas fa-times me-2"></i> Clear Filters
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-xxl-10 col-lg-8 col-xl-9">
+                <!-- Search and Sorting -->
+                <div class="product_page_top">
+                    <div class="row">
+                        <div class="col-4 col-xl-6 col-md-6">
+                            <div class="product_page_top_button">
+                                <nav>
+                                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                        <button class="nav-link active" id="nav-grid-tab" data-bs-toggle="tab"
+                                            data-bs-target="#nav-grid" type="button" role="tab"
+                                            aria-controls="nav-grid" aria-selected="true">
+                                            <i class="fas fa-th"></i>
+                                        </button>
+                                        <button class="nav-link" id="nav-list-tab" data-bs-toggle="tab"
+                                            data-bs-target="#nav-list" type="button" role="tab"
+                                            aria-controls="nav-list" aria-selected="false">
+                                            <i class="fas fa-list-ul"></i>
+                                        </button>
+                                    </div>
+                                </nav>
+                                <p>Showing {{ $products->firstItem() }}–{{ $products->lastItem() }} of {{ $products->total() }} results</p>
+                            </div>
+                        </div>
+                        <div class="col-8 col-xl-6 col-md-6">
+                            <ul class="product_page_sorting">
+                                <li>
+                                    <form method="GET" action="{{ route('shop') }}" class="d-inline">
+                                        <input type="hidden" name="search" value="{{ request('search') }}">
+                                        <input type="hidden" name="category" value="{{ request('category') }}">
+                                        <input type="hidden" name="min_price" value="{{ request('min_price') }}">
+                                        <input type="hidden" name="max_price" value="{{ request('max_price') }}">
+                                        <input type="hidden" name="on_sale" value="{{ request('on_sale') }}">
+                                        <input type="hidden" name="in_stock" value="{{ request('in_stock') }}">
+                                        <input type="hidden" name="rating" value="{{ request('rating') }}">
+                                        @if(request('categories'))
+                                            @foreach(request('categories') as $category)
+                                                <input type="hidden" name="categories[]" value="{{ $category }}">
+                                            @endforeach
+                                        @endif
+                                        
+                                        <select class="select_js" name="sort" onchange="this.form.submit()">
+                                            <option value="featured" {{ request('sort') == 'featured' ? 'selected' : '' }}>Featured</option>
+                                            <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest</option>
+                                            <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
+                                            <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
+                                            <option value="rating" {{ request('sort') == 'rating' ? 'selected' : '' }}>Highest Rated</option>
+                                            <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Most Popular</option>
+                                        </select>
+                                    </form>
+                                </li>
+                                <li>
+                                    <select class="select_js show" name="per_page" onchange="updatePerPage(this.value)">
+                                        <option value="12" {{ request('per_page', 12) == 12 ? 'selected' : '' }}>Show: 12</option>
+                                        <option value="24" {{ request('per_page') == 24 ? 'selected' : '' }}>Show: 24</option>
+                                        <option value="36" {{ request('per_page') == 36 ? 'selected' : '' }}>Show: 36</option>
+                                        <option value="48" {{ request('per_page') == 48 ? 'selected' : '' }}>Show: 48</option>
+                                    </select>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-                <div class="col-xxl-10 col-lg-8 col-xl-9">
-                    <div class="product_page_top">
-                        <div class="row">
-                            <div class="col-4 col-xl-6 col-md-6">
-                                <div class="product_page_top_button">
-                                    <nav>
-                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab"
-                                                data-bs-target="#nav-home" type="button" role="tab"
-                                                aria-controls="nav-home" aria-selected="true">
-                                                <i class="fas fa-th"></i>
-                                            </button>
-                                            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
-                                                data-bs-target="#nav-profile" type="button" role="tab"
-                                                aria-controls="nav-profile" aria-selected="false">
-                                                <i class="fas fa-list-ul"></i>
-                                            </button>
-                                        </div>
-                                    </nav>
-                                    <p>Showing 1–14 of 26 results</p>
-                                </div>
-                            </div>
-                            <div class="col-8 col-xl-6 col-md-6">
-                                <ul class="product_page_sorting">
-                                    <li>
-                                        <select class="select_js">
-                                            <option>Default Sorting</option>
-                                            <option>Low to Hight</option>
-                                            <option>High to Low</option>
-                                            <option>New Added</option>
-                                            <option>On Sale</option>
-                                        </select>
-                                    </li>
-                                    <li>
-                                        <select class="select_js show">
-                                            <option>Show: 12</option>
-                                            <option>Show: 16</option>
-                                            <option>Show: 20</option>
-                                            <option>Show: 24</option>
-                                            <option>Show: 26</option>
-                                        </select>
-                                    </li>
-                                </ul>
+
+                <!-- Search Box -->
+                <div class="mb-4">
+                    <form method="GET" action="{{ route('shop') }}" class="row g-3">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control" 
+                                       placeholder="Search products..." value="{{ request('search') }}">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <select class="form-select" name="category" onchange="this.form.submit()">
+                                <option value="">All Categories</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Products Grid View -->
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-grid" role="tabpanel"
+                        aria-labelledby="nav-grid-tab" tabindex="0">
+                        @if($products->count() > 0)
+                            <div class="row">
+                                @foreach($products as $product)
+                                    <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
+                                        <div class="product_item_2 product_item">
+                                            <div class="product_img">
+                                                @php
+                                                    $primaryImage = $product->images->where('is_primary', true)->first();
+                                                    if (!$primaryImage && $product->images->count() > 0) {
+                                                        $primaryImage = $product->images->first();
+                                                    }
+                                                @endphp
+                                                
+                                                @if($primaryImage)
+                                                    <img src="{{ asset('storage/' . $primaryImage->image_path) }}" 
+                                                         alt="{{ $product->name }}" class="img-fluid w-100">
+                                                @else
+                                                    <img src="https://placehold.co/300x300?text=No+Image" 
+                                                         alt="No Image" class="img-fluid w-100">
+                                                @endif
+                                                
+                                                <ul class="discount_list">
+                                                    @if($product->sale_price)
+                                                        @php
+                                                            $discount = round((($product->base_price - $product->sale_price) / $product->base_price) * 100);
+                                                        @endphp
+                                                        <li class="sale">{{ $discount }}% OFF</li>
+                                                    @endif
+                                                    @if($product->created_at->gt(now()->subDays(7)))
+                                                        <li class="new">New</li>
+                                                    @endif
+                                                </ul>
+                                                <ul class="btn_list">
+                                                    <li>
+                                                        <a href="#" class="add-to-wishlist" data-product-id="{{ $product->id }}">
+                                                            <img src="{{ asset('assets/images/love_icon_white.svg') }}" alt="Love"
+                                                                class="img-fluid">
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ route('product.show', $product->slug) }}">
+                                                            <img src="{{ asset('assets/images/eye_icon_white.svg') }}" alt="View"
+                                                                class="img-fluid">
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <form action="{{ route('cart.add') }}" method="POST" class="d-inline">
+                                                            @csrf
+                                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                            <input type="hidden" name="quantity" value="1">
+                                                            <button type="submit" class="p-0 bg-transparent border-0 btn">
+                                                                <img src="{{ asset('assets/images/cart_icon_white.svg') }}" alt="Cart"
+                                                                    class="img-fluid">
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="product_text">
+                                                <a class="title" href="{{ route('product.show', $product->slug) }}">
+                                                    {{ Str::limit($product->name, 40) }}
+                                                </a>
+                                                <p class="price">
+                                                    @if($product->sale_price)
+                                                        <span class="text-danger">₹{{ number_format($product->sale_price, 2) }}</span>
+                                                        <span class="text-decoration-line-through">₹{{ number_format($product->base_price, 2) }}</span>
+                                                    @else
+                                                        ₹{{ number_format($product->base_price, 2) }}
+                                                    @endif
+                                                </p>
+                                                <p class="rating">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        @if($i <= floor($product->avg_rating ?? 0))
+                                                            <i class="fas fa-star text-warning"></i>
+                                                        @elseif($i == ceil($product->avg_rating ?? 0) && fmod($product->avg_rating ?? 0, 1) > 0)
+                                                            <i class="fas fa-star-half-alt text-warning"></i>
+                                                        @else
+                                                            <i class="far fa-star text-warning"></i>
+                                                        @endif
+                                                    @endfor
+                                                    <span>({{ $product->reviews_count ?? 0 }})</span>
+                                                </p>
+                                                @if($product->stock <= 0)
+                                                    <span class="badge bg-danger">Out of Stock</span>
+                                                @elseif($product->stock < 10)
+                                                    <span class="badge bg-warning">Only {{ $product->stock }} left</span>
+                                                @else
+                                                    <span class="badge bg-success">In Stock</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="py-5 text-center">
+                                <i class="fas fa-box-open display-1 text-muted"></i>
+                                <h3 class="mt-3">No products found</h3>
+                                <p class="text-muted">Try adjusting your search or filter to find what you're looking for.</p>
+                                <a href="{{ route('shop') }}" class="mt-2 btn btn-primary">
+                                    <i class="fas fa-times me-2"></i> Clear Filters
+                                </a>
+                            </div>
+                        @endif
+
+                        <!-- Pagination -->
+                        @if($products->hasPages())
+                            <div class="row">
+                                <div class="pagination_area">
+                                    <nav aria-label="...">
+                                        <ul class="pagination justify-content-start mt_50">
+                                            {{-- Previous Page Link --}}
+                                            @if($products->onFirstPage())
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">
+                                                        <i class="far fa-arrow-left"></i>
+                                                    </span>
+                                                </li>
+                                            @else
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ $products->previousPageUrl() }}">
+                                                        <i class="far fa-arrow-left"></i>
+                                                    </a>
+                                                </li>
+                                            @endif
+
+                                            {{-- Pagination Elements --}}
+                                            @foreach($products->getUrlRange(1, $products->lastPage()) as $page => $url)
+                                                @if($page == $products->currentPage())
+                                                    <li class="page-item active">
+                                                        <span class="page-link">{{ $page }}</span>
+                                                    </li>
+                                                @else
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                                    </li>
+                                                @endif
+                                            @endforeach
+
+                                            {{-- Next Page Link --}}
+                                            @if($products->hasMorePages())
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ $products->nextPageUrl() }}">
+                                                        <i class="far fa-arrow-right"></i>
+                                                    </a>
+                                                </li>
+                                            @else
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">
+                                                        <i class="far fa-arrow-right"></i>
+                                                    </span>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        @endif
                     </div>
 
-                    <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
-                            aria-labelledby="nav-home-tab" tabindex="0">
+                    <!-- Products List View -->
+                    <div class="tab-pane fade" id="nav-list" role="tabpanel" aria-labelledby="nav-list-tab"
+                        tabindex="0">
+                        @if($products->count() > 0)
                             <div class="row">
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_23.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="discount_list">
-                                                <li class="new"> new</li>
-                                            </ul>
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html"> Kid's dresses for summer</a>
-                                            <p class="price">$70.00</p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(44 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_18.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="discount_list">
-                                                <li class="new"> new</li>
-                                            </ul>
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">Full Sleeve Hoodie Jacket</a>
-                                            <p class="price">$88.00 </p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>(20 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_7.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="discount_list">
-                                                <li class="new"> new</li>
-                                            </ul>
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">Denim 2 Quarter Pant</a>
-                                            <p class="price">$40.00</p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(20 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                        <div class="out_of_stock">
-                                            <p>out of stock</p>
+                                @foreach($products as $product)
+                                    <div class="col-12">
+                                        <div class="mb-4 product_list_item product_item_2 product_item">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-5 col-sm-6 col-xxl-4">
+                                                    <div class="product_img">
+                                                        @php
+                                                            $primaryImage = $product->images->where('is_primary', true)->first();
+                                                            if (!$primaryImage && $product->images->count() > 0) {
+                                                                $primaryImage = $product->images->first();
+                                                            }
+                                                        @endphp
+                                                        
+                                                        @if($primaryImage)
+                                                            <img src="{{ asset('storage/' . $primaryImage->image_path) }}" 
+                                                                 alt="{{ $product->name }}" class="img-fluid w-100">
+                                                        @else
+                                                            <img src="https://placehold.co/300x300?text=No+Image" 
+                                                                 alt="No Image" class="img-fluid w-100">
+                                                        @endif
+                                                        
+                                                        <ul class="discount_list">
+                                                            @if($product->sale_price)
+                                                                @php
+                                                                    $discount = round((($product->base_price - $product->sale_price) / $product->base_price) * 100);
+                                                                @endphp
+                                                                <li class="sale">{{ $discount }}% OFF</li>
+                                                            @endif
+                                                            @if($product->created_at->gt(now()->subDays(7)))
+                                                                <li class="new">New</li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-7 col-sm-6 col-xxl-8">
+                                                    <div class="product_text">
+                                                        <a class="title" href="{{ route('product.show', $product->slug) }}">
+                                                            {{ $product->name }}
+                                                        </a>
+                                                        <p class="rating">
+                                                            @for($i = 1; $i <= 5; $i++)
+                                                                @if($i <= floor($product->avg_rating ?? 0))
+                                                                    <i class="fas fa-star text-warning"></i>
+                                                                @elseif($i == ceil($product->avg_rating ?? 0) && fmod($product->avg_rating ?? 0, 1) > 0)
+                                                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                                                @else
+                                                                    <i class="far fa-star text-warning"></i>
+                                                                @endif
+                                                            @endfor
+                                                            <span>({{ $product->reviews_count ?? 0 }} reviews)</span>
+                                                        </p>
+                                                        <p class="price">
+                                                            @if($product->sale_price)
+                                                                <span class="text-danger">₹{{ number_format($product->sale_price, 2) }}</span>
+                                                                <span class="text-decoration-line-through">₹{{ number_format($product->base_price, 2) }}</span>
+                                                            @else
+                                                                ₹{{ number_format($product->base_price, 2) }}
+                                                            @endif
+                                                        </p>
+                                                        @if($product->stock <= 0)
+                                                            <span class="badge bg-danger">Out of Stock</span>
+                                                        @elseif($product->stock < 10)
+                                                            <span class="badge bg-warning">Only {{ $product->stock }} left</span>
+                                                        @else
+                                                            <span class="badge bg-success">In Stock</span>
+                                                        @endif
+                                                        
+                                                        <p class="mt-2 short_description">
+                                                            {{ Str::limit($product->description, 200) }}
+                                                        </p>
+                                                        <div class="gap-2 mt-3 d-flex">
+                                                            <form action="{{ route('cart.add') }}" method="POST" class="d-inline">
+                                                                @csrf
+                                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                                <input type="hidden" name="quantity" value="1">
+                                                                <button type="submit" class="btn btn-primary" 
+                                                                        {{ $product->stock <= 0 ? 'disabled' : '' }}>
+                                                                    <i class="fas fa-cart-plus me-2"></i> Add to Cart
+                                                                </button>
+                                                            </form>
+                                                            <a href="{{ route('product.show', $product->slug) }}" class="btn btn-outline-primary">
+                                                                <i class="fas fa-eye me-2"></i> View Details
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_9.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="discount_list">
-                                                <li class="discount"> <b>-</b> 45%</li>
-                                            </ul>
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">Men's Denim combo set</a>
-                                            <p class="price">$47.00 <del>$50.00</del></p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(17 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_10.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">Women's Western Party Dress</a>
-                                            <p class="price">$43.00</p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>(22 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_11.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="discount_list">
-                                                <li class="new"> new</li>
-                                                <li class="discount"> <b>-</b> 75%</li>
-                                            </ul>
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">Kid's Western Party Dress</a>
-                                            <p class="price">$75.00 <del>$69.00</del></p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(58 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_17.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">Denim Jeans Pants For Men</a>
-                                            <p class="price">$71.00</p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>(20 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_12.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">Half Sleeve Tops for Women</a>
-                                            <p class="price">$29.00</p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(44 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_13.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">Sharee Petticoat For Women</a>
-                                            <p class="price">$56.00 </p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>(98 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_14.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="discount_list">
-                                                <li class="discount"> <b>-</b> 49%</li>
-                                            </ul>
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">Jeans Pants For Women</a>
-                                            <p class="price">$49.00 <del>$39.00</del></p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(44 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_16.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">cherry fabric western tops</a>
-                                            <p class="price">$33.00</p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(20 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_15.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="discount_list">
-                                                <li class="new"> new</li>
-                                                <li class="discount"> <b>-</b> 75%</li>
-                                            </ul>
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">Denim Shirt For Men</a>
-                                            <p class="price">$40.00 <del>$48.00</del></p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(20 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_18.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="discount_list">
-                                                <li class="new"> new</li>
-                                            </ul>
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">Full Sleeve Hoodie Jacket</a>
-                                            <p class="price">$88.00 </p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>(20 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_19.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="discount_list">
-                                                <li class="new"> new</li>
-                                            </ul>
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">Men's premium formal shirt</a>
-                                            <p class="price">$46.00</p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(17 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_20.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="discount_list">
-                                                <li class="new"> new</li>
-                                            </ul>
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">cherry fabric western tops</a>
-                                            <p class="price">$46.00</p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
-                                                <span>(22 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xxl-3 col-6 col-md-4 col-lg-6 col-xl-4 wow fadeInUp">
-                                    <div class="product_item_2 product_item">
-                                        <div class="product_img">
-                                            <img src="assets/images/product_4.png" alt="Product"
-                                                class="img-fluid w-100">
-                                            <ul class="discount_list">
-                                                <li class="new"> new</li>
-                                            </ul>
-                                            <ul class="btn_list">
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/compare_icon_white.svg" alt="Compare"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <img src="assets/images/cart_icon_white.svg" alt="Love"
-                                                            class="img-fluid">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="product_text">
-                                            <a class="title" href="shop_details.html">Comfortable Sports Sneakers</a>
-                                            <p class="price">$75.00</p>
-                                            <p class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>(58 reviews)</span>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
+                                @endforeach
                             </div>
-                            <div class="row">
-                                <div class="pagination_area">
-                                    <nav aria-label="...">
-                                        <ul class="pagination justify-content-start mt_50">
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">
-                                                    <i class="far fa-arrow-left"></i>
-                                                </a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link active" href="#">01</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">02</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">03</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">
-                                                    <i class="far fa-arrow-right"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab"
-                            tabindex="0">
-                            <div class="row">
-                                <div class="col-6 col-xxl-10 col-sm-12">
-                                    <div class="product_list_item product_item_2 product_item">
-                                        <div class=" row align-items-center">
-                                            <div class="col-md-5 col-sm-6 col-xxl-4">
-                                                <div class="product_img">
-                                                    <img src="assets/images/product_23.png" alt="Product"
-                                                        class="img-fluid w-100">
-                                                    <ul class="discount_list">
-                                                        <li class="new"> new</li>
-                                                    </ul>
-                                                    <ul class="btn_list">
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/compare_icon_white.svg"
-                                                                    alt="Compare" class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                                    class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7 col-sm-6 col-xxl-8">
-                                                <div class="product_text">
-                                                    <a class="title" href="shop_details.html">Full Sleeve Hoodie
-                                                        Jacket</a>
-                                                    <p class="rating">
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <span>(20 reviews)</span>
-                                                    </p>
-                                                    <p class="price">$88.00</p>
-                                                     
-                                                    <p class="short_description">Lorem ipsum dolor sit amet consectetur,
-                                                        adipisicing elit. Exercitationem inventore libero accusantium ex
-                                                        ipsam, provident voluptas facere nemo, quas assumenda
-                                                        reprehenderit nihil ratione quaerat ad.</p>
-                                                    <a class="common_btn" href="shop_details.html">add to cart <i
-                                                            class="fas fa-long-arrow-right"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-xxl-10 col-sm-12">
-                                    <div class="product_list_item product_item_2 product_item">
-                                        <div class=" row align-items-center">
-                                            <div class="col-md-5 col-sm-6 col-xxl-4">
-                                                <div class="product_img">
-                                                    <img src="assets/images/product_7.png" alt="Product"
-                                                        class="img-fluid w-100">
-                                                    <ul class="btn_list">
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/compare_icon_white.svg"
-                                                                    alt="Compare" class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                                    class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7 col-sm-6 col-xxl-8">
-                                                <div class="product_text">
-                                                    <a class="title" href="shop_details.html">Denim 2 Quarter Pant</a>
-                                                    <p class="rating">
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <span>(93 reviews)</span>
-                                                    </p>
-                                                    <p class="price">$65.00</p>
-                                                     
-                                                    <p class="short_description">Lorem ipsum dolor sit amet consectetur,
-                                                        adipisicing elit. Exercitationem inventore libero accusantium ex
-                                                        ipsam, provident voluptas facere nemo, quas assumenda
-                                                        reprehenderit nihil ratione quaerat ad.</p>
-                                                    <a class="common_btn" href="shop_details.html">add to cart <i
-                                                            class="fas fa-long-arrow-right"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-xxl-10 col-sm-12">
-                                    <div class="product_list_item product_item_2 product_item">
-                                        <div class=" row align-items-center">
-                                            <div class="col-md-5 col-sm-6 col-xxl-4">
-                                                <div class="product_img">
-                                                    <img src="assets/images/product_9.png" alt="Product"
-                                                        class="img-fluid w-100">
-                                                    <ul class="btn_list">
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/compare_icon_white.svg"
-                                                                    alt="Compare" class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                                    class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7 col-sm-6 col-xxl-8">
-                                                <div class="product_text">
-                                                    <a class="title" href="shop_details.html">Men's Denim combo set</a>
-                                                    <p class="rating">
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <span>(16 reviews)</span>
-                                                    </p>
-                                                    <p class="price">$72.00</p>
-                                                     
-                                                    <p class="short_description">Lorem ipsum dolor sit amet consectetur,
-                                                        adipisicing elit. Exercitationem inventore libero accusantium ex
-                                                        ipsam, provident voluptas facere nemo, quas assumenda
-                                                        reprehenderit nihil ratione quaerat ad.</p>
-                                                    <a class="common_btn" href="shop_details.html">add to cart <i
-                                                            class="fas fa-long-arrow-right"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-xxl-10 col-sm-12">
-                                    <div class="product_list_item product_item_2 product_item">
-                                        <div class=" row align-items-center">
-                                            <div class="col-md-5 col-sm-6 col-xxl-4">
-                                                <div class="product_img">
-                                                    <img src="assets/images/product_17.png" alt="Product"
-                                                        class="img-fluid w-100">
-                                                    <ul class="discount_list">
-                                                        <li class="new"> new</li>
-                                                        <li class="discount"> <b>-</b> 75%</li>
-                                                    </ul>
-                                                    <ul class="btn_list">
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/compare_icon_white.svg"
-                                                                    alt="Compare" class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                                    class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7 col-sm-6 col-xxl-8">
-                                                <div class="product_text">
-                                                    <a class="title" href="shop_details.html">Denim Jeans Pants For
-                                                        Men</a>
-                                                    <p class="rating">
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <span>(27 reviews)</span>
-                                                    </p>
-                                                    <p class="price">$50.00 <del>$60.00</del></p>
-                                                     
-                                                    <p class="short_description">Lorem ipsum dolor sit amet consectetur,
-                                                        adipisicing elit. Exercitationem inventore libero accusantium ex
-                                                        ipsam, provident voluptas facere nemo, quas assumenda
-                                                        reprehenderit nihil ratione quaerat ad.</p>
-                                                    <a class="common_btn" href="shop_details.html">add to cart <i
-                                                            class="fas fa-long-arrow-right"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-xxl-10 col-sm-12">
-                                    <div class="product_list_item product_item_2 product_item">
-                                        <div class=" row align-items-center">
-                                            <div class="col-md-5 col-sm-6 col-xxl-4">
-                                                <div class="product_img">
-                                                    <img src="assets/images/product_23.png" alt="Product"
-                                                        class="img-fluid w-100">
-                                                    <ul class="discount_list">
-                                                        <li class="new"> new</li>
-                                                    </ul>
-                                                    <ul class="btn_list">
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/compare_icon_white.svg"
-                                                                    alt="Compare" class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                                    class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7 col-sm-6 col-xxl-8">
-                                                <div class="product_text">
-                                                    <a class="title" href="shop_details.html">Full Sleeve Hoodie
-                                                        Jacket</a>
-                                                    <p class="rating">
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <span>(20 reviews)</span>
-                                                    </p>
-                                                    <p class="price">$88.00</p>
-                                                     
-                                                    <p class="short_description">Lorem ipsum dolor sit amet consectetur,
-                                                        adipisicing elit. Exercitationem inventore libero accusantium ex
-                                                        ipsam, provident voluptas facere nemo, quas assumenda
-                                                        reprehenderit nihil ratione quaerat ad.</p>
-                                                    <a class="common_btn" href="shop_details.html">add to cart <i
-                                                            class="fas fa-long-arrow-right"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-xxl-10 col-sm-12">
-                                    <div class="product_list_item product_item_2 product_item">
-                                        <div class=" row align-items-center">
-                                            <div class="col-md-5 col-sm-6 col-xxl-4">
-                                                <div class="product_img">
-                                                    <img src="assets/images/product_7.png" alt="Product"
-                                                        class="img-fluid w-100">
-                                                    <ul class="btn_list">
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/compare_icon_white.svg"
-                                                                    alt="Compare" class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                                    class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7 col-sm-6 col-xxl-8">
-                                                <div class="product_text">
-                                                    <a class="title" href="shop_details.html">Denim 2 Quarter Pant</a>
-                                                    <p class="rating">
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <span>(93 reviews)</span>
-                                                    </p>
-                                                    <p class="price">$65.00</p>
-                                                     
-                                                    <p class="short_description">Lorem ipsum dolor sit amet consectetur,
-                                                        adipisicing elit. Exercitationem inventore libero accusantium ex
-                                                        ipsam, provident voluptas facere nemo, quas assumenda
-                                                        reprehenderit nihil ratione quaerat ad.</p>
-                                                    <a class="common_btn" href="shop_details.html">add to cart <i
-                                                            class="fas fa-long-arrow-right"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-xxl-10 col-sm-12">
-                                    <div class="product_list_item product_item_2 product_item">
-                                        <div class=" row align-items-center">
-                                            <div class="col-md-5 col-sm-6 col-xxl-4">
-                                                <div class="product_img">
-                                                    <img src="assets/images/product_9.png" alt="Product"
-                                                        class="img-fluid w-100">
-                                                    <ul class="btn_list">
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/compare_icon_white.svg"
-                                                                    alt="Compare" class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                                    class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7 col-sm-6 col-xxl-8">
-                                                <div class="product_text">
-                                                    <a class="title" href="shop_details.html">Men's Denim combo set</a>
-                                                    <p class="rating">
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <span>(16 reviews)</span>
-                                                    </p>
-                                                    <p class="price">$72.00</p>
-                                                     
-                                                    <p class="short_description">Lorem ipsum dolor sit amet consectetur,
-                                                        adipisicing elit. Exercitationem inventore libero accusantium ex
-                                                        ipsam, provident voluptas facere nemo, quas assumenda
-                                                        reprehenderit nihil ratione quaerat ad.</p>
-                                                    <a class="common_btn" href="shop_details.html">add to cart <i
-                                                            class="fas fa-long-arrow-right"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-xxl-10 col-sm-12">
-                                    <div class="product_list_item product_item_2 product_item">
-                                        <div class=" row align-items-center">
-                                            <div class="col-md-5 col-sm-6 col-xxl-4">
-                                                <div class="product_img">
-                                                    <img src="assets/images/product_17.png" alt="Product"
-                                                        class="img-fluid w-100">
-                                                    <ul class="discount_list">
-                                                        <li class="new"> new</li>
-                                                        <li class="discount"> <b>-</b> 75%</li>
-                                                    </ul>
-                                                    <ul class="btn_list">
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/compare_icon_white.svg"
-                                                                    alt="Compare" class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">
-                                                                <img src="assets/images/love_icon_white.svg" alt="Love"
-                                                                    class="img-fluid">
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7 col-sm-6 col-xxl-8">
-                                                <div class="product_text">
-                                                    <a class="title" href="shop_details.html">Denim Jeans Pants For
-                                                        Men</a>
-                                                    <p class="rating">
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <span>(27 reviews)</span>
-                                                    </p>
-                                                    <p class="price">$50.00 <del>$60.00</del></p>
-                                                    
-                                                    <p class="short_description">Lorem ipsum dolor sit amet consectetur,
-                                                        adipisicing elit. Exercitationem inventore libero accusantium ex
-                                                        ipsam, provident voluptas facere nemo, quas assumenda
-                                                        reprehenderit nihil ratione quaerat ad.</p>
-                                                    <a class="common_btn" href="shop_details.html">add to cart <i
-                                                            class="fas fa-long-arrow-right"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="pagination_area">
-                                    <nav aria-label="...">
-                                        <ul class="pagination justify-content-start mt_50">
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">
-                                                    <i class="far fa-arrow-left"></i>
-                                                </a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link active" href="#">01</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">02</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">03</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">
-                                                    <i class="far fa-arrow-right"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <!--============================
-        SHOP PAGE END
-    =============================-->
- 
-    
+    </div>
+</section>
 
 <x-footer />
-  
+
+@push('styles')
+<style>
+    .price-inputs {
+        gap: 10px;
+    }
+    .price-inputs input {
+        max-width: 100px;
+    }
+    .btn_list {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    .btn_list li a, .btn_list li button {
+        background: rgba(0,0,0,0.5);
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s;
+    }
+    .btn_list li a:hover, .btn_list li button:hover {
+        background: rgba(0,0,0,0.8);
+        transform: translateY(-2px);
+    }
+    .discount_list {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 2;
+    }
+    .discount_list li {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 3px;
+        font-size: 12px;
+        font-weight: 600;
+        color: white;
+        margin-right: 5px;
+    }
+    .discount_list li.sale {
+        background: #dc3545;
+    }
+    .discount_list li.new {
+        background: #28a745;
+    }
+    .product_img {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+    .product_img img {
+        transition: transform 0.3s ease;
+    }
+    .product_img:hover img {
+        transform: scale(1.05);
+    }
+    .sidebar_category ul {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.0/nouislider.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.0/nouislider.min.css">
+
+<script>
+$(document).ready(function() {
+    // Initialize price range slider
+    var priceSlider = document.getElementById('price-range');
+    if (priceSlider) {
+        noUiSlider.create(priceSlider, {
+            start: [{{ request('min_price', 0) }}, {{ request('max_price', 10000) }}],
+            connect: true,
+            range: {
+                'min': 0,
+                'max': 10000
+            },
+            step: 100
+        });
+
+        priceSlider.noUiSlider.on('update', function(values) {
+            $('#min-price').val(Math.round(values[0]));
+            $('#max-price').val(Math.round(values[1]));
+        });
+
+        $('#min-price, #max-price').on('change', function() {
+            priceSlider.noUiSlider.set([$('#min-price').val(), $('#max-price').val()]);
+        });
+    }
+
+    // Update per page
+    function updatePerPage(value) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('per_page', value);
+        window.location.href = url.toString();
+    }
+
+    // Auto submit form when filter changes
+    $('.category-checkbox, [name="rating"], [name="on_sale"], [name="in_stock"]').on('change', function() {
+        $('#filter-form').submit();
+    });
+
+    // Mobile filter toggle
+    $('.shop_filter_btn').on('click', function() {
+        $('.shop_filter_area').toggleClass('active');
+    });
+
+    // Add to wishlist
+    $('.add-to-wishlist').on('click', function(e) {
+        e.preventDefault();
+        const productId = $(this).data('product-id');
+        
+        $.ajax({
+            url: '{{ route("wishlist.add") }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                product_id: productId
+            },
+            success: function(response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function() {
+                toastr.error('An error occurred. Please try again.');
+            }
+        });
+    });
+});
+</script>
+@endpush

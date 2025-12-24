@@ -644,7 +644,7 @@ header .header_logo_area {
 }
 
 header .header_logo {
-    width: 130px;
+    width: 205px;
 }
 
 header form {
@@ -1020,6 +1020,7 @@ header .header_support h3 a:hover {
     justify-content: end;
     gap: 10px;
     margin-left: auto;
+    align-items: center
 }
 
 .menu_icon li {

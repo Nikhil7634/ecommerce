@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Baby Name Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #eef2ff, #fdf2f8);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container {
+  background: #fff;
+  width: 100%;
+  max-width: 520px;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+input, select, button {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+button {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:hover {
+  background: #4f46e5;
+}
+.name-card {
+  background: #f4f6ff;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+.loading {
+  text-align: center;
+}
+.error {
+  color: red;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>👶 AI Baby Name Generator</h1>
+
+  <input id="mother" placeholder="Mother Name">
+  <input id="father" placeholder="Father Name">
+
+  <select id="gender">
+    <option>Male</option>
+    <option>Female</option>
+  </select>
+
+  <select id="country">
+    <option>India</option>
+    <option>USA</option>
+    <option>UK</option>
+    <option>Canada</option>
+    <option>Australia</option>
+  </select>
+
+  <button onclick="generateNames()">Generate Baby Names</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+const API_KEY = "AIzaSyBgAjZ1TkFp3zduIhlMKEvQQyb8W1nQSsE";
+
+async function generateNames() {
+  const mother = document.getElementById("mother").value.trim();
+  const father = document.getElementById("father").value.trim();
+  const gender = document.getElementById("gender").value;
+  const country = document.getElementById("country").value;
+  const resultDiv = document.getElementById("result");
+
+  if (!mother || !father) {
+    resultDiv.innerHTML = "<p class='error'>Please enter both parent names.</p>";
+    return;
+  }
+
+  resultDiv.innerHTML = "<p class='loading'>AI is generating baby names...</p>";
+
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: `You are a baby name expert.
+
+Generate 10 ${gender} baby names inspired by:
+Mother: ${mother}
+Father: ${father}
+Country: ${country}
+
+Output format (NO extra text):
+
+Name: <name>
+Meaning: <meaning>
+Origin: <origin>
+
+Separate each name with "---".`
+            }]
+          }],
+          generationConfig: {
+            temperature: 0.8,
+            maxOutputTokens: 1024
+          }
+        })
+      }
+    );
+
+    const data = await response.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) throw new Error("No response");
+
+    const blocks = text.split("---");
+    let html = "";
+
+    blocks.forEach(b => {
+      const lines = b.trim().split("\n");
+      if (lines.length >= 3) {
+        html += `
+          <div class="name-card">
+            <strong>${lines[0].replace("Name:", "").trim()}</strong><br>
+            <small><b>Meaning:</b> ${lines[1].replace("Meaning:", "").trim()}</small><br>
+            <small><b>Origin:</b> ${lines[2].replace("Origin:", "").trim()}</small>
+          </div>
+        `;
+      }
+    });
+
+    resultDiv.innerHTML = html || "<p class='error'>Try again.</p>";
+
+  } catch (err) {
+    console.error(err);
+    resultDiv.innerHTML = "<p class='error'>AI request failed. Please retry.</p>";
+  }
+}
+</script>
+
+</body>
+</html>

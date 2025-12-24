@@ -23,34 +23,46 @@ use App\Http\Controllers\Seller\ReviewController         as SellerReviewControll
 use App\Http\Controllers\Seller\TicketController         as SellerTicketController;
 use App\Http\Controllers\Seller\SettingController        as SellerSettingController;
 
-
 // Buyer Controllers
 use App\Http\Controllers\Buyer\{
-    DashboardController,
+    DashboardController as BuyerDashboardController,
     CartController,
     WishlistController,
-    ProfileController,
-    OrderController,
+    ProfileController as BuyerProfileController,
+    OrderController as BuyerOrderController,
     DownloadController,
     ReturnController,
     AddressController,
-    ReviewController
+    ReviewController as BuyerReviewController
 };
 
-// BECOME SELLER CONTROLLER
+// Become Seller
 use App\Http\Controllers\Auth\RegisterController;
-
-
-
-// Seller Routes
-Route::post('/become-seller', [RegisterController::class, 'registerSeller'])->name('become.seller.store');
-
-
- 
-
+use App\Http\Middleware\Seller;
 
 // ======================
-// SELLER ROUTES – FINAL & CORRECT (Matches Your Controller Names)
+// PUBLIC ROUTES
+// ======================
+
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+Route::get('/stores', [StoreController::class, 'index'])->name('stores');
+Route::get('/flash-deals', [FlashDealController::class, 'index'])->name('flash.deals');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::get('/category', [CategoryController::class, 'index'])->name('category');
+// Single category with products (optional)
+Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('category.show');
+
+// Become Seller
+Route::get('/become-seller', [SellerController::class, 'index'])->name('become.seller');
+Route::post('/become-seller', [RegisterController::class, 'registerSeller'])->name('become.seller.store');
+
+// Social Login
+Route::get('/auth/{provider}/redirect', [SocialController::class, 'redirectToProvider'])->name('social.redirect');
+Route::get('/auth/{provider}/callback', [SocialController::class, 'handleProviderCallback'])->name('social.callback');
+
+// ======================
+// SELLER ROUTES
 // ======================
 Route::prefix('seller')->name('seller.')->middleware([
     'auth',
@@ -59,132 +71,154 @@ Route::prefix('seller')->name('seller.')->middleware([
 
     Route::middleware(\App\Http\Middleware\SellerInactive::class)->group(function () {
 
-        // Pending Approval Page
         Route::get('/pending', fn() => view('seller.pending'))->name('pending');
 
-        // Dashboard
         Route::get('/dashboard', [SellerDashboardController::class, 'index'])->name('dashboard');
 
-        // Profile
         Route::get('/profile', [SellerProfileController::class, 'index'])->name('profile');
         Route::get('/profile/edit', [SellerProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [SellerProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile/avatar', [SellerProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
 
-        // Store
         Route::get('/store', [SellerStoreController::class, 'index'])->name('store');
         Route::get('/store/edit', [SellerStoreController::class, 'edit'])->name('store.edit');
         Route::patch('/store', [SellerStoreController::class, 'update'])->name('store.update');
 
-        // Products
         Route::resource('products', SellerProductController::class)->except(['show']);
+        
+        
+        // IMAGE MANAGEMENT ROUTES - MUST COME BEFORE PRODUCTS RESOURCE
+        Route::delete('/products/{product}/images/{image}', [SellerProductController::class, 'removeImage'])
+            ->name('products.images.destroy');
+        
+        Route::post('/products/{product}/images/{image}/set-primary', [SellerProductController::class, 'setPrimaryImage'])
+            ->name('products.images.set-primary');
+ 
 
-        // Orders
         Route::get('/orders', [SellerOrderController::class, 'index'])->name('orders');
         Route::get('/orders/{id}', [SellerOrderController::class, 'show'])->name('order.show');
-        Route::patch('/orders/{id}/status', [SellerOrderController::class, 'updateStatus'] ?? fn() => back())
-            ->name('order.update-status');
+        Route::patch('/orders/{id}/status', [SellerOrderController::class, 'updateStatus'])->name('order.update-status');
 
-        // Earnings
         Route::get('/earnings', [SellerEarningController::class, 'index'])->name('earnings');
 
-        // Withdraw
         Route::get('/withdraw', [SellerWithdrawController::class, 'index'])->name('withdraw');
-        Route::post('/withdraw/request', [SellerWithdrawController::class, 'request'] ?? fn() => back())
-            ->name('withdraw.request');
+        Route::post('/withdraw/request', [SellerWithdrawController::class, 'request'])->name('withdraw.request');
 
-        // Subscription
         Route::get('/subscription', [SellerSubscriptionController::class, 'index'])->name('subscription');
+        Route::get('/subscription/checkout/{plan}', [SellerSubscriptionController::class, 'checkout'])->name('subscription.checkout');
+        Route::post('/subscription/create-order/{plan}', [SellerSubscriptionController::class, 'createOrder'])->name('subscription.createOrder');
+        Route::post('/subscription/verify-payment', [SellerSubscriptionController::class, 'verifyPayment'])->name('subscription.verifyPayment');
 
-        // Reviews
+        Route::post('/webhook/razorpay-subscription', [SellerSubscriptionController::class, 'webhook'])->name('subscription.webhook');
+        Route::post('/subscription/pay/{plan}', [SellerSubscriptionController::class, 'pay'])->name('subscription.pay');
+        Route::get('/subscription/success', [SellerSubscriptionController::class, 'success'])->name('subscription.success');
+        Route::post('/subscription/verify', [SellerSubscriptionController::class, 'verify'])->name('subscription.verify');
+
         Route::get('/reviews', [SellerReviewController::class, 'index'])->name('reviews');
 
-        // Support Tickets
         Route::get('/tickets', [SellerTicketController::class, 'index'])->name('tickets');
         Route::get('/tickets/create', [SellerTicketController::class, 'create'])->name('tickets.create');
-        Route::post('/tickets', [SellerTicketController::class, 'store'] ?? fn() => back())->name('tickets.store');
-        Route::get('/tickets/{id}', [SellerTicketController::class, 'show'] ?? fn() => back())->name('tickets.show');
+        Route::post('/tickets', [SellerTicketController::class, 'store'])->name('tickets.store');
+        Route::get('/tickets/{id}', [SellerTicketController::class, 'show'])->name('tickets.show');
 
-        // Settings
         Route::get('/settings', [SellerSettingController::class, 'index'])->name('settings');
-        Route::patch('/settings', [SellerSettingController::class, 'update'] ?? fn() => back())->name('settings.update');
+        Route::patch('/settings', [SellerSettingController::class, 'update'])->name('settings.update');
 
+        Route::patch('/settings/notifications', [SellerSettingController::class, 'updateNotifications'])->name('settings.notifications.update');
+        Route::patch('/settings/password', [SellerSettingController::class, 'updatePassword'])->name('settings.password.update');
     });
 });
 
 // ======================
-// BUYER ROUTES – ONLY REAL BUYERS CAN ENTER
+// BUYER ROUTES
 // ======================
 Route::prefix('buyer')->name('buyer.')->middleware(['auth', \App\Http\Middleware\EnsureIsBuyer::class])->group(function () {
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [BuyerDashboardController::class, 'index'])->name('dashboard');
 
-    // Cart
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
     Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
     Route::patch('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
 
-    // Wishlist
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
-    // Profile
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update']);
-    Route::post('/profile/password', [ProfileController::class, 'password']);
-    Route::post('/profile/avatar/update', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
+    Route::get('/profile', [BuyerProfileController::class, 'index'])->name('profile');
+    Route::get('/profile/edit', [BuyerProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [BuyerProfileController::class, 'update']);
+    Route::post('/profile/password', [BuyerProfileController::class, 'password']);
+    Route::post('/profile/avatar/update', [BuyerProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
 
-    // Orders & Others
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
-    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
+    Route::get('/orders', [BuyerOrderController::class, 'index'])->name('orders');
+    Route::get('/orders/{id}', [BuyerOrderController::class, 'show'])->name('order.show');
+
     Route::get('/downloads', [DownloadController::class, 'index'])->name('downloads');
     Route::get('/return-policy', [ReturnController::class, 'index'])->name('return.policy');
     Route::get('/address', [AddressController::class, 'index'])->name('address');
-    Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
+    Route::get('/reviews', [BuyerReviewController::class, 'index'])->name('reviews');
 });
 
-
 // ======================
-// PUBLIC ROUTES
+// ADMIN ROUTES – CLEAN & NO CONFLICTS
 // ======================
+Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+        Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
-// Become a Seller Page (GET = show form)
-Route::get('/become-seller', [SellerController::class, 'index'])->name('become.seller');
+        // Sellers
+        Route::get('/sellers', [App\Http\Controllers\Admin\SellerController::class, 'index'])->name('sellers.index');
+        Route::get('/sellers/pending', [App\Http\Controllers\Admin\SellerController::class, 'pending'])->name('sellers.pending');
+        Route::get('/sellers/suspended', [App\Http\Controllers\Admin\SellerController::class, 'suspended'])->name('sellers.suspended');
 
-// Become a Seller Form Submit (POST = save data)
-Route::post('/become-seller', [RegisterController::class, 'registerSeller'])->name('become.seller.store');
+        Route::patch('/sellers/{user}/suspend', [App\Http\Controllers\Admin\SellerController::class, 'suspend'])->name('sellers.suspend');
+        Route::patch('/sellers/{user}/activate', [App\Http\Controllers\Admin\SellerController::class, 'activate'])->name('sellers.activate');
+        Route::patch('/sellers/{user}/approve', [App\Http\Controllers\Admin\SellerController::class, 'approve'])->name('sellers.approve');
+        Route::patch('/sellers/{user}/reject', [App\Http\Controllers\Admin\SellerController::class, 'reject'])->name('sellers.reject');
 
-// Other Public Pages
-Route::get('/shop', [ShopController::class, 'index'])->name('shop');
-Route::get('/stores', [StoreController::class, 'index'])->name('stores');
-Route::get('/flash-deals', [FlashDealController::class, 'index'])->name('flash.deals');
-Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::get('/category', [CategoryController::class, 'index'])->name('category');
+        Route::resource('sellers', App\Http\Controllers\Admin\SellerController::class)->only(['index', 'show']);
 
-// ======================
-// SOCIAL LOGIN
-// ======================
-Route::get('/auth/{provider}/redirect', [SocialController::class, 'redirectToProvider'])->name('social.redirect');
-Route::get('/auth/{provider}/callback', [SocialController::class, 'handleProviderCallback'])->name('social.callback');
+        // Buyers
+        Route::resource('buyers', App\Http\Controllers\Admin\BuyerController::class)->except(['show']);
+        Route::get('/buyers/blocked', [App\Http\Controllers\Admin\BuyerController::class, 'blocked'])->name('buyers.blocked');
+        Route::get('/buyers/{buyer}', [App\Http\Controllers\Admin\BuyerController::class, 'show'])->name('buyers.show');
+        Route::patch('/buyers/{buyer}/ban', [App\Http\Controllers\Admin\BuyerController::class, 'ban'])->name('buyers.ban');
+        Route::patch('/buyers/{buyer}/unban', [App\Http\Controllers\Admin\BuyerController::class, 'unban'])->name('buyers.unban');
 
- 
+        // Products & Categories
+        Route::resource('products', App\Http\Controllers\Admin\ProductController::class);
+        Route::resource('categories', App\Http\Controllers\Admin\CategoryController::class);
 
+        // Orders
+        Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
+        Route::patch('/orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
 
- 
-// ======================
-// ADMIN ROUTES
-// ======================
+        // Subscriptions — CLEAN RESOURCE ROUTE (NO DUPLICATES)
+        Route::resource('subscriptions', App\Http\Controllers\Admin\SubscriptionPlanController::class)->except(['show']);
 
-Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
-});
+        // Custom Toggle for Subscriptions
+        Route::patch('/subscriptions/{subscription}/toggle', [App\Http\Controllers\Admin\SubscriptionPlanController::class, 'toggle'])
+            ->name('subscriptions.toggle');
+
+        // Payments
+        Route::get('/payments/transactions', [App\Http\Controllers\Admin\PaymentController::class, 'transactions'])->name('payments.transactions');
+        Route::get('/payments/withdrawals', [App\Http\Controllers\Admin\PaymentController::class, 'withdrawals'])->name('payments.withdrawals');
+        Route::patch('/payments/withdrawals/{id}/approve', [App\Http\Controllers\Admin\PaymentController::class, 'approveWithdrawal'])->name('payments.withdrawal.approve');
+
+        // Reports & Settings
+        Route::get('/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
+
+        Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+        Route::patch('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+
+        // Content
+        Route::get('/content/pages', [App\Http\Controllers\Admin\ContentController::class, 'pages'])->name('content.pages');
+        Route::get('/content/banners', [App\Http\Controllers\Admin\ContentController::class, 'banners'])->name('content.banners');
+    });
 
 // ======================
 // RAZORPAY WEBHOOK
@@ -194,6 +228,6 @@ Route::post('/webhook/razorpay', [SubscriptionController::class, 'webhook'])
     ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 // ======================
-// DEFAULT AUTH ROUTES (Login, Register, etc.)
+// AUTH ROUTES
 // ======================
 require __DIR__.'/auth.php';

@@ -9,12 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+   public function up()
     {
-        Schema::create('seller_documents', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('seller_documents')) {
+            Schema::create('seller_documents', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+                $table->string('document_type');
+                $table->string('file_path');
+                $table->string('original_name')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

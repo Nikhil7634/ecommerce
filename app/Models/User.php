@@ -62,6 +62,19 @@ class User extends Authenticatable
         }
     }
 
+
+    public function products()
+    {
+        return $this->hasMany(\App\Models\Product::class, 'seller_id');
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(\App\Models\SellerDocument::class, 'user_id');
+    }
+
+    
+
     /**
      * Get full avatar URL (for both local and social users).
      */
@@ -100,6 +113,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\Address::class, 'user_id');
     }
+    public function wishlist()
+    {
+        return $this->hasMany(Wishlist::class); // assuming your table is wishlists and model is Wishlist
+    }
+
+    public function cart()
+    {
+        return $this->hasMany(Cart::class);
+    }
 
     /**
      * Helper methods for checking roles.
@@ -118,4 +140,21 @@ class User extends Authenticatable
     {
         return $this->role === 'buyer';
     }
+
+
+    public function subscription()
+    {
+        return $this->hasOne(SellerSubscription::class, 'seller_id')
+                    ->latest();
+    }
+
+    public function activeSubscription()
+    {
+        return $this->hasOne(SellerSubscription::class, 'seller_id')
+                    ->active();
+    }
+
+    
+
+    
 }

@@ -123,4 +123,24 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    'name' => env('APP_NAME', 'Laravel'),
+    'admin_email' => env('ADMIN_EMAIL', 'admin@example.com'),
+    'commission_rate' => env('COMMISSION_RATE', 10),
+    'contact_phone' => env('CONTACT_PHONE', '+91 9876543210'),
+    'copyright_text' => env('COPYRIGHT_TEXT', '© 2025 Laravel. All rights reserved.'),
+
+    'social' => [
+        'facebook' => env('SOCIAL_FACEBOOK', '#'),
+        'instagram' => env('SOCIAL_INSTAGRAM', '#'),
+        'twitter' => env('SOCIAL_TWITTER', '#'),
+        'linkedin' => env('SOCIAL_LINKEDIN', '#'),
+    ],
+
+    // Logo & Favicon paths (stored in public/storage)
+    'site_logo' => env('SITE_LOGO', 'images/logo.png'),
+    'favicon' => env('FAVICON', 'images/favicon.ico'),
+
+    
+
 ];

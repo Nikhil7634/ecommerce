@@ -18,7 +18,7 @@
     ==========================-->
  
 
- <section class="banner_2 alibaba-hero-banner">
+ <section style="z-index: 1" class="banner_2 alibaba-hero-banner">
     <div class="container">
         <div class="hero-content-wrapper">
             <a href="#" class="learn-link">
@@ -198,89 +198,31 @@
  
     
    
-    <section   class="category category_2 mt_55">
+    <section class="category category_2 mt_55">
         <div class="container">
             <div class="row category_2_slider">
-                <div class="col-2 wow fadeInUp">
-                    <a href="shop.php" class="category_item">
-                        <div class="img">
-                            <img src="https://s.alicdn.com/@img/imgextra/i4/O1CN01WD8L611FtC7zB5hSv_!!6000000000544-2-tps-200-200.png" alt="Category" class="img-fluid w-100">
-                        </div>
-                        <h3> Enviroment</h3>
-                    </a>
-                </div>
-                <div class="col-2 wow fadeInUp">
-                    <a href="shop.php" class="category_item">
-                        <div class="img">
-                            <img src="https://s.alicdn.com/@img/imgextra/i2/O1CN01Si2Chv1URSNSZI3w2_!!6000000002514-2-tps-200-200.png" alt="Category" class="img-fluid w-100">
-                        </div>
-                        <h3>Apparel & Accessories</h3>
-                    </a>
-                </div>
-                <div class="col-2 wow fadeInUp">
-                    <a href="shop.php" class="category_item">
-                        <div class="img">
-                            <img src="https://s.alicdn.com/@img/imgextra/i2/O1CN01FNDTXs1Js3bqyZjbx_!!6000000001083-2-tps-200-200.png" alt="Category" class="img-fluid w-100">
-                        </div>
-                        <h3>Home & Garden</h3>
-                    </a>
-                </div>
-                <div class="col-2 wow fadeInUp">
-                    <a href="shop.php" class="category_item">
-                        <div class="img">
-                            <img src="https://s.alicdn.com/@img/imgextra/i4/O1CN01pbpLad1tk6uA15t5q_!!6000000005939-2-tps-200-200.png" alt="Category" class="img-fluid w-100">
-                        </div>
-                        <h3>Commercial Equipment & Machinery</h3>
-                    </a>
-                </div>
-                <div class="col-2 wow fadeInUp">
-                    <a href="shop.php" class="category_item">
-                        <div class="img">
-                            <img src="https://s.alicdn.com/@img/imgextra/i3/O1CN01gRUkNN1sW5HWJb8Me_!!6000000005773-2-tps-200-200.png" alt="Category" class="img-fluid w-100">
-                        </div>
-                        <h3>Beauty</h3>
-                    </a>
-                </div>
-                <div class="col-2 wow fadeInUp">
-                    <a href="shop.php" class="category_item">
-                        <div class="img">
-                            <img src="https://s.alicdn.com/@img/imgextra/i1/O1CN012sGbIl1o81tW54KPo_!!6000000005179-2-tps-200-200.png" alt="Category" class="img-fluid w-100">
-                        </div>
-                        <h3>Jewelry, Eyewear, Watches & Accessories</h3>
-                    </a>
-                </div>
-                <div class="col-2 wow fadeInUp">
-                    <a href="shop.php" class="category_item">
-                        <div class="img">
-                            <img src="https://s.alicdn.com/@img/imgextra/i4/O1CN01yvRa9M1eCTa1vhbZ9_!!6000000003835-2-tps-200-200.png" alt="Category" class="img-fluid w-100">
-                        </div>
-                        <h3>Tools & Hardware</h3>
-                    </a>
-                </div>
-                <div class="col-2 wow fadeInUp">
-                    <a href="shop.php" class="category_item">
-                        <div class="img">
-                            <img src="https://s.alicdn.com/@img/imgextra/i1/O1CN01SECwAR1ehcde7HSzA_!!6000000003903-2-tps-200-200.png" alt="Category" class="img-fluid w-100">
-                        </div>
-                        <h3>Mother, Kids & Toys</h3>
-                    </a>
-                </div>
-                <div class="col-2 wow fadeInUp">
-                    <a href="shop.php" class="category_item">
-                        <div class="img">
-                            <img src="https://s.alicdn.com/@img/imgextra/i3/O1CN01fm34sD1PrUwNSEFdk_!!6000000001894-2-tps-200-200.png" alt="Category" class="img-fluid w-100">
-                        </div>
-                        <h3>Business Services</h3>
-                    </a>
-                </div>
-                <div class="col-2 wow fadeInUp">
-                    <a href="shop.php" class="category_item">
-                        <div class="img">
-                            <img src="https://s.alicdn.com/@img/imgextra/i2/O1CN01lTlEA71idHDZyDnE1_!!6000000004435-2-tps-200-200.png" alt="Category" class="img-fluid w-100">
-                        </div>
-                        <h3>Consumer Electronics</h3>
-                    </a>
-                </div>
+                @forelse($categories as $category)
+                    <div class="col-2 wow fadeInUp">
+                        <a href="{{ route('category.show', $category->slug) }}" class="category_item">
+                            <div class="img">
+                                @if($category->image)
+                                    <img src="{{ Storage::url($category->image) }}" alt="{{ $category->name }}" class="img-fluid w-100">
+                                @else
+                                    <img src="https://via.placeholder.com/200x200/eeeeee/666666?text={{ Str::limit($category->name, 10) }}" 
+                                        alt="{{ $category->name }}" class="img-fluid w-100">
+                                @endif
+                            </div>
+                            <h3>{{ $category->name }}</h3>
+                            @if($category->children->count() > 0)
+                                <small class="text-muted">{{ $category->children->count() }} subcategories</small>
+                            @endif
+                        </a>
+                    </div>
+                @empty
+                    <div class="py-5 text-center col-12">
+                        <p class="text-muted">No categories available yet.</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>

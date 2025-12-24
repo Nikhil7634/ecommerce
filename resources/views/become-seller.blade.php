@@ -1,5 +1,5 @@
 <x-header 
-    title="Become a Seller - eCommerce"
+    title="Become a Vendor - eCommerce"
     description="Shop the latest electronics, fashion, and home essentials at Valtara with fast delivery and best prices."
     keywords="Valtara, online store, eCommerce, electronics, clothing, deals"
     ogImage="{{ asset('assets/images/banner/home-og.jpg') }}"
@@ -16,10 +16,10 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page_banner_text wow fadeInUp">
-                        <h1>Become a Seller</h1>
+                        <h1>Become a Vendor</h1>
                         <ul>
                             <li><a href="{{ route('home') }}"><i class="fal fa-home-lg"></i> Home</a></li>
-                            <li><a href="#">Become a Seller</a></li>
+                            <li><a href="#">Become a Vendor</a></li>
                         </ul>
                     </div>
                 </div>

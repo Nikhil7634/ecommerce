@@ -15,11 +15,13 @@
     <!-- plugins -->
     <link href="{{ asset('seller-assets/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ asset('seller-assets/assets/plugins/metismenu/metisMenu.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('seller-assets/assets/plugins/fancy-file-uploader/fancy_fileuplod.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('seller-assets/assets/plugins/metismenu/mm-vertical.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('seller-assets/assets/plugins/simplebar/css/simplebar.css') }}">
 
     <!-- bootstrap css -->
-    <link href="{{ asset('seller-assets/assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{asset('seller-assets/assets/css/bootstrap.min.css') }}" rel="stylesheet">
+
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Material+Icons+Outlined" rel="stylesheet">
 
@@ -31,5 +33,7 @@
     <link href="{{ asset('seller-assets/sass/semi-dark.css') }}" rel="stylesheet">
     <link href="{{ asset('seller-assets/sass/bordered-theme.css') }}" rel="stylesheet">
     <link href="{{ asset('seller-assets/sass/responsive.css') }}" rel="stylesheet">
-</head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
+
+ </head>
 <body>

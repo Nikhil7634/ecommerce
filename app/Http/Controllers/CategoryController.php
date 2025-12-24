@@ -3,20 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Category; // optional — only if you have a Category model
+use App\Models\Category;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display all categories (public).
-     */
     public function index()
     {
-        // If you already have a Category model and table:
-        // $categories = Category::orderBy('name')->get();
-        // return view('category.index', compact('categories'));
+        // Fetch main categories (parent_id = NULL)
+        $categories = Category::whereNull('parent_id')
+                              ->orderBy('name')
+                              ->get();
 
-        // Temporary static version if no DB yet:
-        return view('category');
+        // PASS $categories to the view
+        return view('category', compact('categories'));
     }
 }

@@ -212,11 +212,16 @@
 <script src="{{ asset('seller-assets/assets/js/jquery.min.js') }}"></script>
 <script src="{{ asset('seller-assets/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js') }}"></script>
 <script src="{{ asset('seller-assets/assets/plugins/metismenu/metisMenu.min.js') }}"></script>
+<script src="{{ asset('seller-assets/assets/plugins/fancy-file-uploader/jquery.ui.widget.js') }}"></script>
+<script src="{{ asset('seller-assets/assets/plugins/fancy-file-uploader/jquery.fileupload.js') }}"></script>
+<script src="{{ asset('seller-assets/assets/plugins/fancy-file-uploader/jquery.iframe-transport.js') }}"></script>
+<script src="{{ asset('seller-assets/assets/plugins/fancy-file-uploader/jquery.fancy-fileupload.js') }} "></script>
+
 <script src="{{ asset('seller-assets/assets/plugins/apexchart/apexcharts.min.js') }}"></script>
 <script src="{{ asset('seller-assets/assets/plugins/simplebar/js/simplebar.min.js') }}"></script>
 <script src="{{ asset('seller-assets/assets/plugins/peity/jquery.peity.min.js') }}"></script>
 
-
+ 
 
 
 <script>
@@ -231,46 +236,46 @@
 	   new PerfectScrollbar(".user-list")
   </script>
 
-  <script>
-// Save cookie
-function setCookie(name, value, days) {
-    const d = new Date();
-    d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-    document.cookie = name + "=" + value + ";expires=" + d.toUTCString() + ";path=/";
-}
+<script>
+    // Save cookie
+    function setCookie(name, value, days) {
+        const d = new Date();
+        d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = name + "=" + value + ";expires=" + d.toUTCString() + ";path=/";
+    }
 
-// Read cookie
-function getCookie(name) {
-    const n = name + "=";
-    const parts = document.cookie.split(";");
-    for (let c of parts) {
-        c = c.trim();
-        if (c.indexOf(n) === 0) {
-            return c.substring(n.length);
+    // Read cookie
+    function getCookie(name) {
+        const n = name + "=";
+        const parts = document.cookie.split(";");
+        for (let c of parts) {
+            c = c.trim();
+            if (c.indexOf(n) === 0) {
+                return c.substring(n.length);
+            }
         }
+        return null;
     }
-    return null;
-}
 
-// When user selects a theme
-document.querySelectorAll("input[name='theme-options']").forEach(input => {
-    input.addEventListener("change", function () {
-        setCookie("selectedThemeRadio", this.id, 365);
+    // When user selects a theme
+    document.querySelectorAll("input[name='theme-options']").forEach(input => {
+        input.addEventListener("change", function () {
+            setCookie("selectedThemeRadio", this.id, 365);
+        });
     });
-});
 
-// On page load – auto re-apply theme
-window.addEventListener("load", function () {
-    const savedID = getCookie("selectedThemeRadio");
+    // On page load – auto re-apply theme
+    window.addEventListener("load", function () {
+        const savedID = getCookie("selectedThemeRadio");
 
-    if (savedID && document.getElementById(savedID)) {
-        document.getElementById(savedID).checked = true;
+        if (savedID && document.getElementById(savedID)) {
+            document.getElementById(savedID).checked = true;
 
-        // Trigger original theme changing code of template
-        document.getElementById(savedID).dispatchEvent(new Event("change"));
-        document.getElementById(savedID).click();
-    }
-});
+            // Trigger original theme changing code of template
+            document.getElementById(savedID).dispatchEvent(new Event("change"));
+            document.getElementById(savedID).click();
+        }
+    });
 </script>
 
 
