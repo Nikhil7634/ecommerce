@@ -1,30 +1,16 @@
 <x-header 
-    title="Products - eCommerce"
+    title="Products - {{ setting('site_name', 'eCommerce') }}"
     description="Shop the latest electronics, fashion, and home essentials at Valtara with fast delivery and best prices."
     keywords="Valtara, online store, eCommerce, electronics, clothing, deals"
     ogImage="{{ asset('assets/images/banner/home-og.jpg') }}"
->
-</x-header>
+></x-header>
 
 <x-navbar />
 
-<section class="page_banner" style="background: url('{{ asset('assets/images/page_banner_bg.jpg') }}');">
-    <div class="page_banner_overlay">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="page_banner_text wow fadeInUp">
-                        <h1>Shop</h1>
-                        <ul>
-                            <li><a href="{{ url('/') }}"><i class="fal fa-home-lg"></i> Home</a></li>
-                            <li><a href="{{ route('shop') }}">Shop</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- Livewire Notification Manager Component -->
+@livewire('notification-manager')
+
+ 
 
 <section class="shop_page mt_100 mb_100">
     <div class="container">
@@ -75,37 +61,27 @@
                                 <ul>
                                     @foreach($categories as $category)
                                         <li>
-                                            <div class="form-check">
-                                                <input class="form-check-input category-checkbox" type="checkbox" 
-                                                       name="categories[]" value="{{ $category->id }}" 
-                                                       id="category-{{ $category->id }}"
-                                                       {{ in_array($category->id, request('categories', [])) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="category-{{ $category->id }}">
-                                                    {{ $category->name }}
-                                                    <span>{{ $category->products_count ?? 0 }}</span>
-                                                </label>
-                                            </div>
+                                            <a href="{{ route('shop', ['category' => $category->id]) }}" 
+                                            class="{{ request('category') == $category->id ? 'active' : '' }}">
+                                                {{ $category->name }}
+                                                <span>{{ $category->products_count ?? 0 }}</span>
+                                            </a>
                                         </li>
                                         @if($category->children->count() > 0)
                                             @foreach($category->children as $child)
                                                 <li style="padding-left: 20px;">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input category-checkbox" type="checkbox" 
-                                                               name="categories[]" value="{{ $child->id }}" 
-                                                               id="category-{{ $child->id }}"
-                                                               {{ in_array($child->id, request('categories', [])) ? 'checked' : '' }}>
-                                                        <label class="form-check-label" for="category-{{ $child->id }}">
-                                                            {{ $child->name }}
-                                                            <span>{{ $child->products_count ?? 0 }}</span>
-                                                        </label>
-                                                    </div>
+                                                    <a href="{{ route('shop', ['category' => $child->id]) }}" 
+                                                    class="{{ request('category') == $child->id ? 'active' : '' }}">
+                                                        {{ $child->name }}
+                                                        <span>{{ $child->products_count ?? 0 }}</span>
+                                                    </a>
                                                 </li>
                                             @endforeach
                                         @endif
                                     @endforeach
                                 </ul>
                             </div>
-
+                            
                             <!-- Rating Filter -->
                             <div class="sidebar_rating">
                                 <h3>Rating</h3>
@@ -161,29 +137,31 @@
                                             if (!$primaryImage && $product->images->count() > 0) {
                                                 $primaryImage = $product->images->first();
                                             }
+                                            $avgRating = $product->reviews_avg_rating ?? 0;
+                                            $reviewCount = $product->reviews_count ?? 0;
                                         @endphp
                                         <li>
                                             <a href="{{ route('product.show', $product->slug) }}" class="img">
                                                 @if($primaryImage)
                                                     <img src="{{ asset('storage/' . $primaryImage->image_path) }}" 
-                                                         alt="{{ $product->name }}" class="img-fluid">
+                                                        alt="{{ $product->name }}" class="img-fluid">
                                                 @else
                                                     <img src="https://placehold.co/100x100?text=No+Image" 
-                                                         alt="No Image" class="img-fluid">
+                                                        alt="No Image" class="img-fluid">
                                                 @endif
                                             </a>
                                             <div class="text">
                                                 <p class="rating">
                                                     @for($i = 1; $i <= 5; $i++)
-                                                        @if($i <= floor($product->avg_rating ?? 0))
+                                                        @if($i <= floor($avgRating))
                                                             <i class="fas fa-star"></i>
-                                                        @elseif($i == ceil($product->avg_rating ?? 0) && fmod($product->avg_rating ?? 0, 1) > 0)
+                                                        @elseif($i == ceil($avgRating) && fmod($avgRating, 1) > 0)
                                                             <i class="fas fa-star-half-alt"></i>
                                                         @else
                                                             <i class="far fa-star"></i>
                                                         @endif
                                                     @endfor
-                                                    <span>({{ $product->reviews_count ?? 0 }})</span>
+                                                    <span>({{ $reviewCount }})</span>
                                                 </p>
                                                 <a class="title" href="{{ route('product.show', $product->slug) }}">
                                                     {{ Str::limit($product->name, 30) }}
@@ -236,7 +214,7 @@
                                         </button>
                                     </div>
                                 </nav>
-                                <p>Showing {{ $products->firstItem() }}–{{ $products->lastItem() }} of {{ $products->total() }} results</p>
+                                <p>Showing {{ $products->firstItem() ?? 0 }}–{{ $products->lastItem() ?? 0 }} of {{ $products->total() ?? 0 }} results</p>
                             </div>
                         </div>
                         <div class="col-8 col-xl-6 col-md-6">
@@ -279,31 +257,6 @@
                     </div>
                 </div>
 
-                <!-- Search Box -->
-                <div class="mb-4">
-                    <form method="GET" action="{{ route('shop') }}" class="row g-3">
-                        <div class="col-md-8">
-                            <div class="input-group">
-                                <input type="text" name="search" class="form-control" 
-                                       placeholder="Search products..." value="{{ request('search') }}">
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="fas fa-search"></i> Search
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <select class="form-select" name="category" onchange="this.form.submit()">
-                                <option value="">All Categories</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </form>
-                </div>
-
                 <!-- Products Grid View -->
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-grid" role="tabpanel"
@@ -342,27 +295,24 @@
                                                 </ul>
                                                 <ul class="btn_list">
                                                     <li>
-                                                        <a href="#" class="add-to-wishlist" data-product-id="{{ $product->id }}">
-                                                            <img src="{{ asset('assets/images/love_icon_white.svg') }}" alt="Love"
-                                                                class="img-fluid">
-                                                        </a>
+                                                        <!-- Wishlist Livewire Component -->
+                                                        @livewire('wishlist-toggle', [
+                                                            'productId' => $product->id,
+                                                            'buttonType' => 'icon'
+                                                        ], key('wishlist-' . $product->id))
                                                     </li>
                                                     <li>
                                                         <a href="{{ route('product.show', $product->slug) }}">
-                                                            <img src="{{ asset('assets/images/eye_icon_white.svg') }}" alt="View"
+                                                            <img style="filter: brightness(0) invert(1)" src="{{ asset('https://icon-library.com/images/white-eye-icon/white-eye-icon-4.jpg') }}" alt="View"
                                                                 class="img-fluid">
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <form action="{{ route('cart.add') }}" method="POST" class="d-inline">
-                                                            @csrf
-                                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                            <input type="hidden" name="quantity" value="1">
-                                                            <button type="submit" class="p-0 bg-transparent border-0 btn">
-                                                                <img src="{{ asset('assets/images/cart_icon_white.svg') }}" alt="Cart"
-                                                                    class="img-fluid">
-                                                            </button>
-                                                        </form>
+                                                        <!-- Cart Livewire Component -->
+                                                        @livewire('add-to-cart', [
+                                                            'productId' => $product->id,
+                                                            'buttonType' => 'icon'
+                                                        ], key('cart-' . $product->id))
                                                     </li>
                                                 </ul>
                                             </div>
@@ -372,17 +322,17 @@
                                                 </a>
                                                 <p class="price">
                                                     @if($product->sale_price)
-                                                        <span class="text-danger">₹{{ number_format($product->sale_price, 2) }}</span>
-                                                        <span class="text-decoration-line-through">₹{{ number_format($product->base_price, 2) }}</span>
+                                                        <span class="text-danger">₹{{ number_format($product->final_sale_price ?? $product->sale_price, 2) }}</span>
+                                                        <span class="text-decoration-line-through">₹{{ number_format($product->final_base_price ?? $product->base_price, 2) }}</span>
                                                     @else
-                                                        ₹{{ number_format($product->base_price, 2) }}
+                                                        ₹{{ number_format($product->final_base_price ?? $product->base_price, 2) }}
                                                     @endif
                                                 </p>
                                                 <p class="rating">
                                                     @for($i = 1; $i <= 5; $i++)
-                                                        @if($i <= floor($product->avg_rating ?? 0))
+                                                        @if($i <= floor($product->reviews_avg_rating ?? 0))
                                                             <i class="fas fa-star text-warning"></i>
-                                                        @elseif($i == ceil($product->avg_rating ?? 0) && fmod($product->avg_rating ?? 0, 1) > 0)
+                                                        @elseif($i == ceil($product->reviews_avg_rating ?? 0) && fmod($product->reviews_avg_rating ?? 0, 1) > 0)
                                                             <i class="fas fa-star-half-alt text-warning"></i>
                                                         @else
                                                             <i class="far fa-star text-warning"></i>
@@ -514,9 +464,9 @@
                                                         </a>
                                                         <p class="rating">
                                                             @for($i = 1; $i <= 5; $i++)
-                                                                @if($i <= floor($product->avg_rating ?? 0))
+                                                                @if($i <= floor($product->reviews_avg_rating ?? 0))
                                                                     <i class="fas fa-star text-warning"></i>
-                                                                @elseif($i == ceil($product->avg_rating ?? 0) && fmod($product->avg_rating ?? 0, 1) > 0)
+                                                                @elseif($i == ceil($product->reviews_avg_rating ?? 0) && fmod($product->reviews_avg_rating ?? 0, 1) > 0)
                                                                     <i class="fas fa-star-half-alt text-warning"></i>
                                                                 @else
                                                                     <i class="far fa-star text-warning"></i>
@@ -543,18 +493,22 @@
                                                         <p class="mt-2 short_description">
                                                             {{ Str::limit($product->description, 200) }}
                                                         </p>
-                                                        <div class="gap-2 mt-3 d-flex">
-                                                            <form action="{{ route('cart.add') }}" method="POST" class="d-inline">
-                                                                @csrf
-                                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                                <input type="hidden" name="quantity" value="1">
-                                                                <button type="submit" class="btn btn-primary" 
-                                                                        {{ $product->stock <= 0 ? 'disabled' : '' }}>
-                                                                    <i class="fas fa-cart-plus me-2"></i> Add to Cart
-                                                                </button>
-                                                            </form>
-                                                            <a href="{{ route('product.show', $product->slug) }}" class="btn btn-outline-primary">
-                                                                <i class="fas fa-eye me-2"></i> View Details
+                                                        <div class="flex-wrap gap-2 mt-3 d-flex">
+                                                            <!-- Cart Livewire Component -->
+                                                            @livewire('add-to-cart', [
+                                                                'productId' => $product->id,
+                                                                'buttonType' => 'button',
+                                                                'showQuantity' => true
+                                                            ], key('cart-list-' . $product->id))
+                                                            
+                                                            <!-- Wishlist Livewire Component -->
+                                                            @livewire('wishlist-toggle', [
+                                                                'productId' => $product->id,
+                                                                'buttonType' => 'button'
+                                                            ], key('wishlist-list-' . $product->id))
+                                                            
+                                                            <a style="max-height: min-content" href="{{ route('product.show', $product->slug) }}" class="common_btn buy_now">
+                                                                <i style="transform: rotate(0)" class="fas fa-eye me-2"></i> View Details
                                                             </a>
                                                         </div>
                                                     </div>
@@ -576,66 +530,63 @@
 
 @push('styles')
 <style>
-    .price-inputs {
-        gap: 10px;
+    /* Livewire Component Styles */
+    .add-to-cart, .add-to-wishlist {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
     }
-    .price-inputs input {
-        max-width: 100px;
-    }
-    .btn_list {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-    }
-    .btn_list li a, .btn_list li button {
-        background: rgba(0,0,0,0.5);
-        width: 40px;
-        height: 40px;
+    
+    .cart-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #28a745;
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 50%;
-        transition: all 0.3s;
+        font-weight: bold;
     }
-    .btn_list li a:hover, .btn_list li button:hover {
-        background: rgba(0,0,0,0.8);
-        transform: translateY(-2px);
+    
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 5px;
     }
-    .discount_list {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 2;
+    
+    .quantity-controls button {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
     }
-    .discount_list li {
+    
+    .quantity-controls span {
+        min-width: 30px;
+        text-align: center;
+        font-weight: bold;
+    }
+    
+    /* Loading States */
+    [wire\:loading] {
+        opacity: 0.7;
+        pointer-events: none;
+    }
+    
+    [wire\:loading] .spinner-border {
         display: inline-block;
-        padding: 3px 10px;
-        border-radius: 3px;
-        font-size: 12px;
-        font-weight: 600;
-        color: white;
-        margin-right: 5px;
     }
-    .discount_list li.sale {
-        background: #dc3545;
-    }
-    .discount_list li.new {
-        background: #28a745;
-    }
-    .product_img {
+    
+    .btn_list li {
         position: relative;
-        overflow: hidden;
-        border-radius: 8px;
-    }
-    .product_img img {
-        transition: transform 0.3s ease;
-    }
-    .product_img:hover img {
-        transform: scale(1.05);
-    }
-    .sidebar_category ul {
-        max-height: 300px;
-        overflow-y: auto;
     }
 </style>
 @endpush
@@ -646,71 +597,91 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.0/nouislider.min.css">
 
 <script>
-$(document).ready(function() {
-    // Initialize price range slider
-    var priceSlider = document.getElementById('price-range');
-    if (priceSlider) {
-        noUiSlider.create(priceSlider, {
-            start: [{{ request('min_price', 0) }}, {{ request('max_price', 10000) }}],
-            connect: true,
-            range: {
-                'min': 0,
-                'max': 10000
-            },
-            step: 100
+    $(document).ready(function() {
+        // Initialize price range slider
+        var priceSlider = document.getElementById('price-range');
+        if (priceSlider) {
+            noUiSlider.create(priceSlider, {
+                start: [{{ request('min_price', 0) }}, {{ request('max_price', 10000) }}],
+                connect: true,
+                range: {
+                    'min': 0,
+                    'max': 10000
+                },
+                step: 100
+            });
+
+            priceSlider.noUiSlider.on('update', function(values) {
+                $('#min-price').val(Math.round(values[0]));
+                $('#max-price').val(Math.round(values[1]));
+            });
+
+            $('#min-price, #max-price').on('change', function() {
+                priceSlider.noUiSlider.set([$('#min-price').val(), $('#max-price').val()]);
+            });
+        }
+
+        // Update per page
+        function updatePerPage(value) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('per_page', value);
+            window.location.href = url.toString();
+        }
+
+        // Auto submit form when filter changes
+        $('.category-checkbox, [name="rating"], [name="on_sale"], [name="in_stock"]').on('change', function() {
+            $('#filter-form').submit();
         });
 
-        priceSlider.noUiSlider.on('update', function(values) {
-            $('#min-price').val(Math.round(values[0]));
-            $('#max-price').val(Math.round(values[1]));
+        // Mobile filter toggle
+        $('.shop_filter_btn').on('click', function() {
+            $('.shop_filter_area').toggleClass('active');
         });
 
-        $('#min-price, #max-price').on('change', function() {
-            priceSlider.noUiSlider.set([$('#min-price').val(), $('#max-price').val()]);
-        });
-    }
+        // Test function - call this from browser console
+        window.testNotifications = function() {
+            console.log('Testing notifications...');
+            
+            // Test success notification
+            Livewire.dispatch('showNotification', {
+                type: 'success',
+                message: 'Test success notification!'
+            });
+            
+            setTimeout(() => {
+                // Test error notification
+                Livewire.dispatch('showNotification', {
+                    type: 'error',
+                    message: 'Test error notification!'
+                });
+            }, 1000);
+            
+            setTimeout(() => {
+                // Test warning notification
+                Livewire.dispatch('showNotification', {
+                    type: 'warning',
+                    message: 'Test warning notification!'
+                });
+            }, 2000);
+            
+            setTimeout(() => {
+                // Test info notification
+                Livewire.dispatch('showNotification', {
+                    type: 'info',
+                    message: 'Test info notification!'
+                });
+            }, 3000);
+            
+            setTimeout(() => {
+                // Test login alert
+                Livewire.dispatch('showLoginAlert');
+            }, 4000);
+        };
 
-    // Update per page
-    function updatePerPage(value) {
-        const url = new URL(window.location.href);
-        url.searchParams.set('per_page', value);
-        window.location.href = url.toString();
-    }
-
-    // Auto submit form when filter changes
-    $('.category-checkbox, [name="rating"], [name="on_sale"], [name="in_stock"]').on('change', function() {
-        $('#filter-form').submit();
+        // Debug: Check if Livewire is working
+        console.log('Notification system ready');
+        console.log('Livewire available:', typeof Livewire !== 'undefined');
+        console.log('Test function available: testNotifications()');
     });
-
-    // Mobile filter toggle
-    $('.shop_filter_btn').on('click', function() {
-        $('.shop_filter_area').toggleClass('active');
-    });
-
-    // Add to wishlist
-    $('.add-to-wishlist').on('click', function(e) {
-        e.preventDefault();
-        const productId = $(this).data('product-id');
-        
-        $.ajax({
-            url: '{{ route("wishlist.add") }}',
-            method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',
-                product_id: productId
-            },
-            success: function(response) {
-                if (response.success) {
-                    toastr.success(response.message);
-                } else {
-                    toastr.error(response.message);
-                }
-            },
-            error: function() {
-                toastr.error('An error occurred. Please try again.');
-            }
-        });
-    });
-});
 </script>
 @endpush

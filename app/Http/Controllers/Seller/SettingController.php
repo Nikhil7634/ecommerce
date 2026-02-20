@@ -6,58 +6,126 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Store;
+use Illuminate\Support\Str;
 
 class SettingController extends Controller
 {
     public function index()
     {
         $seller = Auth::user();
-        return view('seller.settings', compact('seller'));
+        
+        // Eager load the store relationship
+        $seller->load('store');
+        $store = $seller->store;
+        
+        return view('seller.settings', compact('seller', 'store'));
     }
 
     public function update(Request $request)
     {
-        $validated = $request->validate([
-            'store_name' => 'nullable|string|max:255',
-            'store_slug' => 'nullable|string|max:255|unique:users,business_name,' . Auth::id(),
-            'store_description' => 'nullable|string|max:500',
-            'contact_email' => 'nullable|email|max:255',
-            'contact_phone' => 'nullable|string|max:20',
-            'support_hours' => 'nullable|string|max:50',
-            'timezone' => 'nullable|string|max:50',
-            'currency' => 'nullable|string|max:10',
-            'language' => 'nullable|string|max:10',
+        $seller = Auth::user();
+        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'banner' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'address' => 'nullable|string',
+            'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
         ]);
-
-        // Update user settings
-        $user = Auth::user();
-        $user->update([
-            'business_name' => $validated['store_name'] ?? $user->business_name,
-            'phone' => $validated['contact_phone'] ?? $user->phone,
-        ]);
-
-        // You might want to store other settings in a separate settings table
-        // For now, we'll store them in session or a settings column if available
-
-        return back()->with('success', 'Settings updated successfully!');
+        
+        // Find existing store or create new one
+        $store = Store::where('user_id', $seller->id)->first();
+        
+        if (!$store) {
+            // Create new store
+            $store = new Store();
+            $store->user_id = $seller->id;
+            $store->status = 'active';
+        }
+        
+        // Generate unique slug if needed
+        $slug = $this->generateUniqueSlug($request->slug, $store->id);
+        
+        // Update store details
+        $store->name = $request->name;
+        $store->slug = $slug;
+        $store->description = $request->description;
+        $store->address = $request->address;
+        $store->phone = $request->phone;
+        $store->email = $request->email;
+        
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            // Delete old logo if exists
+            if ($store->logo && Storage::exists('public/' . $store->logo)) {
+                Storage::delete('public/' . $store->logo);
+            }
+            
+            $logoPath = $request->file('logo')->store('store-logos', 'public');
+            $store->logo = $logoPath;
+        }
+        
+        // Handle banner upload
+        if ($request->hasFile('banner')) {
+            // Delete old banner if exists
+            if ($store->banner && Storage::exists('public/' . $store->banner)) {
+                Storage::delete('public/' . $store->banner);
+            }
+            
+            $bannerPath = $request->file('banner')->store('store-banners', 'public');
+            $store->banner = $bannerPath;
+        }
+        
+        $store->save();
+        
+        // Refresh the store relationship
+        $seller->refresh();
+        
+        return redirect()->route('seller.settings')->with('success', 'Store settings saved successfully!');
     }
 
-    public function updateNotifications(Request $request)
+    private function generateUniqueSlug($baseSlug, $storeId = null)
     {
-        $validated = $request->validate([
-            'email_orders' => 'nullable|boolean',
-            'email_payments' => 'nullable|boolean',
-            'email_reviews' => 'nullable|boolean',
-            'email_support' => 'nullable|boolean',
-            'push_orders' => 'nullable|boolean',
-            'push_messages' => 'nullable|boolean',
-            'push_stock' => 'nullable|boolean',
-            'email_frequency' => 'nullable|in:daily,weekly,monthly,never',
+        $slug = Str::slug($baseSlug);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (Store::where('slug', $slug)
+                    ->when($storeId, function($query) use ($storeId) {
+                        return $query->where('id', '!=', $storeId);
+                    })
+                    ->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        return $slug;
+    }
+
+    public function checkSlug(Request $request)
+    {
+        $request->validate([
+            'slug' => 'required|string',
+            'current' => 'nullable|string'
         ]);
 
-        // Store notification settings (you might want to use a separate table)
+        $seller = Auth::user();
+        $store = Store::where('user_id', $seller->id)->first();
         
-        return back()->with('success', 'Notification settings updated successfully!');
+        $slug = Str::slug($request->slug);
+        $currentSlug = $request->current;
+
+        if ($currentSlug && $slug === $currentSlug) {
+            return response()->json(['slug' => $slug]);
+        }
+
+        $availableSlug = $this->generateUniqueSlug($slug, $store ? $store->id : null);
+        return response()->json(['slug' => $availableSlug]);
     }
 
     public function updatePassword(Request $request)
@@ -66,19 +134,21 @@ class SettingController extends Controller
             'current_password' => 'required',
             'new_password' => 'required|min:8|confirmed',
         ]);
-
-        $user = Auth::user();
-
-        // Check current password
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'Current password is incorrect']);
+        
+        $seller = Auth::user();
+        
+        if (!$seller->password) {
+            $seller->password = Hash::make($request->new_password);
+            $seller->save();
+            return redirect()->back()->with('success', 'Password set successfully!');
         }
-
-        // Update password
-        $user->update([
-            'password' => Hash::make($request->new_password)
-        ]);
-
-        return back()->with('success', 'Password updated successfully!');
+        
+        if (!Hash::check($request->current_password, $seller->password)) {
+            return redirect()->back()->with('error', 'Current password is incorrect.');
+        }
+        
+        $seller->password = Hash::make($request->new_password);
+        $seller->save();
+        return redirect()->back()->with('success', 'Password updated successfully!');
     }
 }

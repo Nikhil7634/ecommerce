@@ -14,26 +14,26 @@ class User extends Authenticatable
     /**
      * Mass assignable attributes.
      */
-   protected $fillable = [
-    'name',
-    'email',
-    'password',
-    'phone',
-    'address',
-    'avatar',
-    'role',
-    'status',
-    'provider',
-    'provider_id',
-    'country',
-    'state',
-    'city',
-    'zip',
-    'business_name',
-    'gst_no',
-    'seller_verified_at',
-    'email_verified_at',
-];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'phone',
+        'address',
+        'avatar',
+        'role',
+        'status',
+        'provider',
+        'provider_id',
+        'country',
+        'state',
+        'city',
+        'zip',
+        'business_name',
+        'gst_no',
+        'seller_verified_at',
+        'email_verified_at',
+    ];
 
     /**
      * Hidden attributes for arrays.
@@ -62,18 +62,29 @@ class User extends Authenticatable
         }
     }
 
-
+    /**
+     * PRODUCTS RELATIONSHIP
+     */
     public function products()
     {
         return $this->hasMany(\App\Models\Product::class, 'seller_id');
     }
 
+    /**
+     * STORE RELATIONSHIP (ADD THIS)
+     */
+    public function store()
+    {
+        return $this->hasOne(\App\Models\Store::class);
+    }
+
+    /**
+     * DOCUMENTS RELATIONSHIP
+     */
     public function documents()
     {
         return $this->hasMany(\App\Models\SellerDocument::class, 'user_id');
     }
-
-    
 
     /**
      * Get full avatar URL (for both local and social users).
@@ -113,14 +124,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\Address::class, 'user_id');
     }
+
     public function wishlist()
     {
-        return $this->hasMany(Wishlist::class); // assuming your table is wishlists and model is Wishlist
+        return $this->hasMany(Wishlist::class);
     }
 
     public function cart()
     {
         return $this->hasMany(Cart::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 
     /**
@@ -141,7 +158,6 @@ class User extends Authenticatable
         return $this->role === 'buyer';
     }
 
-
     public function subscription()
     {
         return $this->hasOne(SellerSubscription::class, 'seller_id')
@@ -153,8 +169,4 @@ class User extends Authenticatable
         return $this->hasOne(SellerSubscription::class, 'seller_id')
                     ->active();
     }
-
-    
-
-    
 }

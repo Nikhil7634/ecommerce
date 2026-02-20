@@ -7,6 +7,7 @@
     <script src="{{ asset('admin-assets/assets/vendor/js/daterangepicker.js') }}"></script>
     <script src="{{ asset('admin-assets/assets/js/dashboard.js') }}"></script>
     <script src="{{ asset('admin-assets/assets/vendor/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('admin-assets/assets/vendor/js/bootstrap.bundle.min.js') }}"></script>
     
     <script src="{{ asset('admin-assets/assets/js/main.js') }}"></script>
     <!-- for demo purpose -->

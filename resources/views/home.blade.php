@@ -17,8 +17,7 @@
         BANNER 2 START
     ==========================-->
  
-
- <section style="z-index: 1" class="banner_2 alibaba-hero-banner">
+<section style="z-index: 1" class="banner_2 alibaba-hero-banner">
     <div class="container">
         <div class="hero-content-wrapper">
             <a href="#" class="learn-link">
@@ -27,18 +26,24 @@
 
             <h1>The leading B2B ecommerce platform for global trade</h1>
 
-            <div class="search-form-group">
-                <input type="text" placeholder="smart watch" class="search-input">
-                <button type="submit" class="search-button">
-                    <i class="fas fa-search"></i> Search
-                </button>
-            </div>
+            <form method="GET" action="{{ route('shop') }}" class="search-form">
+                <div class="search-form-group">
+                    <input type="text" 
+                        name="search" 
+                        placeholder="Search products..." 
+                        class="search-input"
+                        value="{{ request('search') }}">
+                    <button type="submit" class="search-button">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </form>
 
             <div class="frequently-searched-links">
                 <span class="search-label">Frequently searched:</span>
-                <a href="#">iphones 15 pro max</a>
-                <a href="#">mobile phones</a>
-                <a href="#">watch</a>
+                <a href="{{ route('shop', ['search' => 'iphones 15 pro max']) }}" class="search-link">iphones 15 pro max</a>
+                <a href="{{ route('shop', ['search' => 'mobile phones']) }}" class="search-link">mobile phones</a>
+                <a href="{{ route('shop', ['search' => 'watch']) }}" class="search-link">watch</a>
             </div>
         </div>
     </div>
@@ -106,126 +111,122 @@
 
 
 
+<section style="display: none" class="features mt_20">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-3 col-md-6 wow fadeInUp">
+                <div class="features_item purple">
+                    <div class="icon">
+                        <img src="assets/images/feature-icon_1.svg" alt="feature">
+                    </div>
+                    <div class="text">
+                        <h3>Return & refund</h3>
+                        <p>Money back guarantee</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 wow fadeInUp">
+                <div class="features_item green">
+                    <div class="icon">
+                        <img src="assets/images/feature-icon_3.svg" alt="feature">
+                    </div>
+                    <div class="text">
+                        <h3>Quality Support</h3>
+                        <p>Always online 24/7</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 wow fadeInUp">
+                <div class="features_item orange">
+                    <div class="icon">
+                        <img src="assets/images/feature-icon_2.svg" alt="feature">
+                    </div>
+                    <div class="text">
+                        <h3>Secure Payment</h3>
+                        <p>30% off by subscribing</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 wow fadeInUp">
+                <div class="features_item">
+                    <div class="icon">
+                        <img src="assets/images/feature-icon_4.svg" alt="feature">
+                    </div>
+                    <div class="text">
+                        <h3>Daily Offers</h3>
+                        <p>20% off by subscribing</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
+
+<section class="stat-section-unique">
+    <div class="container stats-container-flex">
         
- 
-   
-    <section style="display: none" class="features mt_20">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-3 col-md-6 wow fadeInUp">
-                    <div class="features_item purple">
-                        <div class="icon">
-                            <img src="assets/images/feature-icon_1.svg" alt="feature">
-                        </div>
-                        <div class="text">
-                            <h3>Return & refund</h3>
-                            <p>Money back guarantee</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6 wow fadeInUp">
-                    <div class="features_item green">
-                        <div class="icon">
-                            <img src="assets/images/feature-icon_3.svg" alt="feature">
-                        </div>
-                        <div class="text">
-                            <h3>Quality Support</h3>
-                            <p>Always online 24/7</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6 wow fadeInUp">
-                    <div class="features_item orange">
-                        <div class="icon">
-                            <img src="assets/images/feature-icon_2.svg" alt="feature">
-                        </div>
-                        <div class="text">
-                            <h3>Secure Payment</h3>
-                            <p>30% off by subscribing</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6 wow fadeInUp">
-                    <div class="features_item">
-                        <div class="icon">
-                            <img src="assets/images/feature-icon_4.svg" alt="feature">
-                        </div>
-                        <div class="text">
-                            <h3>Daily Offers</h3>
-                            <p>20% off by subscribing</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="stats-heading-wrapper">
+            <h2>Explore millions of offerings tailored to your business needs</h2>
         </div>
-    </section>
-
-
-    <section class="stat-section-unique">
-        <div class="container stats-container-flex">
+        
+        <div class="statistics-grid-unique">
             
-            <div class="stats-heading-wrapper">
-                <h2>Explore millions of offerings tailored to your business needs</h2>
+            <div class="stat-item">
+                <p class="stat-number">200M+</p>
+                <p class="stat-label">products</p>
             </div>
             
-            <div class="statistics-grid-unique">
-                
-                <div class="stat-item">
-                    <p class="stat-number">200M+</p>
-                    <p class="stat-label">products</p>
-                </div>
-                
-                <div class="stat-item stat-item-right-col">
-                    <p class="stat-number">200K+</p>
-                    <p class="stat-label">suppliers</p>
-                </div>
-                
-                <div class="stat-item">
-                    <p class="stat-number">5,900</p>
-                    <p class="stat-label">product categories</p>
-                </div>
-                
-                <div class="stat-item stat-item-right-col">
-                    <p class="stat-number">200+</p>
-                    <p class="stat-label">countries and regions</p>
-                </div>
-                
+            <div class="stat-item stat-item-right-col">
+                <p class="stat-number">200K+</p>
+                <p class="stat-label">suppliers</p>
+            </div>
+            
+            <div class="stat-item">
+                <p class="stat-number">5,900</p>
+                <p class="stat-label">product categories</p>
+            </div>
+            
+            <div class="stat-item stat-item-right-col">
+                <p class="stat-number">200+</p>
+                <p class="stat-label">countries and regions</p>
             </div>
             
         </div>
-    </section>
- 
+        
+    </div>
+</section>
+
     
    
-    <section class="category category_2 mt_55">
-        <div class="container">
-            <div class="row category_2_slider">
-                @forelse($categories as $category)
-                    <div class="col-2 wow fadeInUp">
-                        <a href="{{ route('category.show', $category->slug) }}" class="category_item">
-                            <div class="img">
-                                @if($category->image)
-                                    <img src="{{ Storage::url($category->image) }}" alt="{{ $category->name }}" class="img-fluid w-100">
-                                @else
-                                    <img src="https://via.placeholder.com/200x200/eeeeee/666666?text={{ Str::limit($category->name, 10) }}" 
-                                        alt="{{ $category->name }}" class="img-fluid w-100">
-                                @endif
-                            </div>
-                            <h3>{{ $category->name }}</h3>
-                            @if($category->children->count() > 0)
-                                <small class="text-muted">{{ $category->children->count() }} subcategories</small>
+<section class="category category_2 mt_55">
+    <div class="container">
+        <div class="row category_2_slider">
+            @forelse($categories as $category)
+                <div class="col-2 wow fadeInUp">
+                    <a href="{{ route('category.show', $category->slug) }}" class="category_item">
+                        <div class="img">
+                            @if($category->image)
+                                <img src="{{ Storage::url($category->image) }}" alt="{{ $category->name }}" class="img-fluid w-100">
+                            @else
+                                <img src="https://via.placeholder.com/200x200/eeeeee/666666?text={{ Str::limit($category->name, 10) }}" 
+                                    alt="{{ $category->name }}" class="img-fluid w-100">
                             @endif
-                        </a>
-                    </div>
-                @empty
-                    <div class="py-5 text-center col-12">
-                        <p class="text-muted">No categories available yet.</p>
-                    </div>
-                @endforelse
-            </div>
+                        </div>
+                        <h3>{{ $category->name }}</h3>
+                        @if($category->children->count() > 0)
+                            <small class="text-muted">{{ $category->children->count() }} subcategories</small>
+                        @endif
+                    </a>
+                </div>
+            @empty
+                <div class="py-5 text-center col-12">
+                    <p class="text-muted">No categories available yet.</p>
+                </div>
+            @endforelse
         </div>
-    </section>
+    </div>
+</section>
     <!--============================
         CATEGORY 2 END
     ==============================-->

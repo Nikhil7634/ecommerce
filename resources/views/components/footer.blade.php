@@ -140,6 +140,7 @@
     <script src="{{ asset('assets/js/multiple-image-video.js') }}"></script>
     <script src="{{ asset('assets/js/animated_barfiller.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 
 
 </body>

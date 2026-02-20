@@ -6,11 +6,12 @@
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
  * Generated for Laravel 12.36.1.
- *
+ 
  * This file should not be included in your code, only analyzed by your IDE!
- *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
+ 
  * @see https://github.com/barryvdh/laravel-ide-helper
+ 
  */
 namespace Illuminate\Support\Facades {
     /**
@@ -23246,6 +23247,7 @@ namespace  {
      * @template TValue of static
      * @template TValue of static
      */
+
     class Eloquent extends \Illuminate\Database\Eloquent\Model {        /**
          * Create and return an un-saved model instance.
          *
@@ -23339,7 +23341,6 @@ namespace  {
 
         /**
          * Add a where clause on the primary key to the query.
-         *
          * @param mixed $id
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static

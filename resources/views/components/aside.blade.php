@@ -1,5 +1,5 @@
 <div class="col-lg-3 wow fadeInUp">
-    <div class="dashboard_sidebar">
+    <div style="max-height: max-content" class="dashboard_sidebar">
         <div class="dashboard_sidebar_area">
             @php
             use Illuminate\Support\Str;
@@ -66,26 +66,7 @@
                         </a>
                     </li>
 
-                    <li>
-                        {{-- Dynamic 'active' class: Check if current route is 'buyer.downloads' --}}
-                        <a href="{{ route('buyer.downloads') }}" class="{{ request()->routeIs('buyer.downloads') ? 'active' : '' }}">
-                            <span>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 24 24" stroke-width="1.5"
-                                    stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m9 13.5 3 3m0 0 3-3m-3 3v-6m1.06-4.19
-                                        -2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25
-                                        2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0
-                                        2.25 2.25h15A2.25 2.25 0 0 0
-                                        21.75 18V9a2.25 2.25 0 0 0-2.25
-                                        -2.25h-5.379a1.5 1.5 0 0 1
-                                        -1.06-.44Z" />
-                                </svg>
-                            </span>
-                            Downloads
-                        </a>
-                    </li>
+                     
 
                     <li>
                         {{-- Dynamic 'active' class: Check if current route is 'buyer.return.policy' --}}
@@ -131,27 +112,7 @@
                         </a>
                     </li>
 
-                    <li>
-                        {{-- Dynamic 'active' class: Check if current route is 'buyer.address' --}}
-                        <a href="{{ route('buyer.address') }}" class="{{ request()->routeIs('buyer.address') ? 'active' : '' }}">
-                            <span>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 24 24" stroke-width="1.5"
-                                    stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M15 10.5a3 3 0 1 1-6 0
-                                        3 3 0 0 1 6 0Z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M19.5 10.5c0 7.142-7.5
-                                        11.25-7.5 11.25S4.5 17.642
-                                        4.5 10.5a7.5 7.5 0 1 1
-                                        15 0Z" />
-                                </svg>
-                            </span>
-                            Address
-                        </a>
-                    </li>
-
+                     
                     <li>
                         {{-- Dynamic 'active' class: Check if current route is 'buyer.wishlist' --}}
                         <a href="{{ route('buyer.wishlist') }}" class="{{ request()->routeIs('buyer.wishlist') ? 'active' : '' }}">

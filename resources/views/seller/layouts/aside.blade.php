@@ -68,7 +68,7 @@
 
             <!-- Withdraw -->
             <li class="{{ request()->routeIs('seller.withdraw') ? 'mm-active' : '' }}">
-                <a href="{{ route('seller.withdraw') }}">
+                <a href="{{ route('seller.earnings.withdrawal') }}">
                     <div class="parent-icon"><i class="material-icons-outlined">account_balance_wallet</i></div>
                     <div class="menu-title">Withdraw</div>
                 </a>

@@ -132,21 +132,7 @@
 
                     <ul class="menu_icon">
                         @auth
-                            @if(auth()->user()->role === 'buyer')
-                                <li>
-                                    <a href="{{ route('buyer.wishlist') }}">
-                                        <b><img src="{{ asset('assets/images/love_black.svg') }}" alt="Wishlist"></b>
-                                        <span>{{ auth()->user()->wishlist()->count() }}</span>
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">
-                                        <b><img src="{{ asset('assets/images/cart_black.svg') }}" alt="cart"></b>
-                                        <span>{{ auth()->user()->cart()->count() }}</span>
-                                    </a>
-                                </li>
-                            @endif
+                            <livewire:navbar-cart-count />
 
                             <li class="position-relative">
                                 <a class="user">
