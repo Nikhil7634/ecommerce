@@ -434,7 +434,7 @@
                             </div>
                             @empty
                             <div class="py-4 text-center">
-                                <p class="mb-0 text-muted">No products found</p>
+                                <p class="mb-0 ">No products found</p>
                             </div>
                             @endforelse
                         </div>
@@ -489,7 +489,7 @@
                             </div>
                             @empty
                             <div class="py-4 text-center">
-                                <p class="mb-0 text-muted">No other vendors found</p>
+                                <p class="mb-0 ">No other vendors found</p>
                             </div>
                             @endforelse
                         </div>

@@ -182,11 +182,17 @@
                                     <th>Total</th>
                                     <th>Status</th>
                                     <th>Payment</th>
+                                    <th>Earnings</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($orderItems as $item)
+                                @php
+                                    // Check if earnings exist for this item
+                                    $earningExists = \App\Models\SellerEarning::where('order_item_id', $item->id)->exists();
+                                    $earningAmount = $earningExists ? \App\Models\SellerEarning::where('order_item_id', $item->id)->value('net_amount') : 0;
+                                @endphp
                                 <tr>
                                     <td>
                                         <input type="checkbox" name="order_ids[]" value="{{ $item->order_id }}" class="form-check-input order-checkbox">
@@ -265,6 +271,21 @@
                                         </span>
                                     </td>
                                     <td>
+                                        @if($item->order->status == 'delivered')
+                                            @if($earningExists)
+                                                <span class="badge bg-success">
+                                                    <i class="bx bx-check"></i> ₹{{ number_format($earningAmount, 2) }}
+                                                </span>
+                                            @else
+                                                <span class="badge bg-warning text-dark">
+                                                    <i class="bx bx-time"></i> Pending
+                                                </span>
+                                            @endif
+                                        @else
+                                            <span class="badge bg-secondary">-</span>
+                                        @endif
+                                    </td>
+                                    <td>
                                         <div class="gap-2 d-flex">
                                             <a href="{{ route('seller.orders.show', $item->order_id) }}" 
                                                class="btn btn-sm btn-outline-primary" 
@@ -282,7 +303,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="10" class="py-5 text-center">
+                                    <td colspan="11" class="py-5 text-center">
                                         <img src="{{ asset('seller-assets/assets/images/no-orders.png') }}" alt="No orders" width="120" class="mb-3">
                                         <h5 class="">No orders found</h5>
                                         <p class="mb-0 ">Try adjusting your filters</p>
@@ -342,10 +363,16 @@
                         <label class="form-label">Notes (Optional)</label>
                         <textarea name="notes" class="form-control" rows="2" placeholder="Add any notes..."></textarea>
                     </div>
+                    
+                    <!-- Earnings Preview for Delivered Status -->
+                    <div class="mb-3 alert alert-info" id="earnings_preview" style="display: none;">
+                        <i class="bx bx-info-circle me-2"></i>
+                        <span id="earnings_message"></span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update Status</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Update Status</button>
                 </div>
             </form>
         </div>
@@ -354,77 +381,4 @@
 
 @include('seller.layouts.footer')
 
-@push('scripts')
-<script>
-    // Select all checkbox
-    document.getElementById('select-all')?.addEventListener('change', function() {
-        document.querySelectorAll('.order-checkbox').forEach(cb => {
-            cb.checked = this.checked;
-        });
-    });
-
-    // Bulk update function
-    function bulkUpdate(status) {
-        const selected = document.querySelectorAll('.order-checkbox:checked');
-        if (selected.length === 0) {
-            alert('Please select at least one order.');
-            return;
-        }
-        
-        if (confirm(`Are you sure you want to mark ${selected.length} order(s) as ${status}?`)) {
-            const form = document.getElementById('bulk-form');
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'status';
-            input.value = status;
-            form.appendChild(input);
-            form.submit();
-        }
-    }
-
-    // Update status function
-    function updateStatus(orderId, currentStatus) {
-        document.getElementById('modal_order_id').value = orderId;
-        document.getElementById('modal_status').value = currentStatus;
-        
-        // Show/hide tracking section based on status
-        const statusSelect = document.getElementById('modal_status');
-        const trackingSection = document.getElementById('tracking_section');
-        const trackingUrlSection = document.getElementById('tracking_url_section');
-        
-        function toggleTracking() {
-            if (statusSelect.value === 'shipped') {
-                trackingSection.style.display = 'block';
-                trackingUrlSection.style.display = 'block';
-            } else {
-                trackingSection.style.display = 'none';
-                trackingUrlSection.style.display = 'none';
-            }
-        }
-        
-        statusSelect.addEventListener('change', toggleTracking);
-        toggleTracking();
-        
-        const form = document.getElementById('statusForm');
-        form.action = `/seller/orders/${orderId}/status`;
-        
-        new bootstrap.Modal(document.getElementById('statusModal')).show();
-    }
-
-    // Auto-submit filters on change for status dropdown
-    document.querySelector('select[name="status"]')?.addEventListener('change', function() {
-        document.getElementById('filter-form').submit();
-    });
-
-    // Date validation
-    document.querySelector('input[name="date_from"]')?.addEventListener('change', function() {
-        document.querySelector('input[name="date_to"]').min = this.value;
-    });
-    
-    document.querySelector('input[name="date_to"]')?.addEventListener('change', function() {
-        document.querySelector('input[name="date_from"]').max = this.value;
-    });
-</script>
-
  
-@endpush

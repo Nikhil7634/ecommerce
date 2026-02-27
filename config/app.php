@@ -137,6 +137,9 @@ return [
         'linkedin' => env('SOCIAL_LINKEDIN', '#'),
     ],
 
+
+    
+
     // Logo & Favicon paths (stored in public/storage)
     'site_logo' => env('SITE_LOGO', 'images/logo.png'),
     'favicon' => env('FAVICON', 'images/favicon.ico'),

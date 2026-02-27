@@ -532,7 +532,7 @@
     <div class="cta-content-wrapper">
         <h2>Ready to get started?</h2>
         <p>Explore millions of products from trusted suppliers by signing up today!</p>
-        <a href="#" class="cta-sign-up-button">Sign up</a>
+        <a href="{{ route('become.seller') }}" class="cta-sign-up-button">Sign up</a>
     </div>
 </section>
 

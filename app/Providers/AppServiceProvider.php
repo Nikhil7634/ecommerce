@@ -11,6 +11,8 @@ use Livewire\Livewire;
 use App\Livewire\WishlistToggle;
 use App\Livewire\AddToCart;
 use App\Livewire\NotificationManager;
+use App\Observers\OrderStatusObserver;
+use App\Models\Order;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +29,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+         Order::observe(OrderStatusObserver::class);
+
         // === SHARE SETTINGS WITH ALL VIEWS ===
         $settings = Cache::rememberForever('app_settings', function () {
             return Setting::pluck('value', 'key')->toArray();
@@ -67,5 +71,10 @@ class AppServiceProvider extends ServiceProvider
         Livewire::component('wishlist-toggle', \App\Livewire\WishlistToggle::class);
         Livewire::component('add-to-cart', \App\Livewire\AddToCart::class);
         Livewire::component('notification-manager', \App\Livewire\NotificationManager::class);
+
+        
     }
+
+       
+
 }

@@ -36,68 +36,75 @@ class ShopController extends Controller
             ->withAvg('reviews', 'rating')
             ->withCount('reviews');
 
-        // Search with intelligent matching
+        // ============ FIXED SEARCH LOGIC ============
         if ($request->has('search') && !empty($request->search)) {
-            $search = strtolower(trim($request->search));
+            $search = trim($request->search);
             
             $query->where(function($q) use ($search) {
-                // Original case-insensitive search
-                $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
-                  ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"])
-                  ->orWhere('sku', 'like', "%{$search}%");
+                // Split search into individual words for better matching
+                $words = explode(' ', $search);
                 
-                // If search ends with 's', also search without 's'
-                if (substr($search, -1) === 's') {
-                    $singular = substr($search, 0, -1);
-                    if (strlen($singular) >= 2) {
-                        $q->orWhereRaw('LOWER(name) LIKE ?', ["%{$singular}%"])
-                          ->orWhereRaw('LOWER(description) LIKE ?', ["%{$singular}%"]);
+                foreach ($words as $word) {
+                    if (strlen($word) > 1) {
+                        $q->where(function($subQuery) use ($word) {
+                            $subQuery->where('name', 'LIKE', "%{$word}%")
+                                     ->orWhere('description', 'LIKE', "%{$word}%");
+                        });
                     }
                 }
                 
-                // If search doesn't end with 's', also search with 's'
-                if (substr($search, -1) !== 's') {
-                    $plural = $search . 's';
-                    $q->orWhereRaw('LOWER(name) LIKE ?', ["%{$plural}%"])
-                      ->orWhereRaw('LOWER(description) LIKE ?', ["%{$plural}%"]);
-                }
+                // Also search for the full phrase
+                $q->orWhere('name', 'LIKE', "%{$search}%")
+                  ->orWhere('description', 'LIKE', "%{$search}%")
+                  ->orWhere('sku', 'LIKE', "%{$search}%");
                 
                 // Search in categories
-                $q->orWhereHas('categories', function($q) use ($search) {
-                    $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
-                    if (substr($search, -1) === 's') {
-                        $singular = substr($search, 0, -1);
-                        $q->orWhereRaw('LOWER(name) LIKE ?', ["%{$singular}%"]);
-                    }
+                $q->orWhereHas('categories', function($catQuery) use ($search) {
+                    $catQuery->where('name', 'LIKE', "%{$search}%");
                 });
             });
         }
 
-        // Category filter
+        // ============ FIXED CATEGORY FILTER (using slug) ============
         if ($request->has('category') && !empty($request->category)) {
-            $query->whereHas('categories', function($q) use ($request) {
-                $q->where('categories.id', $request->category);
-            });
+            $categorySlug = $request->category;
+            
+            // Find category by slug and get all child category IDs
+            $category = Category::where('slug', $categorySlug)->first();
+            
+            if ($category) {
+                // Get all subcategory IDs including the main category
+                $categoryIds = $this->getAllCategoryIds($category);
+                
+                $query->whereHas('categories', function($q) use ($categoryIds) {
+                    $q->whereIn('categories.id', $categoryIds);
+                });
+            }
         }
 
-        // Multiple categories filter
-        if ($request->has('categories')) {
+        // Multiple categories filter (if using array of IDs)
+        if ($request->has('categories') && is_array($request->categories)) {
             $query->whereHas('categories', function($q) use ($request) {
                 $q->whereIn('categories.id', $request->categories);
             });
         }
 
-        // Price range filter (using base price without commission)
-        if ($request->has('min_price') || $request->has('max_price')) {
-            $minPrice = $request->min_price ?? 0;
-            $maxPrice = $request->max_price ?? 10000;
-            $query->whereBetween('base_price', [$minPrice, $maxPrice]);
+        // Price range filter
+        if ($request->has('min_price') && $request->min_price !== null && $request->min_price !== '') {
+            $minPrice = floatval($request->min_price);
+            $query->where('base_price', '>=', $minPrice);
+        }
+        
+        if ($request->has('max_price') && $request->max_price !== null && $request->max_price !== '') {
+            $maxPrice = floatval($request->max_price);
+            $query->where('base_price', '<=', $maxPrice);
         }
 
         // On sale filter
         if ($request->has('on_sale') && $request->on_sale == 1) {
             $query->whereNotNull('sale_price')
-                  ->where('sale_price', '>', 0);
+                  ->where('sale_price', '>', 0)
+                  ->whereColumn('sale_price', '<', 'base_price');
         }
 
         // In stock filter
@@ -107,11 +114,8 @@ class ShopController extends Controller
 
         // Rating filter
         if ($request->has('rating') && !empty($request->rating)) {
-            $query->whereHas('reviews', function($q) use ($request) {
-                $q->selectRaw('product_id, AVG(rating) as avg_rating')
-                  ->groupBy('product_id')
-                  ->having('avg_rating', '>=', $request->rating);
-            });
+            $rating = intval($request->rating);
+            $query->having('reviews_avg_rating', '>=', $rating);
         }
 
         // Sorting
@@ -130,27 +134,36 @@ class ShopController extends Controller
                 $query->orderBy('reviews_avg_rating', 'desc');
                 break;
             case 'popular':
-                $query->orderBy('created_at', 'desc');
+                $query->orderBy('views', 'desc');
                 break;
             default: // featured
                 $query->orderBy('created_at', 'desc');
                 break;
         }
 
-        // Get categories with product counts
+        // Get categories with product counts (using slugs for URLs)
         $categories = Category::whereNull('parent_id')
             ->with(['children' => function($q) {
                 $q->withCount(['products' => function($query) {
-                    $query->where('status', 'published');
+                    $query->where('status', 'published')
+                          ->whereHas('seller', function($sq) {
+                              $sq->where('status', 'active');
+                          });
                 }]);
             }])
             ->withCount(['products' => function($query) {
-                $query->where('status', 'published');
+                $query->where('status', 'published')
+                      ->whereHas('seller', function($sq) {
+                          $sq->where('status', 'active');
+                      });
             }])
             ->get();
 
         // Get top rated products
         $topRatedProducts = Product::where('status', 'published')
+            ->whereHas('seller', function($q) {
+                $q->where('status', 'active');
+            })
             ->with(['images'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
@@ -160,9 +173,9 @@ class ShopController extends Controller
 
         // Pagination
         $perPage = $request->get('per_page', 12);
-        $products = $query->paginate($perPage);
+        $products = $query->paginate($perPage)->appends($request->query());
         
-        // Calculate final prices with commission for all products
+        // Calculate final prices with commission for paginated products
         $products->getCollection()->transform(function ($product) use ($commissionRate) {
             $product->final_base_price = $this->calculatePriceWithCommission($product->base_price, $commissionRate);
             $product->final_sale_price = $product->sale_price ? 
@@ -178,7 +191,27 @@ class ShopController extends Controller
             return $product;
         });
 
+        // Debug: Log the search query and results
+        if ($request->has('search') && !empty($request->search)) {
+            \Log::info('Search query: ' . $request->search);
+            \Log::info('Products found: ' . $products->total());
+        }
+
         return view('shop', compact('products', 'categories', 'topRatedProducts', 'commissionRate'));
+    }
+
+    /**
+     * Get all category IDs including children recursively
+     */
+    private function getAllCategoryIds($category)
+    {
+        $ids = [$category->id];
+        
+        foreach ($category->children as $child) {
+            $ids = array_merge($ids, $this->getAllCategoryIds($child));
+        }
+        
+        return $ids;
     }
 
     public function show($slug)
@@ -214,30 +247,29 @@ class ShopController extends Controller
             });
         }
 
-        // Get related products with rating data
-        $relatedProducts = Product::where('status', 'published')
-            ->where('id', '!=', $product->id)
-            ->whereHas('seller', function($query) {
-                $query->where('status', 'active');
-            })
-            ->with(['images'])
-            ->withAvg('reviews', 'rating')
-            ->withCount('reviews')
-            ->inRandomOrder()
-            ->take(6) // Get 6 to ensure we have enough after removing any category matches
-            ->get()
-            ->unique('id') // Remove duplicates
-            ->take(4); // Take only 4
-            
-        // Calculate final prices for related products
-        $relatedProducts->transform(function ($relatedProduct) use ($commissionRate) {
-            $relatedProduct->final_base_price = $this->calculatePriceWithCommission($relatedProduct->base_price, $commissionRate);
-            $relatedProduct->final_sale_price = $relatedProduct->sale_price ? 
-                $this->calculatePriceWithCommission($relatedProduct->sale_price, $commissionRate) : null;
-            return $relatedProduct;
-        });
+        // Get related products
+        $categoryIds = $product->categories->pluck('id')->toArray();
+        
+        $relatedProducts = collect();
+        
+        if (!empty($categoryIds)) {
+            $relatedProducts = Product::where('status', 'published')
+                ->where('id', '!=', $product->id)
+                ->whereHas('seller', function($query) {
+                    $query->where('status', 'active');
+                })
+                ->whereHas('categories', function($query) use ($categoryIds) {
+                    $query->whereIn('categories.id', $categoryIds);
+                })
+                ->with(['images'])
+                ->withAvg('reviews', 'rating')
+                ->withCount('reviews')
+                ->inRandomOrder()
+                ->take(4)
+                ->get();
+        }
 
-        // If no related products found by category, get random products
+        // If not enough related products by category, get random products
         if ($relatedProducts->count() < 4) {
             $randomProducts = Product::where('status', 'published')
                 ->where('id', '!=', $product->id)
@@ -251,20 +283,63 @@ class ShopController extends Controller
                 ->take(4 - $relatedProducts->count())
                 ->get();
                 
-            // Calculate final prices for random products
-            $randomProducts->transform(function ($randomProduct) use ($commissionRate) {
-                $randomProduct->final_base_price = $this->calculatePriceWithCommission($randomProduct->base_price, $commissionRate);
-                $randomProduct->final_sale_price = $randomProduct->sale_price ? 
-                    $this->calculatePriceWithCommission($randomProduct->sale_price, $commissionRate) : null;
-                return $randomProduct;
-            });
-
             $relatedProducts = $relatedProducts->concat($randomProducts);
         }
+        
+        // Calculate final prices for related products
+        $relatedProducts->transform(function ($relatedProduct) use ($commissionRate) {
+            $relatedProduct->final_base_price = $this->calculatePriceWithCommission($relatedProduct->base_price, $commissionRate);
+            $relatedProduct->final_sale_price = $relatedProduct->sale_price ? 
+                $this->calculatePriceWithCommission($relatedProduct->sale_price, $commissionRate) : null;
+            return $relatedProduct;
+        });
 
         // Increment view count
         $product->increment('views');
 
         return view('product.show', compact('product', 'relatedProducts', 'commissionRate'));
+    }
+
+    /**
+     * AJAX search for live search
+     */
+    public function searchAjax(Request $request)
+    {
+        $request->validate([
+            'query' => 'required|string|min:2'
+        ]);
+
+        $query = $request->query;
+        $commissionRate = $this->getCommissionRate();
+
+        $products = Product::where('status', 'published')
+            ->whereHas('seller', function($q) {
+                $q->where('status', 'active');
+            })
+            ->where(function($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%")
+                  ->orWhere('description', 'LIKE', "%{$query}%")
+                  ->orWhereHas('categories', function($cq) use ($query) {
+                      $cq->where('name', 'LIKE', "%{$query}%");
+                  });
+            })
+            ->with(['images'])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->take(5)
+            ->get();
+
+        // Calculate final prices
+        $products->transform(function ($product) use ($commissionRate) {
+            $product->final_base_price = $this->calculatePriceWithCommission($product->base_price, $commissionRate);
+            $product->final_sale_price = $product->sale_price ? 
+                $this->calculatePriceWithCommission($product->sale_price, $commissionRate) : null;
+            return $product;
+        });
+
+        return response()->json([
+            'success' => true,
+            'products' => $products
+        ]);
     }
 }

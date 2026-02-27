@@ -117,8 +117,7 @@
                         <li><a class="{{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a></li>
                         <li><a class="{{ request()->routeIs('shop') ? 'active' : '' }}" href="{{ route('shop') }}">Products</a></li>
                         <li><a class="{{ request()->routeIs('stores') ? 'active' : '' }}" href="{{ route('stores') }}">Manufacturers</a></li>
-                        <li><a class="{{ request()->routeIs('flash.deals') ? 'active' : '' }}" href="{{ route('flash.deals') }}">Flash Deals</a></li>
-                        
+                         
                         @auth
                             @if(auth()->user()->role === 'buyer')
                                 <li><a class="{{ request()->routeIs('become.seller') ? 'active' : '' }}" href="{{ route('become.seller') }}">Become a Vendor</a></li>

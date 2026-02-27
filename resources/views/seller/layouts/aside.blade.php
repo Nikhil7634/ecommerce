@@ -22,13 +22,7 @@
                 </a>
             </li>
 
-            <!-- My Store -->
-            <li class="{{ request()->routeIs('seller.store') || request()->routeIs('seller.store.edit') ? 'mm-active' : '' }}">
-                <a href="{{ route('seller.store') }}">
-                    <div class="parent-icon"><i class="material-icons-outlined">store</i></div>
-                    <div class="menu-title">My Store</div>
-                </a>
-            </li>
+            
 
             <!-- Products -->
             <li class="{{ request()->is('seller/products*') ? 'mm-active' : '' }}">
@@ -50,11 +44,16 @@
                 </ul>
             </li>
 
-            <!-- Orders -->
+            <!-- Orders with Red Badge -->
             <li class="{{ request()->routeIs('seller.orders') || request()->routeIs('seller.order.show') ? 'mm-active' : '' }}">
                 <a href="{{ route('seller.orders') }}">
                     <div class="parent-icon"><i class="material-icons-outlined">shopping_cart</i></div>
-                    <div class="menu-title">Orders</div>
+                    <div class="menu-title d-flex align-items-center justify-content-between w-100">
+                        <span>Orders</span>
+                        @if(isset($confirmedOrdersCount) && $confirmedOrdersCount > 0)
+                            <span class="badge bg-danger rounded-pill ms-2">{{ $confirmedOrdersCount }}</span>
+                        @endif
+                    </div>
                 </a>
             </li>
 
@@ -68,7 +67,7 @@
 
             <!-- Withdraw -->
             <li class="{{ request()->routeIs('seller.withdraw') ? 'mm-active' : '' }}">
-                <a href="{{ route('seller.earnings.withdrawal') }}">
+                <a href="{{ route('seller.withdrawals.create') }}">
                     <div class="parent-icon"><i class="material-icons-outlined">account_balance_wallet</i></div>
                     <div class="menu-title">Withdraw</div>
                 </a>
@@ -90,13 +89,7 @@
                 </a>
             </li>
 
-            <!-- Support Tickets -->
-            <li class="{{ request()->routeIs('seller.tickets*') ? 'mm-active' : '' }}">
-                <a href="{{ route('seller.tickets') }}">
-                    <div class="parent-icon"><i class="material-icons-outlined">support_agent</i></div>
-                    <div class="menu-title">Support Tickets</div>
-                </a>
-            </li>
+             
 
             <!-- Account Section -->
             <li class="menu-label">Account</li>
@@ -113,7 +106,7 @@
             <li class="{{ request()->routeIs('seller.settings') ? 'mm-active' : '' }}">
                 <a href="{{ route('seller.settings') }}">
                     <div class="parent-icon"><i class="material-icons-outlined">settings</i></div>
-                    <div class="menu-title">Settings</div>
+                    <div class="menu-title">My Store</div>
                 </a>
             </li>
 

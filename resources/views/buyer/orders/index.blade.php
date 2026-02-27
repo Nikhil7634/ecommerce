@@ -51,17 +51,17 @@
                     <div class="mb-4 order-filters">
                         <div class="row">
                             <div class="col-md-8">
-                                <div class="btn-group" role="group">
+                                <div class="flex-wrap btn-group" role="group">
                                     <a href="{{ route('buyer.orders') }}?status=all" class="btn btn-outline-secondary {{ request('status') == 'all' || !request('status') ? 'active' : '' }}">
                                         All Orders ({{ $totalOrders ?? 0 }})
                                     </a>
-                                    <a href="{{ route('buyer.orders') }}?status=pending" class="btn btn-outline-secondary {{ request('status') == 'pending' ? 'active' : '' }}">
+                                    <a href="{{ route('buyer.orders') }}?status=pending" class="btn btn-outline-secondary {{ request('status') == 'pending' ? 'selected' : '' }}">
                                         Pending ({{ $pendingCount ?? 0 }})
                                     </a>
-                                    <a href="{{ route('buyer.orders') }}?status=confirmed" class="btn btn-outline-secondary {{ request('status') == 'confirmed' ? 'active' : '' }}">
+                                    <a href="{{ route('buyer.orders') }}?status=confirmed" class="btn btn-outline-secondary {{ request('status') == 'confirmed' ? 'selected' : '' }}">
                                         Confirmed ({{ $confirmedCount ?? 0 }})
                                     </a>
-                                    <a href="{{ route('buyer.orders') }}?status=delivered" class="btn btn-outline-secondary {{ request('status') == 'delivered' ? 'active' : '' }}">
+                                    <a href="{{ route('buyer.orders') }}?status=delivered" class="btn btn-outline-secondary {{ request('status') == 'delivered' ? 'selected' : '' }}">
                                         Delivered ({{ $deliveredCount ?? 0 }})
                                     </a>
                                 </div>
@@ -93,6 +93,28 @@
                                 </thead>
                                 <tbody>
                                     @foreach($orders as $order)
+                                    @php
+                                        // Check if this order has any unreviewed products
+                                        $hasUnreviewed = false;
+                                        $reviewableCount = 0;
+                                        $firstUnreviewedProductId = null;
+                                        
+                                        // Only check for delivered or confirmed orders
+                                        if(in_array($order->status, ['delivered', 'confirmed'])) {
+                                            foreach($order->items as $item) {
+                                                $existingReview = \App\Models\Review::where('user_id', Auth::id())
+                                                    ->where('product_id', $item->product_id)
+                                                    ->first();
+                                                if (!$existingReview) {
+                                                    $hasUnreviewed = true;
+                                                    $reviewableCount++;
+                                                    if (!$firstUnreviewedProductId) {
+                                                        $firstUnreviewedProductId = $item->product_id;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    @endphp
                                     <tr>
                                         <td>
                                             <strong>#{{ $order->order_number }}</strong>
@@ -148,6 +170,30 @@
                                                 <a href="{{ route('buyer.order.show', $order->id) }}" class="btn btn-sm btn-outline-primary" title="View Order">
                                                     <i class="fas fa-eye"></i> View
                                                 </a>
+
+                                                <!-- REVIEW BUTTON - Shows for delivered/confirmed orders with unreviewed products -->
+                                                @if($hasUnreviewed)
+                                                    @if($reviewableCount == 1)
+                                                        <!-- Single product to review - go directly to review form -->
+                                                        <a href="{{ route('buyer.reviews.create', ['order' => $order->id, 'product_id' => $firstUnreviewedProductId]) }}" 
+                                                           class="btn btn-sm btn-warning" 
+                                                           title="Write a Review">
+                                                            <i class="fas fa-star"></i> Review
+                                                        </a>
+                                                    @else
+                                                        <!-- Multiple products - go to selection page -->
+                                                        <a href="{{ route('buyer.reviews.select-product', $order->id) }}" 
+                                                           class="btn btn-sm btn-warning" 
+                                                           title="Review Products ({{ $reviewableCount }} items)">
+                                                            <i class="fas fa-star"></i> Review ({{ $reviewableCount }})
+                                                        </a>
+                                                    @endif
+                                                @elseif(in_array($order->status, ['delivered', 'confirmed']) && $order->items->count() > 0)
+                                                    <!-- All products reviewed - show disabled button with checkmark -->
+                                                    <span class="btn btn-sm btn-success" style="cursor: default; opacity: 0.8;" title="All products reviewed">
+                                                        <i class="fas fa-check-circle"></i> Reviewed
+                                                    </span>
+                                                @endif
                                                 
                                                 @if(in_array($order->status, ['pending', 'processing']))
                                                 <form action="{{ route('buyer.order.cancel', $order->id) }}" method="POST" class="d-inline">
@@ -213,6 +259,38 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Quick Review Summary for Delivered Orders -->
+                    @php
+                        $totalUnreviewedCount = 0;
+                        foreach($orders as $order) {
+                            if(in_array($order->status, ['delivered', 'confirmed'])) {
+                                foreach($order->items as $item) {
+                                    $existingReview = \App\Models\Review::where('user_id', Auth::id())
+                                        ->where('product_id', $item->product_id)
+                                        ->first();
+                                    if (!$existingReview) {
+                                        $totalUnreviewedCount++;
+                                    }
+                                }
+                            }
+                        }
+                    @endphp
+                    
+                    @if($totalUnreviewedCount > 0)
+                    <div class="mt-4 alert alert-warning">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-star fa-2x me-3 text-warning"></i>
+                            <div>
+                                <strong>You have {{ $totalUnreviewedCount }} product(s) waiting for your review!</strong>
+                                <p class="mb-0">Share your experience and help other shoppers make informed decisions.</p>
+                            </div>
+                            <a href="{{ route('buyer.reviews') }}" class="btn btn-warning ms-auto">
+                                Write Reviews <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -261,6 +339,10 @@
         border-color: #007bff;
     }
     
+    .btn-group .btn {
+        margin-bottom: 5px;
+    }
+    
     .empty-state {
         padding: 40px 20px;
     }
@@ -276,11 +358,75 @@
     
     .stat-card {
         transition: transform 0.3s ease;
+        height: 100%;
     }
     
     .stat-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .btn-warning {
+        color: #000;
+    }
+    
+    .btn-warning:hover {
+        color: #000;
+        background-color: #ffca2c;
+        border-color: #ffc720;
+    }
+    
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        
+        .btn-group .btn {
+            flex: 1 1 auto;
+            margin-bottom: 5px;
+            font-size: 12px;
+            padding: 0.375rem 0.5rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .action-buttons .btn,
+        .action-buttons form,
+        .action-buttons span {
+            width: 100%;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .table {
+            font-size: 13px;
+        }
+        
+        .alert .d-flex {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .alert .fa-2x {
+            margin-right: 0 !important;
+            margin-bottom: 10px;
+        }
+        
+        .alert .btn {
+            margin-top: 10px;
+            margin-left: 0 !important;
+            width: 100%;
+        }
     }
 </style>
 @endpush

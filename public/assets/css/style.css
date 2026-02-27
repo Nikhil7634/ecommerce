@@ -13261,10 +13261,31 @@ footer {
     position: relative;
     width: 100%;
     height: 600px;
-    background: url("https://s.alicdn.com/@img/imgextra/i4/O1CN01ustqhi1Tz44lu4arh_!!6000000002452-0-tps-3840-1248.jpg_q60.jpg") no-repeat center center/cover;
+    background: url("../images/hero.jpg") no-repeat center center/cover;
     display: flex;
     align-items: center;
     padding: 0;
+    overflow: hidden;
+}
+
+.alibaba-hero-banner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Left side dark, right side transparent */
+    background: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.9) 0%,
+        rgba(0, 0, 0, 0.6) 30%,
+        rgba(0, 0, 0, 0.2) 60%,
+        rgba(0, 0, 0, 0) 100%
+    );
+
+    z-index: 1;
 }
 
  

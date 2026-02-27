@@ -7,12 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Review;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
     // List all orders for the buyer
-    
     public function index(Request $request)
     {
         $userId = Auth::id();
@@ -33,9 +34,9 @@ class OrderController extends Controller
         }
         
         // Paginate results
-        $orders = $query->paginate(10);
+        $orders = $query->paginate(10)->withQueryString();
         
-        // Get statistics - ALL VARIABLES MUST BE DEFINED
+        // Get statistics
         $totalOrders = Order::where('user_id', $userId)->count();
         $pendingCount = Order::where('user_id', $userId)->where('status', 'pending')->count();
         $confirmedCount = Order::where('user_id', $userId)->where('status', 'confirmed')->count();
@@ -43,7 +44,7 @@ class OrderController extends Controller
         $processingCount = Order::where('user_id', $userId)->where('status', 'processing')->count();
         $cancelledCount = Order::where('user_id', $userId)->whereIn('status', ['cancelled', 'payment_failed'])->count();
         
-        // Get total spent - FIXED: Add proper calculation
+        // Get total spent
         $totalSpent = Order::where('user_id', $userId)
             ->whereIn('status', ['confirmed', 'delivered'])
             ->sum('total_amount');
@@ -82,7 +83,20 @@ class OrderController extends Controller
         
         $order->load(['items.product.images', 'items.product.seller']);
         
-        return view('buyer.orders.show', compact('order'));
+        // Check which items are reviewable
+        $reviewableItems = [];
+        foreach ($order->items as $item) {
+            $existingReview = Review::where('user_id', Auth::id())
+                ->where('product_id', $item->product_id)
+                ->first();
+            
+            $reviewableItems[$item->product_id] = [
+                'can_review' => !$existingReview && in_array($order->status, ['delivered', 'confirmed']),
+                'existing_review' => $existingReview,
+            ];
+        }
+        
+        return view('buyer.orders.show', compact('order', 'reviewableItems'));
     }
     
     // Cancel an order
@@ -123,11 +137,43 @@ class OrderController extends Controller
             abort(403, 'Unauthorized access to this order.');
         }
         
+        try {
+            // Check if DomPDF is available
+            if (!class_exists('Barryvdh\DomPDF\Facade\Pdf')) {
+                Log::warning('DomPDF not installed. Please run: composer require barryvdh/laravel-dompdf');
+                return $this->downloadHtmlInvoice($order);
+            }
+            
+            $order->load(['items.product', 'user']);
+            
+            $pdf = Pdf::loadView('buyer.orders.invoice', compact('order'));
+            
+            // Set paper size and orientation
+            $pdf->setPaper('A4', 'portrait');
+            
+            // Download the PDF
+            return $pdf->download('invoice-' . $order->order_number . '.pdf');
+            
+        } catch (\Exception $e) {
+            Log::error('PDF generation failed: ' . $e->getMessage());
+            
+            // Fallback to HTML invoice
+            return $this->downloadHtmlInvoice($order);
+        }
+    }
+    
+    /**
+     * Fallback method to download HTML invoice
+     */
+    private function downloadHtmlInvoice(Order $order)
+    {
         $order->load(['items.product', 'user']);
         
-        $pdf = Pdf::loadView('buyer.orders.invoice', compact('order'));
+        $html = view('buyer.orders.invoice-html', compact('order'))->render();
         
-        return $pdf->download('invoice-' . $order->order_number . '.pdf');
+        return response($html)
+            ->header('Content-Type', 'text/html')
+            ->header('Content-Disposition', 'attachment; filename="invoice-' . $order->order_number . '.html"');
     }
     
     // Track order
@@ -138,16 +184,69 @@ class OrderController extends Controller
             abort(403, 'Unauthorized access to this order.');
         }
         
-        // This would integrate with a shipping API
-        $trackingInfo = [
-            'order_number' => $order->order_number,
-            'status' => $order->status,
-            'estimated_delivery' => $order->created_at->addDays(5)->format('d M Y'),
-            'current_location' => 'In transit',
-            'shipping_provider' => 'Standard Shipping',
-            'tracking_number' => 'TRK' . strtoupper(uniqid()),
-        ];
+        // Get tracking information based on order status
+        $trackingInfo = $this->getTrackingInfo($order);
         
         return view('buyer.orders.track', compact('order', 'trackingInfo'));
+    }
+    
+    /**
+     * Get tracking information for an order
+     */
+    private function getTrackingInfo($order)
+    {
+        $trackingNumber = 'TRK' . strtoupper(substr($order->order_number, -8));
+        
+        $statuses = [
+            'pending' => 'Order Placed',
+            'processing' => 'Processing',
+            'confirmed' => 'Confirmed',
+            'shipped' => 'Shipped',
+            'delivered' => 'Delivered',
+            'cancelled' => 'Cancelled',
+            'payment_failed' => 'Payment Failed'
+        ];
+        
+        $timeline = [
+            [
+                'status' => 'Order Placed',
+                'date' => $order->created_at->format('d M Y, h:i A'),
+                'completed' => true,
+                'description' => 'Your order has been placed successfully.'
+            ],
+            [
+                'status' => 'Payment Confirmed',
+                'date' => $order->paid_at ? $order->paid_at->format('d M Y, h:i A') : null,
+                'completed' => $order->payment_status === 'paid',
+                'description' => 'Payment has been confirmed.'
+            ],
+            [
+                'status' => 'Processing',
+                'date' => $order->updated_at->format('d M Y, h:i A'),
+                'completed' => in_array($order->status, ['processing', 'shipped', 'delivered']),
+                'description' => 'Your order is being processed.'
+            ],
+            [
+                'status' => 'Shipped',
+                'date' => null,
+                'completed' => in_array($order->status, ['shipped', 'delivered']),
+                'description' => 'Your order has been shipped.'
+            ],
+            [
+                'status' => 'Delivered',
+                'date' => null,
+                'completed' => $order->status === 'delivered',
+                'description' => 'Your order has been delivered.'
+            ]
+        ];
+        
+        return [
+            'tracking_number' => $trackingNumber,
+            'current_status' => $statuses[$order->status] ?? ucfirst($order->status),
+            'estimated_delivery' => $order->created_at->addDays(5)->format('d M Y'),
+            'carrier' => 'Standard Shipping',
+            'timeline' => $timeline,
+            'shipping_address' => $order->shipping_address . ', ' . $order->shipping_city . ', ' . $order->shipping_state . ' - ' . $order->shipping_zip
+        ];
     }
 }

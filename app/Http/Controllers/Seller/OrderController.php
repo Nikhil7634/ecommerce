@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\Product;
-use App\Models\User;
+use App\Models\SellerEarning;
+use App\Models\Setting;
 use Carbon\Carbon;
 
 class OrderController extends Controller
@@ -74,10 +75,22 @@ class OrderController extends Controller
         // Get status counts for filter badges
         $statusCounts = $this->getStatusCounts($sellerId);
         
+        // Get commission rate
+        $commissionRate = $this->getCommissionRate();
+        
+        // Check earnings status for each item
+        foreach ($orderItems as $item) {
+            $earning = SellerEarning::where('order_item_id', $item->id)->first();
+            $item->earnings_status = $earning ? 'added' : 'pending';
+            $item->earnings_amount = $earning ? $earning->net_amount : 0;
+            $item->commission_rate = $commissionRate;
+        }
+        
         return view('seller.orders.index', compact(
             'orderItems',
             'statistics',
-            'statusCounts'
+            'statusCounts',
+            'commissionRate'
         ));
     }
 
@@ -102,6 +115,11 @@ class OrderController extends Controller
             abort(404, 'Order not found for this seller.');
         }
         
+        // Get earnings for each item
+        foreach ($order->items as $item) {
+            $item->earning = SellerEarning::where('order_item_id', $item->id)->first();
+        }
+        
         return view('seller.orders.show', compact('order'));
     }
 
@@ -119,55 +137,136 @@ class OrderController extends Controller
         
         $sellerId = Auth::id();
         
-        // Verify that this order has items from this seller
-        $order = Order::with(['items' => function($q) use ($sellerId) {
-                $q->where('seller_id', $sellerId);
-            }])
-            ->findOrFail($orderId);
+        DB::beginTransaction();
         
-        if ($order->items->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Order not found for this seller.'
-            ], 404);
+        try {
+            // Verify that this order has items from this seller
+            $order = Order::with(['items' => function($q) use ($sellerId) {
+                    $q->where('seller_id', $sellerId);
+                }])
+                ->findOrFail($orderId);
+            
+            if ($order->items->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order not found for this seller.'
+                ], 404);
+            }
+            
+            $oldStatus = $order->status;
+            
+            // Update order status
+            $order->status = $request->status;
+            
+            // Add tracking information if provided
+            if ($request->tracking_number) {
+                $trackingData = [
+                    'number' => $request->tracking_number,
+                    'url' => $request->tracking_url,
+                    'updated_at' => now(),
+                ];
+                $order->tracking_info = json_encode($trackingData);
+            }
+            
+            $order->save();
+            
+            // If status changed to delivered, create earnings records
+            if ($request->status == 'delivered' && $oldStatus != 'delivered') {
+                $this->createSellerEarnings($order, $sellerId);
+            }
+            
+            // If status changed from delivered, remove earnings (optional)
+            if ($oldStatus == 'delivered' && $request->status != 'delivered') {
+                $this->removeSellerEarnings($order);
+            }
+            
+            DB::commit();
+            
+            $message = 'Order status updated successfully.';
+            if ($request->status == 'delivered') {
+                $message .= ' Earnings have been added to your account.';
+            }
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                    'status' => $order->status,
+                    'status_badge' => $this->getStatusBadge($order->status)
+                ]);
+            }
+            
+            return redirect()->back()->with('success', $message);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Order status update failed: ' . $e->getMessage());
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error updating order status: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->back()->with('error', 'Error updating order status: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Create seller earnings for delivered orders
+     */
+    private function createSellerEarnings($order, $sellerId)
+    {
+        $commissionRate = $this->getCommissionRate();
+        $earningsCount = 0;
+        
+        foreach ($order->items as $item) {
+            // Check if earning already exists
+            $existingEarning = SellerEarning::where('order_item_id', $item->id)->first();
+            
+            if (!$existingEarning) {
+                // Calculate commission and net amount
+                $commission = ($item->total_price * $commissionRate) / 100;
+                $netAmount = $item->total_price - $commission;
+                
+                // Create earning record
+                SellerEarning::create([
+                    'seller_id' => $sellerId,
+                    'order_id' => $order->id,
+                    'order_item_id' => $item->id,
+                    'amount' => $item->total_price,
+                    'commission' => $commission,
+                    'net_amount' => $netAmount,
+                    'type' => 'sale',
+                    'status' => 'pending', // Will become available after return period
+                    'description' => 'Earnings from order #' . $order->order_number . ' - ' . ($item->product_name ?? 'Product'),
+                    'available_at' => Carbon::now()->addDays(7), // 7 days return period
+                ]);
+                
+                $earningsCount++;
+            }
         }
         
-        // Update order status
-        $order->status = $request->status;
-        
-        // Add tracking information if provided
-        if ($request->tracking_number) {
-            $trackingData = [
-                'number' => $request->tracking_number,
-                'url' => $request->tracking_url,
-                'updated_at' => now(),
-            ];
-            $order->tracking_info = json_encode($trackingData);
+        if ($earningsCount > 0) {
+            Log::info("Created {$earningsCount} earnings records for order #{$order->order_number}");
         }
         
-        $order->save();
+        return $earningsCount;
+    }
+
+    /**
+     * Remove seller earnings (if order status changed from delivered)
+     */
+    private function removeSellerEarnings($order)
+    {
+        $deleted = SellerEarning::where('order_id', $order->id)->delete();
         
-        // Log the status change
-        activity()
-            ->performedOn($order)
-            ->causedBy(Auth::user())
-            ->withProperties([
-                'old_status' => $order->getOriginal('status'),
-                'new_status' => $request->status,
-                'notes' => $request->notes
-            ])
-            ->log('Order status updated');
-        
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Order status updated successfully.',
-                'status' => $order->status,
-                'status_badge' => $this->getStatusBadge($order->status)
-            ]);
+        if ($deleted > 0) {
+            Log::info("Removed {$deleted} earnings records for order #{$order->order_number}");
         }
         
-        return redirect()->back()->with('success', 'Order status updated successfully.');
+        return $deleted;
     }
 
     /**
@@ -183,19 +282,55 @@ class OrderController extends Controller
         
         $sellerId = Auth::id();
         
-        // Get only orders that have items from this seller
-        $orders = Order::whereIn('id', $request->order_ids)
-            ->whereHas('items', function($q) use ($sellerId) {
-                $q->where('seller_id', $sellerId);
-            })
-            ->get();
+        DB::beginTransaction();
         
-        foreach ($orders as $order) {
-            $order->status = $request->status;
-            $order->save();
+        try {
+            // Get only orders that have items from this seller
+            $orders = Order::whereIn('id', $request->order_ids)
+                ->whereHas('items', function($q) use ($sellerId) {
+                    $q->where('seller_id', $sellerId);
+                })
+                ->with(['items' => function($q) use ($sellerId) {
+                    $q->where('seller_id', $sellerId);
+                }])
+                ->get();
+            
+            $updatedCount = 0;
+            $earningsCount = 0;
+            
+            foreach ($orders as $order) {
+                $oldStatus = $order->status;
+                $order->status = $request->status;
+                $order->save();
+                $updatedCount++;
+                
+                // Handle earnings for delivered status
+                if ($request->status == 'delivered' && $oldStatus != 'delivered') {
+                    $earningsCount += $this->createSellerEarnings($order, $sellerId);
+                }
+                
+                // Remove earnings if status changed from delivered
+                if ($oldStatus == 'delivered' && $request->status != 'delivered') {
+                    $this->removeSellerEarnings($order);
+                }
+            }
+            
+            DB::commit();
+            
+            $message = "{$updatedCount} orders updated successfully.";
+            if ($request->status == 'delivered') {
+                $message .= " Earnings added for {$earningsCount} items.";
+            }
+            
+            return redirect()->back()->with('success', $message)
+                ->with('earnings_added', "Earnings added for {$earningsCount} items.");
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Bulk update failed: ' . $e->getMessage());
+            
+            return redirect()->back()->with('error', 'Error updating orders: ' . $e->getMessage());
         }
-        
-        return redirect()->back()->with('success', count($orders) . ' orders updated successfully.');
     }
 
     /**
@@ -204,6 +339,7 @@ class OrderController extends Controller
     public function export(Request $request)
     {
         $sellerId = Auth::id();
+        $commissionRate = $this->getCommissionRate();
         
         $query = OrderItem::where('seller_id', $sellerId)
             ->with(['order', 'product'])
@@ -245,6 +381,8 @@ class OrderController extends Controller
             'Quantity',
             'Unit Price',
             'Total Price',
+            'Commission',
+            'Net Earnings',
             'Order Status',
             'Payment Status',
             'Shipping Address',
@@ -253,6 +391,9 @@ class OrderController extends Controller
         
         // Add data
         foreach ($orderItems as $item) {
+            $commission = ($item->total_price * $commissionRate) / 100;
+            $netEarnings = $item->total_price - $commission;
+            
             fputcsv($handle, [
                 $item->order->order_number,
                 $item->created_at->format('Y-m-d H:i:s'),
@@ -263,6 +404,8 @@ class OrderController extends Controller
                 $item->quantity,
                 $item->unit_price,
                 $item->total_price,
+                $commission,
+                $netEarnings,
                 $item->order->status,
                 $item->order->payment_status,
                 $item->order->shipping_address . ', ' . $item->order->shipping_city . ', ' . $item->order->shipping_state . ' - ' . $item->order->shipping_zip,
@@ -287,6 +430,15 @@ class OrderController extends Controller
         $today = Carbon::today();
         $thisMonth = Carbon::now()->startOfMonth();
         $thisYear = Carbon::now()->startOfYear();
+        
+        // Get earnings statistics
+        $totalEarnings = SellerEarning::where('seller_id', $sellerId)->sum('net_amount');
+        $monthEarnings = SellerEarning::where('seller_id', $sellerId)
+            ->where('created_at', '>=', $thisMonth)
+            ->sum('net_amount');
+        $pendingEarnings = SellerEarning::where('seller_id', $sellerId)
+            ->where('status', 'pending')
+            ->sum('net_amount');
         
         return [
             'total_orders' => OrderItem::where('seller_id', $sellerId)
@@ -367,6 +519,11 @@ class OrderController extends Controller
                     $q->whereIn('status', ['delivered', 'confirmed', 'completed']);
                 })
                 ->avg('total_price') ?: 0,
+            
+            // Add earnings statistics
+            'total_earnings' => $totalEarnings,
+            'month_earnings' => $monthEarnings,
+            'pending_earnings' => $pendingEarnings,
         ];
     }
 
@@ -415,6 +572,15 @@ class OrderController extends Controller
                 ->distinct('order_id')
                 ->count('order_id'),
         ];
+    }
+
+    /**
+     * Get commission rate from settings
+     */
+    private function getCommissionRate()
+    {
+        $rate = Setting::where('key', 'commission_rate')->first();
+        return $rate ? floatval($rate->value) : 10;
     }
 
     /**

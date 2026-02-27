@@ -685,3 +685,25 @@
     });
 </script>
 @endpush
+
+@push('scripts')
+<script>
+    // Add this to test search
+    function testSearch() {
+        console.log('Current URL:', window.location.href);
+        console.log('Search term:', new URLSearchParams(window.location.search).get('search'));
+        console.log('Category:', new URLSearchParams(window.location.search).get('category'));
+        
+        // Check if there are products
+        const productCount = {{ $products->count() }};
+        console.log('Products found:', productCount);
+        
+        if (productCount === 0) {
+            alert('No products found. Check the console for details.');
+        }
+    }
+    
+    // Run test on page load
+    testSearch();
+</script>
+@endpush

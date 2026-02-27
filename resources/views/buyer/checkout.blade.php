@@ -179,7 +179,7 @@
                                                         @if($item->product->images->first())
                                                         <img src="{{ asset('storage/' . $item->product->images->first()->image_path) }}" 
                                                              alt="{{ $item->product->name }}" 
-                                                             class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                                             class="rounded" style="max-width: 60px; max-height: 60px; object-fit: cover;">
                                                         @else
                                                         <div class="rounded bg-light d-flex align-items-center justify-content-center" 
                                                              style="width: 60px; height: 60px;">
@@ -266,38 +266,12 @@
                                                 <i class="fas fa-shield-alt me-1"></i>
                                                 100% Secure Payment | SSL Encrypted
                                             </small>
-                                            <div class="mt-2">
-                                                <img src="{{ asset('assets/images/payment-methods.png') }}" alt="Payment Methods" class="img-fluid" style="max-height: 30px;">
-                                            </div>
+                                             
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Help Info -->
-                                <div class="checkout_card">
-                                    <div class="checkout_card_body">
-                                        <div class="help-info">
-                                            <div class="mb-3 d-flex align-items-center">
-                                                <div class="help-icon">
-                                                    <i class="fas fa-headset fa-lg text-primary"></i>
-                                                </div>
-                                                <div class="ms-3">
-                                                    <h6 class="mb-1">Need Help?</h6>
-                                                    <p class="mb-0 text-muted">Call us: 1800-123-4567</p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-center">
-                                                <div class="help-icon">
-                                                    <i class="fas fa-undo fa-lg text-success"></i>
-                                                </div>
-                                                <div class="ms-3">
-                                                    <h6 class="mb-1">Easy Returns</h6>
-                                                    <p class="mb-0 text-muted">30-Day Return Policy</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -336,12 +310,7 @@
 </div>
 
 <x-footer />
-
-@push('styles')
-<style>
-    /* ... your existing styles ... */
-</style>
-@endpush
+ 
 
 @push('scripts')
 <script>

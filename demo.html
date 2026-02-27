@@ -1,311 +1,2916 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TinyWow Background Remover</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <style>
-    .loading-spinner {
-      width: 24px;
-      height: 24px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 1s ease-in-out infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDF Tools Pro - Every PDF tool you need in one place</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              inter: ["Inter", "sans-serif"],
+            },
+            colors: {
+              primary: {
+                50: "#eef2ff",
+                500: "#6366f1",
+                600: "#4f46e5",
+                700: "#4338ca",
+              },
+              secondary: {
+                500: "#8b5cf6",
+                600: "#7c3aed",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
       }
-    }
-  </style>
-</head>
+      .gradient-bg {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .mobile-menu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      .mobile-menu.open {
+        max-height: 100vh;
+        overflow-y: auto;
+        padding-bottom: 50px;
+      }
+.dropdown-menu .space-y-3 a, .dropdown-menu .space-y-2 a{
+justify-content: start;
+}
+      
+    </style>
+    <style>
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-<body class="min-h-screen bg-gray-50">
-  <?php include 'includes/navbar.php'; ?>
-  <div class="container px-4 py-8 mx-auto">
-    <!-- Header -->
-    <header class="mb-12 text-center">
-      <h1 class="mb-2 text-3xl font-bold text-gray-800">
-        Remove the Background From an Image
-      </h1>
-      <h2 class="text-xl font-semibold text-blue-600">
-        TinyWow Background Remover
-      </h2>
-    </header>
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-    <div class="max-w-4xl mx-auto">
-      <!-- Main content -->
-      <div class="p-6 mb-8 bg-white rounded-lg shadow-md">
-        <h3 class="mb-6 text-2xl font-semibold text-gray-800">
-          How To Remove the Background from an Image
-        </h3>
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
 
-        <div class="grid gap-8 md:grid-cols-2">
-          <!-- Steps section -->
-          <div>
-            <h4 class="mb-4 text-xl font-medium text-gray-700">
-              How to Remove the Background from an Image
-            </h4>
+      .dropdown-menu {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+      }
 
-            <div class="space-y-4">
-              <div class="flex items-start">
+      .dropdown:hover .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .mobile-menu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+
+      .tool-card {
+        transition: all 0.3s ease;
+      }
+
+      .tool-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .floating-animation {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+    </style>
+    <style>
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .dropdown-menu {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+      }
+
+      .dropdown:hover .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .mobile-menu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+
+      .mobile-menu.active {
+        max-height: 500px;
+      }
+
+      .tool-card {
+        transition: all 0.3s ease;
+      }
+
+      .tool-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .floating-animation {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      .mobile-dropdown-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+.site-content, #content ,.site-full-width-container .site-content .woostify-container{
+     margin:0;
+padding: 0px;
+
+}
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <header class="sticky top-0 z-50 bg-white shadow-sm">
+      <nav class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <!-- Logo -->
+          <div class="flex items-center animate-fade-in-down">
+            <div class="flex items-center space-x-2">
+              <div
+                class="flex items-center justify-center w-8 h-8 rounded-lg gradient-bg"
+              >
+                <span class="text-sm font-bold text-white">p</span>
+              </div>
+              <span class="text-xl font-bold text-gray-900">PDF Tools Pro</span>
+            </div>
+          </div>
+
+          <!-- Desktop Navigation -->
+          <div class="hidden lg:block">
+            <div class="flex items-baseline ml-10 space-x-1">
+              <a
+                href="https://aspdf.in/merge-pdf/"
+                class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-primary-600"
+                >MERGE PDF</a
+              >
+              <a
+                href="https://aspdf.in/split/"
+                class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-primary-600"
+                >SPLIT PDF</a
+              >
+              <a
+                href="https://aspdf.in/pdf-compressor/"
+                class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-primary-600"
+                >COMPRESS PDF</a
+              >
+
+              <!-- Convert PDF Dropdown -->
+              <div class="relative dropdown">
+                <button
+                  class="flex items-center px-3 py-2 text-sm font-medium text-red-500 transition-colors hover:text-red-600"
+                >
+                  CONVERT PDF
+                  <svg
+                    class="w-4 h-4 ml-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
                 <div
-                  class="flex items-center justify-center flex-shrink-0 w-8 h-8 mt-1 mr-3 text-blue-800 bg-blue-100 rounded-full">
-                  1
-                </div>
-                <div>
-                  <p class="font-medium text-gray-800">
-                    Select an image to modify and upload it
-                  </p>
+                  style="transform: translateX(-30%)"
+                  class="dropdown-menu absolute top-full left-0 mt-1 w-[40vw] bg-white rounded-lg shadow-xl border"
+                >
+                  <div class="grid grid-cols-2 gap-4 p-4">
+                    <div>
+                      <h3 class="mb-2 text-sm font-semibold text-gray-500">
+                        CONVERT TO PDF
+                      </h3>
+                      <div class="space-y-2">
+                        <a
+                          href="https://aspdf.in/jpg_to_pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-50"
+                        >
+                          <span class="text-yellow-500">📷</span>
+                          <span>JPG to PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/word-to-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-50"
+                        >
+                          <span class="text-blue-500">📄</span>
+                          <span>WORD to PDF</span>
+                        </a>
+
+                        <a
+                          href="https://aspdf.in/excel-to-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-50"
+                        >
+                          <span class="text-green-500">📈</span>
+                          <span>EXCEL to PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/html-to-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-50"
+                        >
+                          <span class="text-orange-600">🌐</span>
+                          <span>HTML to PDF</span>
+                        </a>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 class="mb-2 text-sm font-semibold text-gray-500">
+                        CONVERT FROM PDF
+                      </h3>
+                      <div class="space-y-2">
+                        <a
+                          href="https://aspdf.in/pdf-to-jpg/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-50"
+                        >
+                          <span class="text-yellow-500">📷</span>
+                          <span>PDF to JPG</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/pdf-to-word/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-50"
+                        >
+                          <span class="text-blue-500">📄</span>
+                          <span>PDF to WORD</span>
+                        </a>
+
+                        <a
+                          href="https://aspdf.in/pdf-to-excel/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-50"
+                        >
+                          <span class="text-green-500">📈</span>
+                          <span>PDF to EXCEL</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/pdf-to-pdfa/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-50"
+                        >
+                          <span class="text-blue-600">📋</span>
+                          <span>PDF to JSON</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="flex items-start">
+              <!-- All PDF Tools Dropdown -->
+              <div class="relative dropdown">
+                <button
+                  class="flex items-center px-3 py-2 text-sm font-medium text-red-500 transition-colors hover:text-red-600"
+                >
+                  ALL PDF TOOLS
+                  <svg
+                    class="w-4 h-4 ml-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+                <!-- Updated grid from 3 columns to 6 columns to match reference layout exactly -->
                 <div
-                  class="flex items-center justify-center flex-shrink-0 w-8 h-8 mt-1 mr-3 text-blue-800 bg-blue-100 rounded-full">
-                  2
-                </div>
-                <div>
-                  <p class="font-medium text-gray-800">
-                    Choose a new background color or leave transparent
-                  </p>
-                </div>
-              </div>
+                  style="transform: translateX(30%)"
+                  class="dropdown-menu absolute top-full right-0 mt-1 w-[70vw] xl:w-[90vw] bg-white rounded-lg shadow-xl border"
+                >
+                  <div class="grid grid-cols-5 gap-6 p-6">
+                    <!-- ORGANIZE PDF -->
+                    <div>
+                      <h3
+                        class="mb-4 text-sm font-semibold tracking-wide text-gray-500 uppercase"
+                      >
+                        ORGANIZE PDF
+                      </h3>
+                      <div class="space-y-3">
+                        <a
+                          href="https://aspdf.in/merge-pdf/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-red-100 rounded-lg group-hover:bg-red-200"
+                          >
+                            <span class="text-red-500">📄</span>
+                          </div>
+                          <span class="font-medium">Merge PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/split/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-red-100 rounded-lg group-hover:bg-red-200"
+                          >
+                            <span class="text-red-500">📄</span>
+                          </div>
+                          <span class="font-medium">Split PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/remove-_page/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-red-100 rounded-lg group-hover:bg-red-200"
+                          >
+                            <span class="text-red-500">❌</span>
+                          </div>
+                          <span class="font-medium">Remove pages</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/exract-pdf/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-red-100 rounded-lg group-hover:bg-red-200"
+                          >
+                            <span class="text-red-500">📄</span>
+                          </div>
+                          <span class="font-medium">Extract pages</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/organize-pdf/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-red-100 rounded-lg group-hover:bg-red-200"
+                          >
+                            <span class="text-red-500">📄</span>
+                          </div>
+                          <span class="font-medium">Organize PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/repair-pdf/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-red-100 rounded-lg group-hover:bg-red-200"
+                          >
+                            <span class="text-red-500">📄</span>
+                          </div>
+                          <span class="font-medium">Repair PDF</span>
+                        </a>
+                      </div>
+                    </div>
 
-              <div class="flex items-start">
-                <div
-                  class="flex items-center justify-center flex-shrink-0 w-8 h-8 mt-1 mr-3 text-blue-800 bg-blue-100 rounded-full">
-                  3
-                </div>
-                <div>
-                  <p class="font-medium text-gray-800">
-                    Download the processed image
-                  </p>
-                </div>
-              </div>
+                    <!-- OPTIMIZE PDF -->
+                    <div>
+                      <h3
+                        class="mb-4 text-sm font-semibold tracking-wide text-gray-500 uppercase"
+                      >
+                        OPTIMIZE PDF
+                      </h3>
+                      <div class="space-y-3">
+                        <a
+                          href="https://aspdf.in/pdf-compressor/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-green-100 rounded-lg group-hover:bg-green-200"
+                          >
+                            <span class="text-green-500">❌</span>
+                          </div>
+                          <span class="font-medium">Compress PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/repair-pdf/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-green-100 rounded-lg group-hover:bg-green-200"
+                          >
+                            <span class="text-green-500">❌</span>
+                          </div>
+                          <span class="font-medium">Repair PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/ocr/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-green-100 rounded-lg group-hover:bg-green-200"
+                          >
+                            <span class="text-green-500">🔍</span>
+                          </div>
+                          <span class="font-medium">OCR PDF</span>
+                        </a>
+                      </div>
+                    </div>
 
-              <div class="flex items-start">
-                <div
-                  class="flex items-center justify-center flex-shrink-0 w-8 h-8 mt-1 mr-3 text-blue-800 bg-blue-100 rounded-full">
-                  4
-                </div>
-                <div>
-                  <p class="text-gray-600">
-                    TinyWow provides free online conversion, editing, and
-                    other handy tools to help you work with files of all
-                    types. All processed and unprocessed files are deleted
-                    after 24 hours.
-                  </p>
+                    <!-- CONVERT TO PDF -->
+                    <div>
+                      <h3
+                        class="mb-4 text-sm font-semibold tracking-wide text-gray-500 uppercase"
+                      >
+                        CONVERT TO PDF
+                      </h3>
+                      <div class="space-y-3">
+                        <a
+                          href="https://aspdf.in/jpg_to_pdf/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-yellow-100 rounded-lg group-hover:bg-yellow-200"
+                          >
+                            <span class="text-yellow-500">🖼️</span>
+                          </div>
+                          <span class="font-medium">JPG to PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/png-to-pdf/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-yellow-100 rounded-lg group-hover:bg-yellow-200"
+                          >
+                            <span class="text-yellow-500">🖼️</span>
+                          </div>
+                          <span class="font-medium">PNG to PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/word-to-pdf/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-blue-100 rounded-lg group-hover:bg-blue-200"
+                          >
+                            <span class="text-blue-500">📄</span>
+                          </div>
+                          <span class="font-medium">WORD to PDF</span>
+                        </a>
+
+                        <a
+                          href="https://aspdf.in/excel-to-pdf/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-green-100 rounded-lg group-hover:bg-green-200"
+                          >
+                            <span class="text-green-500">📈</span>
+                          </div>
+                          <span class="font-medium">EXCEL to PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/html-to-pdf/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-orange-100 rounded-lg group-hover:bg-orange-200"
+                          >
+                            <span class="text-orange-500">🌐</span>
+                          </div>
+                          <span class="font-medium">HTML to PDF</span>
+                        </a>
+                      </div>
+                    </div>
+
+                    <!-- CONVERT FROM PDF -->
+                    <div>
+                      <h3
+                        class="mb-4 text-sm font-semibold tracking-wide text-gray-500 uppercase"
+                      >
+                        CONVERT FROM PDF
+                      </h3>
+                      <div class="space-y-3">
+                        <a
+                          href="https://aspdf.in/pdf-to-jpg/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-yellow-100 rounded-lg group-hover:bg-yellow-200"
+                          >
+                            <span class="text-yellow-500">🖼️</span>
+                          </div>
+                          <span class="font-medium">PDF to JPG</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/pdf-to-png/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-yellow-100 rounded-lg group-hover:bg-yellow-200"
+                          >
+                            <span class="text-yellow-500">🖼️</span>
+                          </div>
+                          <span class="font-medium">PDF to PNG</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/pdf-to-word/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-blue-100 rounded-lg group-hover:bg-blue-200"
+                          >
+                            <span class="text-blue-500">📄</span>
+                          </div>
+                          <span class="font-medium">PDF to WORD</span>
+                        </a>
+
+                        <a
+                          href="https://aspdf.in/pdf-to-excel/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-green-100 rounded-lg group-hover:bg-green-200"
+                          >
+                            <span class="text-green-500">📈</span>
+                          </div>
+                          <span class="font-medium">PDF to EXCEL</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/pdf-to-json/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-blue-100 rounded-lg group-hover:bg-blue-200"
+                          >
+                            <span class="text-blue-500">📋</span>
+                          </div>
+                          <span class="font-medium">PDF to JSON</span>
+                        </a>
+                      </div>
+                    </div>
+
+                    <!-- EDIT PDF -->
+                    <div>
+                      <h3
+                        class="mb-4 text-sm font-semibold tracking-wide text-gray-500 uppercase"
+                      >
+                        EDIT PDF
+                      </h3>
+                      <div class="space-y-3">
+                        <a
+                          href="https://aspdf.in/rotate-pdf/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-purple-100 rounded-lg group-hover:bg-purple-200"
+                          >
+                            <span class="text-purple-500">🔄</span>
+                          </div>
+                          <span class="font-medium">Rotate PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/add-pages/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-purple-100 rounded-lg group-hover:bg-purple-200"
+                          >
+                            <span class="text-purple-500">🔢</span>
+                          </div>
+                          <span class="font-medium">Add page numbers</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/58-2/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-purple-100 rounded-lg group-hover:bg-purple-200"
+                          >
+                            <span class="text-purple-500">💧</span>
+                          </div>
+                          <span class="font-medium">Add watermark</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/pdf-sign/"
+                          class="flex items-center p-2 space-x-3 text-sm rounded-lg hover:bg-gray-50 tool-card group"
+                        >
+                          <div
+                            class="flex items-center justify-center w-8 h-8 transition-colors bg-blue-100 rounded-lg group-hover:bg-blue-200"
+                          >
+                            <span class="text-blue-500">✍️</span>
+                          </div>
+                          <span class="font-medium">PDF Signing</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Upload area -->
-          <div class="flex flex-col items-center justify-center p-6 border-2 border-gray-300 border-dashed rounded-lg">
-            <div id="preview" class="mb-4 text-center">
-              <img id="previewImage" src="" alt="Preview" class="hidden max-w-full rounded max-h-48" />
-              <p id="uploadPrompt" class="text-gray-500">No image selected</p>
+          <!-- Desktop Auth Buttons -->
+          <div
+            class="items-center hidden space-x-4 lg:flex animate-fade-in-down"
+          >
+            <a
+              href="#about"
+              class="px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-primary-600"
+            >
+              About us
+            </a>
+            <a
+              href="#tools"
+              class="px-4 py-2 text-sm font-medium text-white transition-colors bg-red-500 rounded-lg hover:bg-red-600"
+            >
+              Get Started
+            </a>
+          </div>
+
+          <!-- Mobile menu button -->
+          <div class="lg:hidden">
+            <button
+              type="button"
+              class="text-gray-500 mobile-menu-btn hover:text-gray-600"
+              onclick="toggleMobileMenu()"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-menu lg:hidden">
+          <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t sm:px-3">
+            <a
+              href="https://aspdf.in/merge-pdf/"
+              class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600"
+              >MERGE PDF</a
+            >
+            <a
+              href="https://aspdf.in/split/"
+              class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600"
+              >SPLIT PDF</a
+            >
+            <a
+              href="https://aspdf.in/pdf-compressor/"
+              class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600"
+              >COMPRESS PDF</a
+            >
+
+            <!-- Added mobile dropdown for CONVERT PDF -->
+            <div class="mobile-dropdown">
+              <button
+                onclick="toggleMobileDropdown('convert')"
+                class="flex items-center justify-between block w-full px-3 py-2 text-base font-medium text-left text-red-500 hover:text-red-600"
+              >
+                CONVERT PDF
+                <svg
+                  class="w-4 h-4 transition-transform duration-200 transform"
+                  id="convert-arrow"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+              <div
+                id="convert-dropdown"
+                class="overflow-hidden transition-all duration-300 ease-in-out mobile-dropdown-content"
+              >
+                <div class="py-2 pl-6 pr-3 bg-gray-50">
+                  <div class="grid grid-cols-1 gap-2">
+                    <div class="mb-3">
+                      <h4
+                        class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase"
+                      >
+                        CONVERT TO PDF
+                      </h4>
+                      <div class="space-y-1">
+                        <a
+                          href="https://aspdf.in/jpg_to_pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-yellow-500">📷</span>
+                          <span>JPG to PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/word-to-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-blue-500">📄</span>
+                          <span>WORD to PDF</span>
+                        </a>
+
+                        <a
+                          href="https://aspdf.in/excel-to-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-green-500">📈</span>
+                          <span>EXCEL to PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/html-to-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-orange-600">🌐</span>
+                          <span>HTML to PDF</span>
+                        </a>
+                      </div>
+                    </div>
+                    <div>
+                      <h4
+                        class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase"
+                      >
+                        CONVERT FROM PDF
+                      </h4>
+                      <div class="space-y-1">
+                        <a
+                          href="https://aspdf.in/pdf-to-jpg/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-yellow-500">📷</span>
+                          <span>PDF to JPG</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/pdf-to-word/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-blue-500">📄</span>
+                          <span>PDF to WORD</span>
+                        </a>
+
+                        <a
+                          href="https://aspdf.in/pdf-to-excel/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-green-500">📈</span>
+                          <span>PDF to EXCEL</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/pdf-to-json/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-blue-600">📋</span>
+                          <span>PDF to JSON</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <i class="mb-3 text-4xl text-blue-500 fas fa-cloud-upload-alt"></i>
-            <p class="mb-4 text-gray-600">
-              Drag & drop your image here or click to browse
-            </p>
-            <input type="file" id="fileInput" accept="image/*" class="hidden" />
-            <button onclick="document.getElementById('fileInput').click()"
-              class="px-4 py-2 text-white transition bg-blue-600 rounded-md hover:bg-blue-700">
-              Select Image
-            </button>
-
-            <div id="bgOptions" class="hidden w-full mt-4">
-              <label class="block mb-2 text-gray-700">Background:</label>
-              <div class="flex flex-wrap gap-2">
-                <button data-color="transparent"
-                  class="px-3 py-1 bg-gray-200 border border-gray-300 rounded hover:bg-gray-300 bg-option active">
-                  Transparent
-                </button>
-                <button data-color="#ffffff"
-                  class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 bg-option">
-                  White
-                </button>
-                <button data-color="#000000"
-                  class="px-3 py-1 text-white bg-black border border-gray-300 rounded hover:bg-gray-800 bg-option">
-                  Black
-                </button>
-                <button data-color="#f3f4f6"
-                  class="px-3 py-1 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 bg-option">
-                  Gray
-                </button>
-              </div>
-
-              <button id="processBtn"
-                class="flex items-center justify-center w-full px-4 py-2 mt-4 text-white transition bg-green-600 rounded-md hover:bg-green-700">
-                <span id="processText">Remove Background</span>
-                <div id="spinner" class="hidden ml-2 loading-spinner"></div>
+            <!-- Added mobile dropdown for ALL PDF TOOLS -->
+            <div class="mobile-dropdown">
+              <button
+                onclick="toggleMobileDropdown('tools')"
+                class="flex items-center justify-between block w-full px-3 py-2 text-base font-medium text-left text-red-500 hover:text-red-600"
+              >
+                ALL PDF TOOLS
+                <svg
+                  class="w-4 h-4 transition-transform duration-200 transform"
+                  id="tools-arrow"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
               </button>
+              <div
+                id="tools-dropdown"
+                class="overflow-hidden transition-all duration-300 ease-in-out mobile-dropdown-content max-h-0"
+              >
+                <div class="py-2 pl-6 pr-3 bg-gray-50">
+                  <div class="space-y-4">
+                    <!-- ORGANIZE PDF -->
+                    <div>
+                      <h4
+                        class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase"
+                      >
+                        ORGANIZE PDF
+                      </h4>
+                      <div class="space-y-1">
+                        <a
+                          href="https://aspdf.in/merge-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-red-500">📄</span>
+                          <span>Merge PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/split/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-red-500">📄</span>
+                          <span>Split PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/remove-_page/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-red-500">❌</span>
+                          <span>Remove pages</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/exract-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-red-500">📄</span>
+                          <span>Extract pages</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/organize-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-red-500">📄</span>
+                          <span>Organize PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/repair-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-red-500">📄</span>
+                          <span>Repair PDF</span>
+                        </a>
+                      </div>
+                    </div>
 
-              <a id="downloadBtn" href="#" download="background-removed.png"
-                class="hidden w-full px-4 py-2 mt-4 text-center text-white transition bg-blue-600 rounded-md hover:bg-blue-700">
-                Download Processed Image
+                    <!-- OPTIMIZE PDF -->
+                    <div>
+                      <h4
+                        class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase"
+                      >
+                        OPTIMIZE PDF
+                      </h4>
+                      <div class="space-y-1">
+                        <a
+                          href="chttps://aspdf.in/pdf-compressor/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-green-500">🗜️</span>
+                          <span>Compress PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/repair-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-green-500">🔧</span>
+                          <span>Repair PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/ocr/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-green-500">🔍</span>
+                          <span>OCR PDF</span>
+                        </a>
+                      </div>
+                    </div>
+
+                    <!-- CONVERT TO PDF -->
+                    <div>
+                      <h4
+                        class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase"
+                      >
+                        CONVERT TO PDF
+                      </h4>
+                      <div class="space-y-1">
+                        <a
+                          href="https://aspdf.in/jpg_to_pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-yellow-500">🖼️</span>
+                          <span>JPG to PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/word-to-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-blue-500">📄</span>
+                          <span>WORD to PDF</span>
+                        </a>
+
+                        <a
+                          href="https://aspdf.in/excel-to-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-green-500">📈</span>
+                          <span>EXCEL to PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/html-to-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-orange-500">🌐</span>
+                          <span>HTML to PDF</span>
+                        </a>
+                      </div>
+                    </div>
+
+                    <!-- CONVERT FROM PDF -->
+                    <div>
+                      <h4
+                        class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase"
+                      >
+                        CONVERT FROM PDF
+                      </h4>
+                      <div class="space-y-1">
+                        <a
+                          href="https://aspdf.in/pdf-to-jpg/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-yellow-500">🖼️</span>
+                          <span>PDF to JPG</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/pdf-to-word/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-blue-500">📄</span>
+                          <span>PDF to WORD</span>
+                        </a>
+
+                        <a
+                          href="https://aspdf.in/pdf-to-excel/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-green-500">📈</span>
+                          <span>PDF to EXCEL</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/pdf-to-json/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-blue-500">📋</span>
+                          <span>PDF to JSON</span>
+                        </a>
+                      </div>
+                    </div>
+
+                    <!-- EDIT PDF -->
+                    <div>
+                      <h4
+                        class="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase"
+                      >
+                        EDIT PDF
+                      </h4>
+                      <div class="space-y-1">
+                        <a
+                          href="https://aspdf.in/rotate-pdf/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-purple-500">🔄</span>
+                          <span>Rotate PDF</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/add-page/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-purple-500">🔢</span>
+                          <span>Add page numbers</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/58-2/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-purple-500">💧</span>
+                          <span>Add watermark</span>
+                        </a>
+                        <a
+                          href="https://aspdf.in/pdf-sign/"
+                          class="flex items-center p-2 space-x-2 text-sm rounded hover:bg-gray-100"
+                        >
+                          <span class="text-blue-500">✍️</span>
+                          <span>PDF Signing</span>
+                        </a>
+                      </div>
+                    </div>
+
+                    <!-- PDF SECURITY -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 mt-3 border-t">
+              <a
+                href="#about"
+                class="block w-full px-3 py-2 text-base font-medium text-left text-gray-700 hover:text-primary-600"
+              >
+                About us
+              </a>
+              <a
+                href="#tools"
+                class="block w-full px-3 py-2 mt-2 text-base font-medium text-left text-white bg-red-500 rounded-lg hover:bg-red-600"
+              >
+                Get Started
               </a>
             </div>
           </div>
         </div>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <!-- Updated color scheme from purple/pink to blue/teal for more pleasant appearance -->
+    <section
+      style="zoom: 0.9"
+      class="relative flex items-center min-h-screen overflow-hidden"
+    >
+      <!-- Modern Gradient Background -->
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-blue-900 via-teal-900 to-cyan-800"
+      ></div>
+
+      <!-- Animated Background Elements -->
+      <div class="absolute inset-0">
+        <div
+          class="absolute rounded-full top-1/4 left-1/4 w-72 h-72 bg-gradient-to-r from-cyan-400/20 to-blue-400/20 blur-3xl animate-pulse"
+        ></div>
+        <div
+          class="absolute rounded-full top-3/4 right-1/4 w-96 h-96 bg-gradient-to-r from-teal-400/20 to-emerald-400/20 blur-3xl animate-pulse"
+          style="animation-delay: -2s"
+        ></div>
+        <div
+          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-blue-400/10 to-cyan-400/10 rounded-full blur-3xl animate-pulse"
+          style="animation-delay: -4s"
+        ></div>
       </div>
 
-      <!-- Tools navigation -->
-      <div class="p-6 bg-white rounded-lg shadow-md">
-        <h4 class="mb-4 text-xl font-medium text-gray-700">Navigate Tools</h4>
-        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Home</a>
-          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Privacy Policy</a>
-          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Terms</a>
-          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Contact</a>
-          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Manage</a>
-          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Edit PDF</a>
-          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">PDF to JPG</a>
-          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">JPG to PDF</a>
-          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Upscale Image</a>
-          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Compress PDF</a>
-          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Remove Watermark</a>
-          <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">Image to Text</a>
+      <!-- Floating PDF Icons -->
+      <div class="absolute inset-0 pointer-events-none">
+        <div
+          class="absolute text-4xl top-20 left-20 opacity-20 floating-animation"
+        >
+          📄
+        </div>
+        <div
+          class="absolute text-3xl top-40 right-32 opacity-20 floating-animation"
+          style="animation-delay: -1s"
+        >
+          🔗
+        </div>
+        <div
+          class="absolute text-3xl bottom-32 left-32 opacity-20 floating-animation"
+          style="animation-delay: -3s"
+        >
+          ✂️
+        </div>
+        <div
+          class="absolute text-4xl bottom-20 right-20 opacity-20 floating-animation"
+          style="animation-delay: -2s"
+        >
+          🗜️
+        </div>
+        <div
+          class="absolute text-2xl top-1/2 left-10 opacity-20 floating-animation"
+          style="animation-delay: -4s"
+        >
+          🔄
+        </div>
+        <div
+          class="absolute text-2xl top-1/3 right-10 opacity-20 floating-animation"
+          style="animation-delay: -5s"
+        >
+          🔒
         </div>
       </div>
-    </div>
-  </div>
 
- 
-  <script>
-    // API configuration
-    const API_KEY = "GxGi4zwMGoiz1viZFGxM7tgd";
-    const API_URL = "https://api.remove.bg/v1.0/removebg";
+      <div class="relative z-10 px-4 py-10 mx-auto sm:px-6 lg:px-8">
+        <div class="grid items-center gap-16 lg:grid-cols-2">
+          <!-- Left Content -->
+          <div class="text-center lg:text-left">
+            <!-- Badge -->
+            <div
+              class="inline-flex items-center px-4 py-2 mb-8 text-sm font-medium rounded-full bg-white/10 backdrop-blur-sm text-white/90 animate-fade-in-down"
+            >
+              <span
+                class="w-2 h-2 mr-2 bg-green-400 rounded-full animate-pulse"
+              ></span>
+              100% Free PDF Tools
+            </div>
 
-    // DOM elements
-    const fileInput = document.getElementById("fileInput");
-    const previewImage = document.getElementById("previewImage");
-    const uploadPrompt = document.getElementById("uploadPrompt");
-    const bgOptions = document.getElementById("bgOptions");
-    const processBtn = document.getElementById("processBtn");
-    const processText = document.getElementById("processText");
-    const spinner = document.getElementById("spinner");
-    const downloadBtn = document.getElementById("downloadBtn");
-    let selectedBgColor = "transparent";
+            <h1
+              class="mb-8 text-5xl font-bold leading-tight text-white md:text-6xl lg:text-7xl animate-fade-in-up"
+            >
+              Every tool to work with
+              <span
+                class="text-transparent bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text"
+              >
+                PDFs
+              </span>
+              in one place
+            </h1>
 
-    // Handle file selection
-    fileInput.addEventListener("change", function (e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          previewImage.src = event.target.result;
-          previewImage.classList.remove("hidden");
-          uploadPrompt.classList.add("hidden");
+            <p
+              class="max-w-2xl mb-12 text-xl leading-relaxed text-blue-100 md:text-2xl animate-fade-in-up"
+              style="animation-delay: 0.2s"
+            >
+              Every tool you need to use PDFs, at your fingertips. All are
+              <span class="font-semibold text-white">100% FREE</span> and easy
+              to use! Merge, split, compress, convert, rotate, unlock and
+              watermark PDFs with just a few clicks.
+            </p>
 
-          // Show background options
-          bgOptions.classList.remove("hidden");
-          downloadBtn.classList.add("hidden");
-        };
-        reader.readAsDataURL(file);
+            <!-- CTA Buttons -->
+            <div
+              class="flex flex-col justify-center gap-4 mb-12 sm:flex-row lg:justify-start animate-fade-in-up"
+              style="animation-delay: 0.4s"
+            >
+              <a href="#tools">
+                <button
+                  class="px-8 py-4 text-lg font-semibold text-white transition-all duration-300 transform shadow-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 rounded-2xl hover:scale-105"
+                >
+                  Start Using Tools
+                </button>
+              </a>
+              <a href="#features">
+                <button
+                  class="px-8 py-4 text-lg font-semibold text-white transition-all duration-300 border bg-white/10 hover:bg-white/20 rounded-2xl backdrop-blur-sm border-white/20 hover:border-white/40"
+                >
+                  Features Overview
+                </button>
+              </a>
+            </div>
+
+            <!-- Stats -->
+            <div
+              class="grid grid-cols-3 gap-8 animate-fade-in-up"
+              style="animation-delay: 0.6s"
+            >
+              <div class="text-center">
+                <div class="mb-2 text-3xl font-bold text-white">25+</div>
+                <div class="text-sm text-blue-200">PDF Tools</div>
+              </div>
+              <div class="text-center">
+                <div class="mb-2 text-3xl font-bold text-white">10M+</div>
+                <div class="text-sm text-blue-200">Files Processed</div>
+              </div>
+              <div class="text-center">
+                <div class="mb-2 text-3xl font-bold text-white">100%</div>
+                <div class="text-sm text-blue-200">Free Forever</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Content - Interactive PDF Tools Preview -->
+          <div class="animate-fade-in-up" style="animation-delay: 0.8s">
+            <div class="relative">
+              <!-- Main Tool Card -->
+              <div
+                class="p-8 border shadow-2xl bg-white/10 backdrop-blur-xl rounded-3xl border-white/20"
+              >
+                <div class="mb-8 text-center">
+                  <h3 class="mb-2 text-2xl font-bold text-white">
+                    Choose Your Tool
+                  </h3>
+                  <p class="text-blue-200">Click on any tool to get started</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6">
+                  <!-- Enhanced Tool Cards -->
+                  <div
+                    class="p-6 transition-all duration-300 border cursor-pointer bg-gradient-to-br from-red-500/20 to-pink-500/20 backdrop-blur-sm rounded-2xl tool-card border-red-300/20 hover:border-red-300/40 group"
+                  >
+                    <div
+                      class="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 bg-gradient-to-br from-red-400 to-pink-500 rounded-2xl group-hover:scale-110"
+                    >
+                      <span class="text-3xl">🔗</span>
+                    </div>
+                    <h4 class="mb-2 text-lg font-bold text-white">Merge PDF</h4>
+                    <p class="text-sm leading-relaxed text-blue-200">
+                      Combine multiple PDFs into one document
+                    </p>
+                  </div>
+
+                  <div
+                    class="p-6 transition-all duration-300 border cursor-pointer bg-gradient-to-br from-orange-500/20 to-red-500/20 backdrop-blur-sm rounded-2xl tool-card border-orange-300/20 hover:border-orange-300/40 group"
+                  >
+                    <div
+                      class="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl group-hover:scale-110"
+                    >
+                      <span class="text-3xl">✂️</span>
+                    </div>
+                    <h4 class="mb-2 text-lg font-bold text-white">Split PDF</h4>
+                    <p class="text-sm leading-relaxed text-blue-200">
+                      Extract pages or split into multiple files
+                    </p>
+                  </div>
+
+                  <div
+                    class="p-6 transition-all duration-300 border cursor-pointer bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-2xl tool-card border-green-300/20 hover:border-green-300/40 group"
+                  >
+                    <div
+                      class="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl group-hover:scale-110"
+                    >
+                      <span class="text-3xl">🗜️</span>
+                    </div>
+                    <h4 class="mb-2 text-lg font-bold text-white">
+                      Compress PDF
+                    </h4>
+                    <p class="text-sm leading-relaxed text-blue-200">
+                      Reduce file size while maintaining quality
+                    </p>
+                  </div>
+
+                  <div
+                    class="p-6 transition-all duration-300 border cursor-pointer bg-gradient-to-br from-cyan-500/20 to-blue-500/20 backdrop-blur-sm rounded-2xl tool-card border-cyan-300/20 hover:border-cyan-300/40 group"
+                  >
+                    <div
+                      class="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl group-hover:scale-110"
+                    >
+                      <span class="text-3xl">🔄</span>
+                    </div>
+                    <h4 class="mb-2 text-lg font-bold text-white">
+                      Convert PDF
+                    </h4>
+                    <p class="text-sm leading-relaxed text-blue-200">
+                      Transform between PDF and other formats
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Floating Elements -->
+              <div
+                class="absolute w-8 h-8 rounded-full -top-4 -right-4 bg-gradient-to-r from-cyan-400 to-blue-500 animate-bounce"
+              ></div>
+              <div
+                class="absolute w-6 h-6 rounded-full -bottom-4 -left-4 bg-gradient-to-r from-teal-400 to-emerald-500 animate-bounce"
+                style="animation-delay: -1s"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div
+        class="absolute transform -translate-x-1/2 bottom-8 left-1/2 animate-bounce"
+      >
+        <div
+          class="flex justify-center w-6 h-10 border-2 rounded-full border-white/30"
+        >
+          <div
+            class="w-1 h-3 mt-2 rounded-full bg-white/50 animate-pulse"
+          ></div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      function toggleMobileMenu() {
+        const mobileMenu = document.querySelector(".mobile-menu");
+        mobileMenu.classList.toggle("active");
       }
-    });
 
-    // Background color selection
-    document.querySelectorAll(".bg-option").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        // Update active state
-        document
-          .querySelectorAll(".bg-option")
-          .forEach((b) => b.classList.remove("active"));
-        this.classList.add("active");
+      function toggleMobileDropdown(type) {
+        const dropdown = document.getElementById(`${type}-dropdown`);
+        const arrow = document.getElementById(`${type}-arrow`);
 
-        // Store selected color
-        selectedBgColor = this.dataset.color;
-      });
-    });
-
-    // Process button click
-    processBtn.addEventListener("click", async function () {
-      if (!fileInput.files[0]) {
-        alert("Please select an image first");
-        return;
-      }
-
-      // Show loading state
-      processText.textContent = "Processing...";
-      spinner.classList.remove("hidden");
-      processBtn.disabled = true;
-
-      try {
-        // Prepare form data
-        const formData = new FormData();
-        formData.append("image_file", fileInput.files[0]);
-        formData.append("size", "auto");
-
-        // Add background color if not transparent
-        if (selectedBgColor !== "transparent") {
-          formData.append("bg_color", selectedBgColor.substring(1)); // Remove #
+        if (
+          dropdown.style.maxHeight === "0px" ||
+          dropdown.style.maxHeight === ""
+        ) {
+          dropdown.style.maxHeight = dropdown.scrollHeight + "px";
+          arrow.style.transform = "rotate(180deg)";
+        } else {
+          dropdown.style.maxHeight = "0px";
+          arrow.style.transform = "rotate(0deg)";
         }
+      }
 
-        // Call Remove.bg API
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "X-Api-Key": API_KEY,
-          },
-          body: formData,
+      // Close dropdowns when clicking outside
+      document.addEventListener("click", function (event) {
+        const dropdowns = document.querySelectorAll(".dropdown");
+        dropdowns.forEach((dropdown) => {
+          if (!dropdown.contains(event.target)) {
+            dropdown.classList.remove("active");
+          }
         });
+      });
 
-        if (!response.ok) {
-          throw new Error(`API error: ${response.status}`);
+      // Add scroll effect to header
+      window.addEventListener("scroll", function () {
+        const header = document.querySelector("header");
+        if (window.scrollY > 10) {
+          header.classList.add("shadow-lg");
+        } else {
+          header.classList.remove("shadow-lg");
         }
+      });
 
-        // Get the result image
-        const blob = await response.blob();
-        const resultUrl = URL.createObjectURL(blob);
+      // Animate elements on scroll
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      };
 
-        // Show download button
-        downloadBtn.href = resultUrl;
-        downloadBtn.classList.remove("hidden");
-      } catch (error) {
-        console.error("Error:", error);
-        alert("Failed to remove background. Please try again.");
-      } finally {
-        // Reset button state
-        processText.textContent = "Remove Background";
-        spinner.classList.add("hidden");
-        processBtn.disabled = false;
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0)";
+          }
+        });
+      }, observerOptions);
+
+      // Observe all animated elements
+      document.querySelectorAll(".animate-fade-in-up").forEach((el) => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(30px)";
+        el.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+        observer.observe(el);
+      });
+    </script>
+
+    <!-- Main Tools Section -->
+    <section id="tools" class="py-20 bg-white">
+      <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="mb-16 text-center">
+          <h2 class="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
+            Choose your PDF tool
+          </h2>
+          <p class="max-w-2xl mx-auto text-xl text-gray-600">
+            Select from our comprehensive collection of PDF tools to handle any
+            document task
+          </p>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="flex flex-wrap justify-center gap-4 mb-12">
+          <button
+            class="px-6 py-2 font-medium text-white transition-all rounded-full filter-btn active bg-primary-500"
+            data-category="all"
+          >
+            All
+          </button>
+          <button
+            class="px-6 py-2 font-medium text-gray-700 transition-all bg-gray-100 rounded-full filter-btn hover:bg-gray-200"
+            data-category="organize"
+          >
+            Organize
+          </button>
+          <button
+            class="px-6 py-2 font-medium text-gray-700 transition-all bg-gray-100 rounded-full filter-btn hover:bg-gray-200"
+            data-category="convert"
+          >
+            Convert
+          </button>
+          <button
+            class="px-6 py-2 font-medium text-gray-700 transition-all bg-gray-100 rounded-full filter-btn hover:bg-gray-200"
+            data-category="edit"
+          >
+            Edit
+          </button>
+          <button
+            class="px-6 py-2 font-medium text-gray-700 transition-all bg-gray-100 rounded-full filter-btn hover:bg-gray-200"
+            data-category="security"
+          >
+            Security
+          </button>
+        </div>
+
+        <!-- Tools Grid -->
+        <div
+          class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          id="tools-grid"
+        >
+          <!-- Tools will be inserted here by JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-gray-50">
+      <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="mb-16 text-center">
+          <h2 class="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
+            Work your way
+          </h2>
+          <p class="max-w-2xl mx-auto text-xl text-gray-600">
+            Choose how you want to work with your PDFs
+          </p>
+        </div>
+
+        <div class="grid gap-8 md:grid-cols-3">
+          <!-- Desktop Card -->
+          <div
+            class="p-8 transition-all duration-300 bg-gradient-to-br from-pink-50 to-orange-50 rounded-3xl group hover:shadow-xl"
+          >
+            <!-- Desktop Interface Mockup -->
+            <div
+              class="mb-8 overflow-hidden transition-transform duration-300 transform bg-white shadow-lg rounded-2xl group-hover:scale-105"
+            >
+              <div class="flex items-center px-4 py-3 space-x-2 bg-gray-100">
+                <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+              </div>
+              <div class="p-6">
+                <div class="flex items-center mb-4 space-x-4">
+                  <div
+                    class="flex items-center justify-center w-8 h-8 bg-red-500 rounded-lg"
+                  >
+                    <svg
+                      class="w-4 h-4 text-white"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="flex-1">
+                    <div class="h-2 mb-1 bg-gray-200 rounded"></div>
+                    <div class="w-3/4 h-2 bg-gray-100 rounded"></div>
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  <div class="h-2 bg-orange-200 rounded"></div>
+                  <div class="w-5/6 h-2 bg-orange-100 rounded"></div>
+                  <div class="w-4/6 h-2 bg-gray-100 rounded"></div>
+                </div>
+                <div class="flex mt-4 space-x-2">
+                  <div class="w-6 h-6 bg-blue-100 rounded"></div>
+                  <div class="w-6 h-6 bg-green-100 rounded"></div>
+                  <div class="w-6 h-6 bg-purple-100 rounded"></div>
+                </div>
+              </div>
+            </div>
+
+            <h3 class="mb-4 text-xl font-semibold text-gray-900">
+              Work offline with Desktop
+            </h3>
+            <p class="mb-6 text-gray-600">
+              Batch edit and manage documents locally, with no internet and no
+              limits.
+            </p>
+          </div>
+
+          <!-- Mobile Card -->
+          <div
+            class="p-8 transition-all duration-300 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl group hover:shadow-xl"
+          >
+            <!-- Mobile Interface Mockup -->
+            <div
+              class="w-48 mx-auto mb-8 overflow-hidden transition-transform duration-300 transform bg-white shadow-lg rounded-3xl group-hover:scale-105"
+            >
+              <div class="flex justify-center px-4 py-2 bg-gray-900">
+                <div class="text-xs font-medium text-white">9:41</div>
+                <div class="flex items-center ml-auto space-x-1">
+                  <div class="w-4 h-2 bg-white rounded-sm"></div>
+                  <div class="w-1 h-1 bg-white rounded-full"></div>
+                  <div class="w-6 h-3 border border-white rounded-sm">
+                    <div class="w-4 h-2 bg-white rounded-sm m-0.5"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-4">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="text-sm font-medium text-gray-900">PDF Tools</div>
+                  <div
+                    class="flex items-center justify-center w-6 h-6 bg-red-500 rounded-full"
+                  >
+                    <div class="w-3 h-3 bg-white rounded-full"></div>
+                  </div>
+                </div>
+                <div class="p-4 mb-4 bg-blue-100 rounded-2xl">
+                  <div class="flex items-center space-x-3">
+                    <div class="w-8 h-10 bg-red-400 rounded shadow-sm"></div>
+                    <div>
+                      <div class="w-20 h-2 mb-1 bg-gray-700 rounded"></div>
+                      <div class="h-1.5 bg-gray-400 rounded w-16"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="p-2 text-center bg-gray-100 rounded-lg">
+                    <div class="w-4 h-4 mx-auto mb-1 bg-blue-500 rounded"></div>
+                    <div class="h-1 bg-gray-400 rounded"></div>
+                  </div>
+                  <div class="p-2 text-center bg-gray-100 rounded-lg">
+                    <div
+                      class="w-4 h-4 mx-auto mb-1 bg-green-500 rounded"
+                    ></div>
+                    <div class="h-1 bg-gray-400 rounded"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h3 class="mb-4 text-xl font-semibold text-gray-900">
+              On-the-go with Mobile
+            </h3>
+            <p class="mb-6 text-gray-600">
+              Your favorite tools, right in your pocket. Keep working on your
+              projects anytime, anywhere.
+            </p>
+          </div>
+
+          <!-- Business Card -->
+          <div
+            class="p-8 transition-all duration-300 bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl group hover:shadow-xl"
+          >
+            <!-- Business Interface Mockup -->
+            <div
+              class="mb-8 overflow-hidden transition-transform duration-300 transform bg-white shadow-lg rounded-2xl group-hover:scale-105"
+            >
+              <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-blue-500 rounded-full"></div>
+                    <div class="w-8 h-8 bg-green-500 rounded-full"></div>
+                    <div
+                      class="flex items-center justify-center w-8 h-8 bg-red-500 rounded-full"
+                    >
+                      <div class="w-4 h-4 bg-white rounded-full"></div>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-bold text-blue-600">INVOICE</div>
+                    <div class="text-xs text-gray-500">#INV-001</div>
+                  </div>
+                </div>
+                <div
+                  class="p-4 mb-4 border-2 border-gray-200 border-dashed rounded-lg"
+                >
+                  <div class="text-center">
+                    <div
+                      class="w-12 h-8 mx-auto mb-2 bg-gray-200 rounded"
+                    ></div>
+                    <div class="h-1.5 bg-gray-300 rounded w-16 mx-auto"></div>
+                  </div>
+                </div>
+                <div
+                  class="p-3 font-mono text-xs text-green-400 bg-gray-900 rounded-lg"
+                >
+                  <div>/* API */</div>
+                  <div>{"id": "db601c95-045"}</div>
+                  <div>{"name": "rename-file"}</div>
+                  <div>{"props": &lt;payload&gt;</div>
+                </div>
+              </div>
+            </div>
+
+            <h3 class="mb-4 text-xl font-semibold text-gray-900">
+              Built for business
+            </h3>
+            <p class="mb-6 text-gray-600">
+              Automate document management, onboard teams easily, and scale with
+              flexible plans.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section
+      id="about"
+      class="relative py-20 overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50"
+    >
+      <!-- Background Elements -->
+      <div class="absolute inset-0">
+        <div
+          class="absolute w-32 h-32 rounded-full top-10 left-10 bg-gradient-to-r from-blue-200/30 to-cyan-200/30 blur-2xl"
+        ></div>
+        <div
+          class="absolute w-40 h-40 rounded-full bottom-10 right-10 bg-gradient-to-r from-teal-200/30 to-emerald-200/30 blur-2xl"
+        ></div>
+        <div
+          class="absolute w-64 h-64 transform -translate-x-1/2 -translate-y-1/2 rounded-full top-1/2 left-1/2 bg-gradient-to-r from-cyan-100/20 to-blue-100/20 blur-3xl"
+        ></div>
+      </div>
+
+      <div class="relative z-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="mb-16 text-center animate-fade-in-up">
+          <div
+            class="inline-flex items-center px-4 py-2 mb-6 text-sm font-medium text-blue-700 bg-blue-100 rounded-full"
+          >
+            <span
+              class="w-2 h-2 mr-2 bg-blue-500 rounded-full animate-pulse"
+            ></span>
+            About Our Mission
+          </div>
+          <h2 class="mb-6 text-4xl font-bold text-gray-900 md:text-5xl">
+            Simplifying PDF workflows for
+            <span
+              class="text-transparent bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text"
+              >everyone</span
+            >
+          </h2>
+          <p class="max-w-3xl mx-auto text-xl leading-relaxed text-gray-600">
+            We believe that working with PDFs should be simple, fast, and
+            accessible to everyone. That's why we've created the most
+            comprehensive suite of PDF tools, completely free.
+          </p>
+        </div>
+
+        <div class="grid items-center gap-16 mb-20 lg:grid-cols-2">
+          <!-- Left Content -->
+          <div class="animate-fade-in-up" style="animation-delay: 0.2s">
+            <h3 class="mb-8 text-3xl font-bold text-gray-900">Our Story</h3>
+
+            <!-- Interactive Timeline -->
+            <div class="space-y-6">
+              <div
+                class="flex items-start p-4 space-x-4 transition-all duration-300 cursor-pointer group rounded-xl hover:bg-white/60"
+              >
+                <div
+                  class="flex items-center justify-center w-12 h-12 font-bold text-white transition-transform duration-300 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 group-hover:scale-110"
+                >
+                  1
+                </div>
+                <div>
+                  <h4 class="mb-2 text-lg font-semibold text-gray-900">
+                    The Problem
+                  </h4>
+                  <p class="text-gray-600">
+                    We noticed that most PDF tools were either expensive,
+                    limited, or required software installation.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class="flex items-start p-4 space-x-4 transition-all duration-300 cursor-pointer group rounded-xl hover:bg-white/60"
+              >
+                <div
+                  class="flex items-center justify-center w-12 h-12 font-bold text-white transition-transform duration-300 rounded-full bg-gradient-to-r from-teal-500 to-emerald-500 group-hover:scale-110"
+                >
+                  2
+                </div>
+                <div>
+                  <h4 class="mb-2 text-lg font-semibold text-gray-900">
+                    The Solution
+                  </h4>
+                  <p class="text-gray-600">
+                    We built a comprehensive, web-based platform that works
+                    instantly in your browser.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class="flex items-start p-4 space-x-4 transition-all duration-300 cursor-pointer group rounded-xl hover:bg-white/60"
+              >
+                <div
+                  class="flex items-center justify-center w-12 h-12 font-bold text-white transition-transform duration-300 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 group-hover:scale-110"
+                >
+                  3
+                </div>
+                <div>
+                  <h4 class="mb-2 text-lg font-semibold text-gray-900">
+                    The Mission
+                  </h4>
+                  <p class="text-gray-600">
+                    Make PDF tools accessible to everyone, everywhere,
+                    completely free of charge.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Content - Interactive Stats -->
+          <div class="animate-fade-in-up" style="animation-delay: 0.4s">
+            <div
+              class="p-8 border shadow-2xl bg-white/70 backdrop-blur-xl rounded-3xl border-white/20"
+            >
+              <h3 class="mb-8 text-2xl font-bold text-center text-gray-900">
+                Our Impact
+              </h3>
+
+              <div class="grid grid-cols-2 gap-6">
+                <!-- Interactive Stat Cards -->
+                <div
+                  class="p-6 text-center transition-all duration-300 cursor-pointer bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl hover:from-blue-100 hover:to-cyan-100 group"
+                >
+                  <div
+                    class="mb-2 text-4xl font-bold text-blue-600 transition-transform duration-300 group-hover:scale-110"
+                  >
+                    10M+
+                  </div>
+                  <div class="font-medium text-gray-600">Files Processed</div>
+                  <div class="w-full h-2 mt-3 bg-blue-200 rounded-full">
+                    <div
+                      class="w-full h-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 animate-pulse"
+                    ></div>
+                  </div>
+                </div>
+
+                <div
+                  class="p-6 text-center transition-all duration-300 cursor-pointer bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl hover:from-teal-100 hover:to-emerald-100 group"
+                >
+                  <div
+                    class="mb-2 text-4xl font-bold text-teal-600 transition-transform duration-300 group-hover:scale-110"
+                  >
+                    25+
+                  </div>
+                  <div class="font-medium text-gray-600">PDF Tools</div>
+                  <div class="w-full h-2 mt-3 bg-teal-200 rounded-full">
+                    <div
+                      class="w-4/5 h-2 rounded-full bg-gradient-to-r from-teal-500 to-emerald-500 animate-pulse"
+                    ></div>
+                  </div>
+                </div>
+
+                <div
+                  class="p-6 text-center transition-all duration-300 cursor-pointer bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl hover:from-purple-100 hover:to-pink-100 group"
+                >
+                  <div
+                    class="mb-2 text-4xl font-bold text-purple-600 transition-transform duration-300 group-hover:scale-110"
+                  >
+                    150+
+                  </div>
+                  <div class="font-medium text-gray-600">Countries</div>
+                  <div class="w-full h-2 mt-3 bg-purple-200 rounded-full">
+                    <div
+                      class="w-5/6 h-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 animate-pulse"
+                    ></div>
+                  </div>
+                </div>
+
+                <div
+                  class="p-6 text-center transition-all duration-300 cursor-pointer bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl hover:from-orange-100 hover:to-red-100 group"
+                >
+                  <div
+                    class="mb-2 text-4xl font-bold text-orange-600 transition-transform duration-300 group-hover:scale-110"
+                  >
+                    100%
+                  </div>
+                  <div class="font-medium text-gray-600">Free Forever</div>
+                  <div class="w-full h-2 mt-3 bg-orange-200 rounded-full">
+                    <div
+                      class="w-full h-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 animate-pulse"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Interactive Features -->
+              <div class="mt-8 text-center">
+                <button
+                  class="px-8 py-3 font-semibold text-white transition-all duration-300 transform shadow-lg bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 rounded-2xl hover:scale-105"
+                >
+                  Join Our Community
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Values Section -->
+        <div class="animate-fade-in-up" style="animation-delay: 0.6s">
+          <h3 class="mb-12 text-3xl font-bold text-center text-gray-900">
+            What Drives Us
+          </h3>
+
+          <div class="grid gap-8 md:grid-cols-3">
+            <!-- Value Cards -->
+            <div
+              class="p-8 text-center transition-all duration-300 border cursor-pointer bg-white/70 backdrop-blur-sm rounded-2xl hover:bg-white/90 group border-white/20 hover:border-blue-200/50"
+            >
+              <div
+                class="flex items-center justify-center w-16 h-16 mx-auto mb-6 transition-transform duration-300 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl group-hover:scale-110"
+              >
+                <span class="text-3xl">🚀</span>
+              </div>
+              <h4 class="mb-4 text-xl font-bold text-gray-900">Innovation</h4>
+              <p class="leading-relaxed text-gray-600">
+                We constantly innovate to bring you the latest PDF processing
+                technologies and features.
+              </p>
+            </div>
+
+            <div
+              class="p-8 text-center transition-all duration-300 border cursor-pointer bg-white/70 backdrop-blur-sm rounded-2xl hover:bg-white/90 group border-white/20 hover:border-teal-200/50"
+            >
+              <div
+                class="flex items-center justify-center w-16 h-16 mx-auto mb-6 transition-transform duration-300 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-2xl group-hover:scale-110"
+              >
+                <span class="text-3xl">🔒</span>
+              </div>
+              <h4 class="mb-4 text-xl font-bold text-gray-900">Security</h4>
+              <p class="leading-relaxed text-gray-600">
+                Your files are processed securely and deleted immediately after
+                conversion. Privacy is our priority.
+              </p>
+            </div>
+
+            <div
+              class="p-8 text-center transition-all duration-300 border cursor-pointer bg-white/70 backdrop-blur-sm rounded-2xl hover:bg-white/90 group border-white/20 hover:border-purple-200/50"
+            >
+              <div
+                class="flex items-center justify-center w-16 h-16 mx-auto mb-6 transition-transform duration-300 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl group-hover:scale-110"
+              >
+                <span class="text-3xl">❤️</span>
+              </div>
+              <h4 class="mb-4 text-xl font-bold text-gray-900">Community</h4>
+              <p class="leading-relaxed text-gray-600">
+                We're built by the community, for the community. Your feedback
+                shapes our development.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      class="py-20 overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50"
+    >
+      <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="flex flex-col items-center gap-16 lg:flex-row">
+          <!-- Visual Composition -->
+          <div class="relative flex-1">
+            <div class="relative w-full max-w-lg mx-auto">
+              <!-- Connection Lines and Squares -->
+              <div
+                class="absolute w-4 h-4 transform rotate-45 bg-blue-500 rounded-sm -top-8 -left-8"
+              ></div>
+              <div
+                class="absolute w-4 h-4 transform rotate-45 bg-blue-500 rounded-sm -top-8 left-1/2"
+              ></div>
+              <div
+                class="absolute w-4 h-4 transform rotate-45 bg-blue-500 rounded-sm -top-8 -right-8"
+              ></div>
+              <div
+                class="absolute w-4 h-4 transform rotate-45 bg-blue-500 rounded-sm top-1/2 -left-8"
+              ></div>
+              <div
+                class="absolute w-4 h-4 transform rotate-45 bg-blue-500 rounded-sm top-1/2 -right-8"
+              ></div>
+              <div
+                class="absolute w-4 h-4 transform rotate-45 bg-blue-500 rounded-sm -bottom-8 -left-8"
+              ></div>
+              <div
+                class="absolute w-4 h-4 transform rotate-45 bg-blue-500 rounded-sm -bottom-8 left-1/2"
+              ></div>
+              <div
+                class="absolute w-4 h-4 transform rotate-45 bg-blue-500 rounded-sm -bottom-8 -right-8"
+              ></div>
+
+              <!-- Connecting Lines -->
+              <div
+                class="absolute w-full h-2 border-t-2 border-blue-500 -top-8 -left-8"
+              ></div>
+              <div
+                class="absolute w-full h-2 border-t-2 border-blue-500 -bottom-8 -left-8"
+              ></div>
+              <div
+                class="absolute w-2 h-full border-l-2 border-blue-500 -top-8 -left-8"
+              ></div>
+              <div
+                class="absolute w-2 h-full border-l-2 border-blue-500 -top-8 -right-8"
+              ></div>
+
+              <!-- Layered Images -->
+              <div class="relative">
+                <!-- Background PDF Document -->
+                <div
+                  class="absolute top-0 left-0 z-10 w-48 h-64 transform bg-white border-2 border-gray-200 rounded-lg shadow-xl -rotate-6"
+                >
+                  <div class="p-4">
+                    <div class="w-full h-4 mb-3 bg-red-500 rounded"></div>
+                    <div class="space-y-2">
+                      <div class="w-full h-2 bg-gray-300 rounded"></div>
+                      <div class="w-4/5 h-2 bg-gray-300 rounded"></div>
+                      <div class="w-full h-2 bg-gray-300 rounded"></div>
+                      <div class="w-3/4 h-2 bg-gray-300 rounded"></div>
+                    </div>
+                    <div
+                      class="flex items-center justify-center w-full h-20 mt-6 bg-blue-100 rounded"
+                    >
+                      <svg
+                        class="w-8 h-8 text-blue-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Main PDF with Tools -->
+                <div
+                  class="relative z-20 w-56 ml-12 rounded-lg shadow-2xl h-72 bg-gradient-to-br from-slate-800 to-slate-900"
+                >
+                  <div class="p-6 text-white">
+                    <div class="flex items-center gap-2 mb-4">
+                      <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                      <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                      <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                    <div class="mb-4 font-mono text-xs">PDF Tools Pro</div>
+
+                    <!-- PDF Icon -->
+                    <div
+                      class="flex items-center justify-center w-16 h-20 mx-auto mb-4 bg-red-500 rounded-lg"
+                    >
+                      <svg
+                        class="w-8 h-8 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </div>
+
+                    <!-- Tool Icons -->
+                    <div class="grid grid-cols-3 gap-2">
+                      <div
+                        class="flex items-center justify-center w-8 h-8 bg-blue-500 rounded"
+                      >
+                        <svg
+                          class="w-4 h-4 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <div
+                        class="flex items-center justify-center w-8 h-8 bg-green-500 rounded"
+                      >
+                        <svg
+                          class="w-4 h-4 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                          />
+                        </svg>
+                      </div>
+                      <div
+                        class="flex items-center justify-center w-8 h-8 bg-purple-500 rounded"
+                      >
+                        <svg
+                          class="w-4 h-4 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Transparent Overlay Effect -->
+                <div
+                  class="absolute right-0 z-30 w-32 h-40 transform bg-white rounded-lg shadow-lg top-8 bg-opacity-90 rotate-12"
+                >
+                  <div class="p-3">
+                    <div
+                      class="flex items-center justify-center w-full h-full rounded bg-gradient-to-br from-blue-100 to-cyan-100"
+                    >
+                      <div class="text-center">
+                        <div
+                          class="flex items-center justify-center w-8 h-8 mx-auto mb-2 bg-blue-500 rounded-full"
+                        >
+                          <svg
+                            class="w-4 h-4 text-white"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <div class="text-xs font-semibold text-gray-700">
+                          Processed
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Resize Arrow -->
+                <div class="absolute z-40 top-4 right-4">
+                  <svg
+                    class="w-6 h-6 text-blue-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M7 16l-4-4m0 0l4-4m-4 4h18"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="flex-1 max-w-xl">
+            <h2
+              class="mb-6 text-4xl font-bold leading-tight text-gray-900 lg:text-5xl"
+            >
+              PDF editing made simple with
+              <span
+                class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600"
+              >
+                PDF Tools Pro
+              </span>
+            </h2>
+
+            <p class="mb-8 text-lg leading-relaxed text-gray-600">
+              Experience the speed, simplicity, and security you expect from PDF
+              Tools Pro tailored for document editing. Merge, split, compress,
+              and convert your PDFs with AI-powered precision.
+            </p>
+
+            <div class="flex flex-col gap-4 sm:flex-row">
+              <a
+                href="#tools"
+                class="px-8 py-4 font-semibold text-red-500 transition-all duration-300 transform border-2 border-red-500 rounded-lg hover:bg-red-500 hover:text-white hover:scale-105"
+              >
+                Try PDF Tools
+              </a>
+
+              <a
+                href="#features"
+                class="px-8 py-4 font-semibold text-white transition-all duration-300 transform rounded-lg shadow-lg bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 hover:scale-105"
+              >
+                Get To Know Features
+              </a>
+            </div>
+
+            <!-- Feature Pills -->
+            <div class="flex flex-wrap gap-3 mt-8">
+              <span
+                class="px-4 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-full"
+              >
+                🔒 100% Secure
+              </span>
+              <span
+                class="px-4 py-2 text-sm font-medium text-green-700 bg-green-100 rounded-full"
+              >
+                ⚡ Lightning Fast
+              </span>
+              <span
+                class="px-4 py-2 text-sm font-medium text-purple-700 bg-purple-100 rounded-full"
+              >
+                🤖 AI Powered
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Contact Us Section -->
+    <section
+      class="relative py-20 overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50"
+    >
+      <!-- Background Decorative Elements -->
+      <div class="absolute inset-0 overflow-hidden">
+        <div
+          class="absolute rounded-full -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-200/30 to-cyan-200/30 blur-3xl"
+        ></div>
+        <div
+          class="absolute rounded-full -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-teal-200/30 to-blue-200/30 blur-3xl"
+        ></div>
+        <div
+          class="absolute transform -translate-x-1/2 -translate-y-1/2 rounded-full top-1/2 left-1/2 w-96 h-96 bg-gradient-to-br from-cyan-100/20 to-blue-100/20 blur-3xl"
+        ></div>
+      </div>
+
+      <div class="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="mb-16 text-center">
+          <h2 class="mb-6 text-4xl font-bold text-gray-900 md:text-5xl">
+            Get in
+            <span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600"
+              >Touch</span
+            >
+          </h2>
+          <p class="max-w-3xl mx-auto text-xl leading-relaxed text-gray-600">
+            Have questions about our PDF tools? Need support or want to
+            collaborate? We'd love to hear from you and help with all your PDF
+            needs.
+          </p>
+        </div>
+
+        <!-- Contact Cards Grid -->
+        <div class="grid gap-8 mb-16 md:grid-cols-2 lg:grid-cols-3">
+          <!-- Email Card -->
+          <div
+            class="p-8 transition-all duration-300 border shadow-lg group bg-white/80 backdrop-blur-sm rounded-2xl hover:shadow-2xl hover:-translate-y-2 border-white/50"
+          >
+            <div
+              class="flex items-center justify-center w-16 h-16 mb-6 transition-transform duration-300 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl group-hover:scale-110"
+            >
+              <i class="text-2xl text-white fas fa-envelope"></i>
+            </div>
+            <h3 class="mb-3 text-2xl font-bold text-gray-900">Email Us</h3>
+            <p class="mb-4 text-gray-600">
+              Send us an email and we'll get back to you within 24 hours.
+            </p>
+            <a
+              href="mailto:support@pdftools.com"
+              class="text-lg font-semibold text-blue-600 transition-colors duration-200 hover:text-blue-700"
+            >
+              support@pdftools.com
+            </a>
+          </div>
+
+          <!-- Phone Card -->
+          <div
+            class="p-8 transition-all duration-300 border shadow-lg group bg-white/80 backdrop-blur-sm rounded-2xl hover:shadow-2xl hover:-translate-y-2 border-white/50"
+          >
+            <div
+              class="flex items-center justify-center w-16 h-16 mb-6 transition-transform duration-300 bg-gradient-to-br from-teal-500 to-blue-500 rounded-2xl group-hover:scale-110"
+            >
+              <i class="text-2xl text-white fas fa-phone"></i>
+            </div>
+            <h3 class="mb-3 text-2xl font-bold text-gray-900">Call Us</h3>
+            <p class="mb-4 text-gray-600">
+              Speak directly with our support team for immediate assistance.
+            </p>
+            <a
+              href="tel:+1234567890"
+              class="text-lg font-semibold text-blue-600 transition-colors duration-200 hover:text-blue-700"
+            >
+              +1 (234) 567-8900
+            </a>
+          </div>
+
+          <!-- Office Card -->
+          <div
+            class="p-8 transition-all duration-300 border shadow-lg group bg-white/80 backdrop-blur-sm rounded-2xl hover:shadow-2xl hover:-translate-y-2 border-white/50 md:col-span-2 lg:col-span-1"
+          >
+            <div
+              class="flex items-center justify-center w-16 h-16 mb-6 transition-transform duration-300 bg-gradient-to-br from-cyan-500 to-teal-500 rounded-2xl group-hover:scale-110"
+            >
+              <i class="text-2xl text-white fas fa-map-marker-alt"></i>
+            </div>
+            <h3 class="mb-3 text-2xl font-bold text-gray-900">Visit Us</h3>
+            <p class="mb-4 text-gray-600">
+              Come visit our office for in-person consultations and support.
+            </p>
+            <address class="text-lg not-italic font-semibold text-blue-600">
+              123 PDF Street<br />
+              Tech City, TC 12345<br />
+              United States
+            </address>
+          </div>
+        </div>
+
+        <!-- Social Media & Additional Info -->
+        <div
+          class="p-8 border shadow-xl bg-white/60 backdrop-blur-sm rounded-3xl md:p-12 border-white/50"
+        >
+          <div class="grid items-center gap-12 md:grid-cols-2">
+            <!-- Left Side - Social Media -->
+            <div>
+              <h3 class="mb-6 text-3xl font-bold text-gray-900">Follow Us</h3>
+              <p class="mb-8 text-lg text-gray-600">
+                Stay updated with the latest PDF tools, tips, and features by
+                following us on social media.
+              </p>
+              <div class="flex space-x-4">
+                <a
+                  href="#"
+                  class="flex items-center justify-center transition-all duration-300 group w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl hover:from-blue-600 hover:to-blue-700 hover:scale-110 hover:shadow-lg"
+                >
+                  <i
+                    class="text-xl text-white transition-transform duration-200 fab fa-twitter group-hover:scale-110"
+                  ></i>
+                </a>
+                <a
+                  href="#"
+                  class="flex items-center justify-center transition-all duration-300 group w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl hover:from-blue-700 hover:to-blue-800 hover:scale-110 hover:shadow-lg"
+                >
+                  <i
+                    class="text-xl text-white transition-transform duration-200 fab fa-facebook-f group-hover:scale-110"
+                  ></i>
+                </a>
+                <a
+                  href="#"
+                  class="flex items-center justify-center transition-all duration-300 group w-14 h-14 bg-gradient-to-br from-blue-700 to-indigo-600 rounded-2xl hover:from-blue-800 hover:to-indigo-700 hover:scale-110 hover:shadow-lg"
+                >
+                  <i
+                    class="text-xl text-white transition-transform duration-200 fab fa-linkedin-in group-hover:scale-110"
+                  ></i>
+                </a>
+                <a
+                  href="#"
+                  class="flex items-center justify-center transition-all duration-300 group w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-500 rounded-2xl hover:from-pink-600 hover:to-rose-600 hover:scale-110 hover:shadow-lg"
+                >
+                  <i
+                    class="text-xl text-white transition-transform duration-200 fab fa-instagram group-hover:scale-110"
+                  ></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- Right Side - Support Hours -->
+            <div class="text-center md:text-left">
+              <h3 class="mb-6 text-3xl font-bold text-gray-900">
+                Support Hours
+              </h3>
+              <div class="space-y-4">
+                <div
+                  class="flex items-center justify-between p-4 bg-white/50 rounded-xl"
+                >
+                  <span class="font-semibold text-gray-700"
+                    >Monday - Friday</span
+                  >
+                  <span class="font-bold text-blue-600">9:00 AM - 6:00 PM</span>
+                </div>
+                <div
+                  class="flex items-center justify-between p-4 bg-white/50 rounded-xl"
+                >
+                  <span class="font-semibold text-gray-700">Saturday</span>
+                  <span class="font-bold text-blue-600"
+                    >10:00 AM - 4:00 PM</span
+                  >
+                </div>
+                <div
+                  class="flex items-center justify-between p-4 bg-white/50 rounded-xl"
+                >
+                  <span class="font-semibold text-gray-700">Sunday</span>
+                  <span class="font-bold text-gray-500">Closed</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom CTA -->
+        <div class="mt-16 text-center">
+          <div
+            class="inline-flex items-center px-8 py-4 space-x-2 text-lg font-semibold text-white transition-all duration-300 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl hover:from-blue-700 hover:to-cyan-700 hover:scale-105 hover:shadow-lg"
+          >
+            <i class="text-red-300 fas fa-heart"></i>
+            <span>We'd love to help you with your PDF needs!</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="py-20 bg-white">
+      <div class="px-4 mx-auto text-center max-w-7xl sm:px-6 lg:px-8">
+        <h2 class="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
+          The PDF software trusted by millions of users
+        </h2>
+        <p class="max-w-3xl mx-auto mb-12 text-xl text-gray-600">
+          PDF Tools Pro is your number one web app for editing PDF with ease.
+          Enjoy all the tools you need to work efficiently with your digital
+          documents while keeping your data safe and secure.
+        </p>
+
+        <!-- Trust Badges -->
+        <div
+          class="flex flex-wrap items-center justify-center gap-8 opacity-60"
+        >
+          <div class="text-2xl font-bold text-black">250M+</div>
+          <div class="text-2xl font-bold text-black">USERS</div>
+          <div class="text-2xl font-bold text-black">SECURE</div>
+          <div class="text-2xl font-bold text-black">GDPR</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 text-white bg-gray-900">
+      <div
+        class="flex flex-col items-center px-4 mx-auto max-w-7xl sm:px-6 lg:px-8"
+      >
+        <!-- Logo and Tagline -->
+        <div class="flex items-center mb-4 space-x-3">
+          <div
+            class="flex items-center justify-center w-10 h-10 transition-transform duration-300 transform rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 hover:scale-110"
+          >
+            <span class="text-lg font-bold text-white">P</span>
+          </div>
+          <span class="text-2xl font-bold tracking-tight">PDF Tools Pro</span>
+        </div>
+        <p class="max-w-md mb-6 text-sm text-center text-gray-300">
+          Your all-in-one solution for PDF editing, conversion, and security.
+        </p>
+
+        <!-- Social Media Links -->
+        <div class="flex mb-6 space-x-6">
+          <a
+            href="#"
+            class="text-gray-400 transition-all duration-300 transform hover:text-white hover:scale-125"
+          >
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"
+              />
+            </svg>
+          </a>
+          <a
+            href="#"
+            class="text-gray-400 transition-all duration-300 transform hover:text-white hover:scale-125"
+          >
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+              />
+            </svg>
+          </a>
+          <a
+            href="#"
+            class="text-gray-400 transition-all duration-300 transform hover:text-white hover:scale-125"
+          >
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.326 3.608 1.301.975.975 1.24 2.242 1.301 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.326 2.633-1.301 3.608-.975.975-2.242 1.24-3.608 1.301-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.326-3.608-1.301-.975-.975-1.24-2.242-1.301-3.608-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.326-2.633 1.301-3.608.975-.975 2.242-1.24 3.608-1.301 1.266-.058 1.646-.07 4.85-.07zM12 0C8.741 0 8.332.014 7.052.072c-1.95.089-3.663.742-5.027 2.106S.072 5.102.072 7.052C.014 8.332 0 8.741 0 12s.014 3.668.072 4.948c.089 1.95.742 3.663 2.106 5.027s3.077 1.917 5.027 2.106c1.28.058 1.689.072 4.948.072s3.668-.014 4.948-.072c1.95-.089 3.663-.742 5.027-2.106s1.917-3.077 2.106-5.027c.058-1.28.072-1.689.072-4.948s-.014-3.668-.072-4.948c-.089-1.95-.742-3.663-2.106-5.027S18.898.815 16.948.726C15.668.668 15.259.654 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.162a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0z"
+              />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Copyright -->
+        <p class="text-sm text-gray-400">
+          &copy; 2025 PDF Tools Pro. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // PDF Tools Data
+      const pdfTools = [
+        // Organize Category
+        {
+        name: "Image Resizer",
+        description:
+            "Resize your images to any dimension quickly without losing quality",
+        icon: "🖼️",
+        category: "image",
+        color: "bg-blue-100 text-blue-600",
+        pageLink:
+            "https://aspdf.in/195-2/",
+        },
+        {
+        name: "Language Translator",
+        description:
+            "Translate text instantly between multiple languages with high accuracy",
+        icon: "🌐",
+        category: "text",
+        color: "bg-green-100 text-green-600",
+        pageLink:
+            "https://aspdf.in/language-translator/",
+        },
+        {
+          name: "Merge PDF",
+          description:
+            "Combine PDFs in the order you want with the easiest PDF merger available",
+          icon: "🔄",
+          category: "organize",
+          color: "bg-red-100 text-red-600",
+          pageLink:
+            "https://aspdf.in/merge-pdf/",
+        },
+        {
+          name: "Split PDF",
+          description:
+            "Separate one page or a whole set for easy conversion into independent PDF files",
+          icon: "✂️",
+          category: "organize",
+          color: "bg-orange-100 text-orange-600",
+          pageLink:
+            "https://aspdf.in/split/",
+        },
+        {
+          name: "Compress PDF",
+          description:
+            "Reduce file size while optimizing for maximal PDF quality",
+          icon: "🗜️",
+          category: "organize",
+          color: "bg-green-100 text-green-600",
+          pageLink:
+            "https://aspdf.in/pdf-compressor/",
+        },
+        {
+          name: "Organize PDF",
+          description:
+            "Sort pages of your PDF file however you like in just a few clicks",
+          icon: "📋",
+          category: "organize",
+          color: "bg-blue-100 text-blue-600",
+          pageLink:
+            "https://aspdf.in/organize-pdf/",
+        },
+        {
+          name: "Remove Pages",
+          description: "Delete pages from PDF files quickly and easily",
+          icon: "🗑️",
+          category: "organize",
+          color: "bg-red-100 text-red-600",
+          pageLink:
+            "https://aspdf.in/remove-_page/",
+        },
+        {
+          name: "Extract Pages",
+          description: "Extract specific pages from PDF documents",
+          icon: "📤",
+          category: "organize",
+          color: "bg-purple-100 text-purple-600",
+          pageLink:
+            "https://aspdf.in/exract-pdf/",
+        },
+        {
+          name: "Repair PDF",
+          description: "Repair and recover corrupted PDF files",
+          icon: "🔧",
+          category: "organize",
+          color: "bg-yellow-100 text-yellow-600",
+          pageLink:
+            "https://aspdf.in/repair-pdf/",
+        },
+        {
+          name: "Add Page Numbers",
+          description: "Insert new pages into existing PDF documents",
+          icon: "➕",
+          category: "organize",
+          color: "bg-green-100 text-green-600",
+          pageLink:
+            "https://aspdf.in/add-pages/",
+        },
+
+        // Convert To PDF
+        {
+          name: "JPG to PDF",
+          description: "Convert JPG images to PDF format",
+          icon: "🖼️",
+          category: "convert",
+          color: "bg-yellow-100 text-yellow-600",
+          pageLink:
+            "https://aspdf.in/jpg_to_pdf/",
+        },
+        {
+          name: "PNG to PDF",
+          description: "Convert PNG images to PDF format",
+          icon: "🖼️",
+          category: "convert",
+          color: "bg-blue-100 text-blue-600",
+          pageLink:
+            "https://aspdf.in/png-to-pdf/",
+        },
+        {
+          name: "Word to PDF",
+          description:
+            "Make DOC and DOCX files easy to read by converting them to PDF",
+          icon: "📝",
+          category: "convert",
+          color: "bg-blue-100 text-blue-600",
+          pageLink:
+            "https://aspdf.in/word-to-pdf/",
+        },
+        {
+          name: "Excel to PDF",
+          description:
+            "Make EXCEL spreadsheets easy to read by converting them to PDF",
+          icon: "📈",
+          category: "convert",
+          color: "bg-green-100 text-green-600",
+          pageLink:
+            "https://aspdf.in/excel-to-pdf/",
+        },
+        {
+          name: "HTML to PDF",
+          description: "Convert HTML files and web pages to PDF format",
+          icon: "🌐",
+          category: "convert",
+          color: "bg-yellow-100 text-yellow-600",
+          pageLink:
+            "https://aspdf.in/html-to-pdf/",
+        },
+        {
+          name: "Text to PDF",
+          description: "Convert plain text files to PDF documents",
+          icon: "📄",
+          category: "convert",
+          color: "bg-gray-100 text-gray-600",
+          pageLink:
+            "https://aspdf.in/text-to-pdf/",
+        },
+        {
+          name: "CSV to PDF",
+          description: "Convert CSV data files to PDF format",
+          icon: "📋",
+          category: "convert",
+          color: "bg-green-100 text-green-600",
+          pageLink:
+            "https://aspdf.in/csv-to-pdf/",
+        },
+        {
+          name: "JSON to PDF",
+          description: "Convert JSON data to PDF documents",
+          icon: "🔧",
+          category: "convert",
+          color: "bg-blue-100 text-blue-600",
+          pageLink:
+            "https://aspdf.in/json-to-pdf/",
+        },
+        {
+          name: "XML to PDF",
+          description: "Convert XML files to PDF format",
+          icon: "📰",
+          category: "convert",
+          color: "bg-orange-100 text-orange-600",
+          pageLink:
+            "https://aspdf.in/xml-to-pdf/",
+        },
+        {
+          name: "WEBP to PDF",
+          description: "Convert WEBP images to PDF format",
+          icon: "🖼️",
+          category: "convert",
+          color: "bg-purple-100 text-purple-600",
+          pageLink:
+            "https://aspdf.in/webp-to-pdf/",
+        },
+        {
+          name: "Speech to PDF",
+          description: "Convert speech recordings to PDF transcripts",
+          icon: "🎤",
+          category: "convert",
+          color: "bg-pink-100 text-pink-600",
+          pageLink:
+            "https://aspdf.in/speech-to-pdf/",
+        },
+
+        // Convert From PDF
+        {
+          name: "PDF to Word",
+          description:
+            "Easily convert your PDF files into easy to edit DOC and DOCX documents",
+          icon: "📝",
+          category: "convert",
+          color: "bg-blue-100 text-blue-600",
+          pageLink:
+            "https://aspdf.in/pdf-to-word/",
+        },
+        {
+          name: "PDF to JPG",
+          description: "Convert PDF pages to JPG images",
+          icon: "🖼️",
+          category: "convert",
+          color: "bg-yellow-100 text-yellow-600",
+          pageLink:
+            "https://aspdf.in/pdf-to-jpg/",
+        },
+        {
+          name: "PDF to PNG",
+          description: "Convert PDF pages to PNG images",
+          icon: "🖼️",
+          category: "convert",
+          color: "bg-blue-100 text-blue-600",
+          pageLink:
+            "https://aspdf.in/pdf-to-png/",
+        },
+        {
+          name: "PDF to Excel",
+          description: "Pull data straight from PDFs into Excel spreadsheets",
+          icon: "📈",
+          category: "convert",
+          color: "bg-green-100 text-green-600",
+          pageLink:
+            "https://aspdf.in/pdf-to-excel/",
+        },
+        {
+          name: "PDF to HTML",
+          description: "Convert PDF documents to HTML web pages",
+          icon: "🌐",
+          category: "convert",
+          color: "bg-yellow-100 text-yellow-600",
+          pageLink:
+            "https://aspdf.in/pdf-to-html/",
+        },
+        {
+          name: "PDF to Text",
+          description: "Extract text content from PDF files",
+          icon: "📄",
+          category: "convert",
+          color: "bg-gray-100 text-gray-600",
+          pageLink:
+            "https://aspdf.in/pdf-to-text/",
+        },
+        {
+          name: "PDF to CSV",
+          description: "Convert PDF tables to CSV format",
+          icon: "📋",
+          category: "convert",
+          color: "bg-green-100 text-green-600",
+          pageLink:
+            "https://aspdf.in/pdf-to-csv/",
+        },
+        {
+          name: "PDF to JSON",
+          description: "Extract data from PDFs in JSON format",
+          icon: "🔧",
+          category: "convert",
+          color: "bg-blue-100 text-blue-600",
+          pageLink:
+            "https://aspdf.in/pdf-to-json/",
+        },
+        {
+          name: "PDF to XML",
+          description: "Convert PDF content to XML format",
+          icon: "📰",
+          category: "convert",
+          color: "bg-orange-100 text-orange-600",
+          pageLink:
+            "https://aspdf.in/pdf-to-xml/",
+        },
+        {
+          name: "PDF to WEBP",
+          description: "Convert PDF pages to WEBP images",
+          icon: "🖼️",
+          category: "convert",
+          color: "bg-purple-100 text-purple-600",
+          pageLink:
+            "https://aspdf.in/pdf-to-webp/",
+        },
+        {
+          name: "PDF to ZIP",
+          description: "Package PDF files into ZIP archives",
+          icon: "📦",
+          category: "convert",
+          color: "bg-gray-100 text-gray-600",
+          pageLink:
+            "https://aspdf.in/pdf-to-zip/",
+        },
+
+        // Edit PDF
+        {
+          name: "Rotate PDF",
+          description: "Rotate PDF pages to the correct orientation",
+          icon: "🔄",
+          category: "edit",
+          color: "bg-purple-100 text-purple-600",
+          pageLink:
+            "https://aspdf.in/rotate-pdf/",
+        },
+        {
+          name: "Add Watermark",
+          description: "Stamp an image or text over your PDF in seconds",
+          icon: "🏷️",
+          category: "edit",
+          color: "bg-blue-100 text-blue-600",
+          pageLink:
+            "https://aspdf.in/58-2/",
+        },
+        {
+          name: "OCR PDF",
+          description: "Extract text from scanned PDFs and images",
+          icon: "👁️",
+          category: "edit",
+          color: "bg-green-100 text-green-600",
+          pageLink:
+            "https://aspdf.in/ocr/",
+        },
+
+        // Security
+        {
+          name: "PDF Signing",
+          description: "Sign PDF documents electronically",
+          icon: "✍️",
+          category: "security",
+          color: "bg-blue-100 text-blue-600",
+          pageLink:
+            "https://aspdf.in/pdf-signing/",
+        },
+      ];
+
+      // Render tools
+      function renderTools(tools) {
+        const toolsGrid = document.getElementById("tools-grid");
+        toolsGrid.innerHTML = "";
+
+        tools.forEach((tool) => {
+          const toolCard = `
+                    <a href="${tool.pageLink}" class="p-6 bg-white border border-gray-100 shadow-sm cursor-pointer tool-card rounded-xl card-hover" data-category="${tool.category}">
+                        <div class="w-12 h-12 ${tool.color} rounded-xl flex items-center justify-center mb-4 text-2xl">
+                            ${tool.icon}
+                        </div>
+                        <h3 class="mb-2 text-lg font-semibold text-gray-900">${tool.name}</h3>
+                        <p class="text-sm text-gray-600">${tool.description}</p>
+                    </a>
+                `;
+          toolsGrid.innerHTML += toolCard;
+        });
       }
-    });
 
-    // Drag and drop functionality
-    const uploadArea = document.querySelector(".border-dashed");
+      // Filter functionality
+      function setupFilters() {
+        const filterButtons = document.querySelectorAll(".filter-btn");
 
-    uploadArea.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      uploadArea.classList.add("border-blue-400", "bg-blue-50");
-    });
+        filterButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            // Update active state
+            filterButtons.forEach((b) => {
+              b.classList.remove("active", "bg-primary-500", "text-white");
+              b.classList.add("bg-gray-100", "text-gray-700");
+            });
+            btn.classList.add("active", "bg-primary-500", "text-white");
+            btn.classList.remove("bg-gray-100", "text-gray-700");
 
-    uploadArea.addEventListener("dragleave", () => {
-      uploadArea.classList.remove("border-blue-400", "bg-blue-50");
-    });
-
-    uploadArea.addEventListener("drop", (e) => {
-      e.preventDefault();
-      uploadArea.classList.remove("border-blue-400", "bg-blue-50");
-
-      if (e.dataTransfer.files.length) {
-        fileInput.files = e.dataTransfer.files;
-        const event = new Event("change");
-        fileInput.dispatchEvent(event);
+            // Filter tools
+            const category = btn.dataset.category;
+            const filteredTools =
+              category === "all"
+                ? pdfTools
+                : pdfTools.filter((tool) => tool.category === category);
+            renderTools(filteredTools);
+          });
+        });
       }
-    });
-  </script>
-</body>
 
+      // Mobile menu toggle
+      function toggleMobileMenu() {
+        const mobileMenu = document.querySelector(".mobile-menu");
+        mobileMenu.classList.toggle("open");
+      }
+
+      // Tool click handler
+      function setupToolClicks() {
+        document.addEventListener("click", (e) => {
+          if (e.target.closest(".tool-card")) {
+            const toolCard = e.target.closest(".tool-card");
+            const toolName = toolCard.querySelector("h3").textContent;
+
+            // Add click animation
+            toolCard.style.transform = "scale(0.95)";
+            setTimeout(() => {
+              toolCard.style.transform = "";
+            }, 150);
+
+            // Navigation is handled by the anchor tag
+            console.log(`Navigating to: ${toolName}`);
+          }
+        });
+      }
+
+      // Smooth scrolling for navigation links
+      function setupSmoothScrolling() {
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute("href"));
+            if (target) {
+              target.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }
+          });
+        });
+      }
+
+      // Initialize everything when DOM is loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        renderTools(pdfTools);
+        setupFilters();
+        setupToolClicks();
+        setupSmoothScrolling();
+      });
+
+      // Add scroll effect to header
+      window.addEventListener("scroll", () => {
+        const header = document.querySelector("header");
+        if (window.scrollY > 0) {
+          header.classList.add("shadow-md");
+        } else {
+          header.classList.remove("shadow-md");
+        }
+      });
+    </script>
+  </body>
 </html>

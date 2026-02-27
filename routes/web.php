@@ -71,6 +71,11 @@ Route::post('/razorpay/callback', [CartController::class, 'razorpayCallback'])->
 Route::get('/checkout/success/{order}', [CartController::class, 'checkoutSuccess'])->name('checkout.success');
 Route::get('/checkout/success/{order}', [CartController::class, 'checkoutSuccess'])->name('checkout.success');
 Route::get('/checkout/cancel', [CartController::class, 'checkoutCancel'])->name('checkout.cancel');
+// Public page view
+Route::get('/page/{slug}', [App\Http\Controllers\PageController::class, 'show'])->name('page.show');
+
+
+
 
 // Become Seller
 Route::get('/become-seller', [SellerController::class, 'index'])->name('become.seller');
@@ -99,6 +104,10 @@ Route::prefix('seller')->name('seller.')->middleware([
         Route::get('/profile/edit', [SellerProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [SellerProfileController::class, 'update'])->name('profile.update');
         Route::post('/profile/avatar', [SellerProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
+        Route::patch('/profile/payment', [SellerProfileController::class, 'updatePayment'])->name('profile.payment.update');
+        Route::delete('/profile/payment/{method}', [SellerProfileController::class, 'removePaymentMethod'])->name('profile.payment.remove');
+        Route::patch('/profile/password', [SellerProfileController::class, 'updatePassword'])->name('profile.password.update');
+
 
         Route::get('/store', [SellerStoreController::class, 'index'])->name('store');
         Route::get('/store/edit', [SellerStoreController::class, 'edit'])->name('store.edit');
@@ -122,17 +131,19 @@ Route::prefix('seller')->name('seller.')->middleware([
         Route::post('/orders/bulk-update', [SellerOrderController::class, 'bulkUpdateStatus'])->name('orders.bulk-update');
             
         // Earnings
+        
         Route::get('/earnings', [SellerEarningController::class, 'index'])->name('earnings');
         Route::get('/earnings/report', [SellerEarningController::class, 'report'])->name('earnings.report');
         Route::get('/earnings/export', [SellerEarningController::class, 'export'])->name('earnings.export');
         
-        // Withdrawals
-        Route::get('/earnings/withdrawal', [SellerEarningController::class, 'withdrawalForm'])->name('earnings.withdrawal');
-        Route::post('/earnings/withdrawal', [SellerEarningController::class, 'requestWithdrawal'])->name('earnings.withdrawal.request');
-        Route::get('/earnings/withdrawals', [SellerEarningController::class, 'withdrawals'])->name('earnings.withdrawals');
-        Route::get('/earnings/withdrawals/{id}', [SellerEarningController::class, 'withdrawalDetails'])->name('earnings.withdrawal.details');
-        Route::post('/earnings/withdrawals/{id}/cancel', [SellerEarningController::class, 'cancelWithdrawal'])->name('earnings.withdrawal.cancel');
-
+        // Withdrawals (Separate Controller)
+        Route::get('/withdrawals', [SellerWithdrawController::class, 'withdrawals'])->name('withdrawals.history');
+        Route::get('/withdrawals/create', [SellerWithdrawController::class, 'withdrawalForm'])->name('withdrawals.create');
+        Route::post('/withdrawals', [SellerWithdrawController::class, 'requestWithdrawal'])->name('withdrawals.request');
+        Route::get('/withdrawals/{id}', [SellerWithdrawController::class, 'withdrawalDetails'])->name('withdrawals.details');
+        Route::post('/withdrawals/{id}/cancel', [SellerWithdrawController::class, 'cancelWithdrawal'])->name('withdrawals.cancel');
+        
+        
         Route::get('/subscription', [SellerSubscriptionController::class, 'index'])->name('subscription');
         Route::get('/subscription/checkout/{plan}', [SellerSubscriptionController::class, 'checkout'])->name('subscription.checkout');
         Route::post('/subscription/create-order/{plan}', [SellerSubscriptionController::class, 'createOrder'])->name('subscription.createOrder');
@@ -143,8 +154,14 @@ Route::prefix('seller')->name('seller.')->middleware([
         Route::get('/subscription/success', [SellerSubscriptionController::class, 'success'])->name('subscription.success');
         Route::post('/subscription/verify', [SellerSubscriptionController::class, 'verify'])->name('subscription.verify');
 
+        // Reviews
         Route::get('/reviews', [SellerReviewController::class, 'index'])->name('reviews');
+        Route::patch('/reviews/{id}/approve', [SellerReviewController::class, 'approve'])->name('reviews.approve');
+        Route::patch('/reviews/{id}/reject', [SellerReviewController::class, 'reject'])->name('reviews.reject');
+        Route::post('/reviews/bulk', [SellerReviewController::class, 'bulkAction'])->name('reviews.bulk');
+        Route::post('/reviews/{id}/reply', [SellerReviewController::class, 'reply'])->name('reviews.reply');
 
+ 
         Route::get('/tickets', [SellerTicketController::class, 'index'])->name('tickets');
         Route::get('/tickets/create', [SellerTicketController::class, 'create'])->name('tickets.create');
         Route::post('/tickets', [SellerTicketController::class, 'store'])->name('tickets.store');
@@ -206,12 +223,17 @@ Route::prefix('buyer')->name('buyer.')->middleware(['auth', \App\Http\Middleware
     Route::post('/reviews', [BuyerReviewController::class, 'store'])->name('reviews.store');
     Route::get('/reviews/{review}/edit', [BuyerReviewController::class, 'edit'])->name('reviews.edit');
     Route::put('/reviews/{review}', [BuyerReviewController::class, 'update'])->name('reviews.update');
+    Route::get('/reviews/select-product/{order}', [BuyerReviewController::class, 'selectProduct'])->name('reviews.select-product');
     Route::delete('/reviews/{review}', [BuyerReviewController::class, 'destroy'])->name('reviews.destroy');
     Route::get('/orders', [BuyerOrderController::class, 'index'])->name('orders');
+
+     
     Route::get('/orders/{order}', [BuyerOrderController::class, 'show'])->name('order.show');
+
     Route::post('/orders/{order}/cancel', [BuyerOrderController::class, 'cancel'])->name('order.cancel');
     Route::get('/orders/{order}/invoice', [BuyerOrderController::class, 'invoice'])->name('order.invoice');
     Route::post('/orders/{order}/track', [BuyerOrderController::class, 'track'])->name('order.track');
+
     Route::post('/razorpay/callback', [CartController::class, 'razorpayCallback'])->name('razorpay.callback');
     Route::get('/razorpay/payment', [CartController::class, 'razorpayPaymentPage'])->name('razorpay.payment');
     Route::post('/razorpay/create-order', [CartController::class, 'createRazorpayOrder'])->name('razorpay.create-order');
@@ -253,7 +275,20 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])
         // Orders
         Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
-        Route::patch('/orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
+        Route::prefix('orders')->name('orders.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('index');
+            Route::get('/export', [App\Http\Controllers\Admin\OrderController::class, 'export'])->name('export');
+            Route::get('/today', [App\Http\Controllers\Admin\OrderController::class, 'today'])->name('today');
+            Route::get('/pending', [App\Http\Controllers\Admin\OrderController::class, 'pending'])->name('pending');
+            Route::get('/processing', [App\Http\Controllers\Admin\OrderController::class, 'processing'])->name('processing');
+            Route::get('/confirmed', [App\Http\Controllers\Admin\OrderController::class, 'confirmed'])->name('confirmed');
+            Route::get('/shipped', [App\Http\Controllers\Admin\OrderController::class, 'shipped'])->name('shipped');
+            Route::get('/delivered', [App\Http\Controllers\Admin\OrderController::class, 'delivered'])->name('delivered');
+            Route::get('/cancelled', [App\Http\Controllers\Admin\OrderController::class, 'cancelled'])->name('cancelled');
+            Route::get('/{id}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('show');
+            Route::post('/{id}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('update-status');
+            Route::post('/{id}/refund', [App\Http\Controllers\Admin\OrderController::class, 'refund'])->name('refund');
+        });
 
         // Subscriptions — CLEAN RESOURCE ROUTE (NO DUPLICATES)
         Route::resource('subscriptions', App\Http\Controllers\Admin\SubscriptionPlanController::class)->except(['show']);
@@ -266,9 +301,21 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])
         Route::get('/payments/transactions', [App\Http\Controllers\Admin\PaymentController::class, 'transactions'])->name('payments.transactions');
         Route::get('/payments/withdrawals', [App\Http\Controllers\Admin\PaymentController::class, 'withdrawals'])->name('payments.withdrawals');
         Route::patch('/payments/withdrawals/{id}/approve', [App\Http\Controllers\Admin\PaymentController::class, 'approveWithdrawal'])->name('payments.withdrawal.approve');
+        
+        Route::prefix('payments')->name('payments.')->group(function () {
+            Route::get('/transactions', [App\Http\Controllers\Admin\PaymentController::class, 'transactions'])->name('transactions');
+            Route::get('/transactions/export', [App\Http\Controllers\Admin\PaymentController::class, 'exportTransactions'])->name('transactions.export');
+            
+            Route::get('/withdrawals', [App\Http\Controllers\Admin\PaymentController::class, 'withdrawals'])->name('withdrawals');
+            Route::get('/withdrawals/export', [App\Http\Controllers\Admin\PaymentController::class, 'exportWithdrawals'])->name('withdrawals.export');
+            Route::get('/withdrawals/{id}', [App\Http\Controllers\Admin\PaymentController::class, 'showWithdrawal'])->name('withdrawals.show');
+            Route::post('/withdrawals/{id}/approve', [App\Http\Controllers\Admin\PaymentController::class, 'approveWithdrawal'])->name('withdrawals.approve');
+            Route::post('/withdrawals/{id}/reject', [App\Http\Controllers\Admin\PaymentController::class, 'rejectWithdrawal'])->name('withdrawals.reject');
+        });
 
         // Reports & Settings
         Route::get('/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/export', [App\Http\Controllers\Admin\ReportController::class, 'export'])->name('reports.export');
 
         Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
         Route::patch('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
@@ -278,6 +325,9 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])
         Route::get('/content/banners', [App\Http\Controllers\Admin\ContentController::class, 'banners'])->name('content.banners');
 
         // ========== MISSING ROUTES ==========
+
+        // Orders
+        
 
         // 1. SUPPORT & CHAT ROUTES
         Route::prefix('support')->name('support.')->group(function () {

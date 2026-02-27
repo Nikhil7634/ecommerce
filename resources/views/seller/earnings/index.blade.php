@@ -17,7 +17,8 @@
                 </nav>
             </div>
             <div class="ms-auto">
-                <a href="{{ route('seller.earnings.withdrawal') }}" class="btn btn-success">
+                <!-- FIXED: Using withdrawals.create route -->
+                <a href="{{ route('seller.withdrawals.create') }}" class="btn btn-success">
                     <i class="bx bx-money"></i> Request Withdrawal
                 </a>
             </div>
@@ -32,7 +33,7 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-grow-1">
                                 <p class="mb-0 ">Available Balance</p>
-                                <h3 class="mb-0 text-success">₹{{ number_format($availableBalance, 2) }}</h3>
+                                <h3 class="mb-0 text-success">₹{{ number_format($availableBalance ?? 0, 2) }}</h3>
                                 <small class="">Ready to withdraw</small>
                             </div>
                             <div class="widgets-icons bg-light-success text-success">
@@ -49,7 +50,7 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-grow-1">
                                 <p class="mb-0 ">Pending Clearance</p>
-                                <h3 class="mb-0 text-warning">₹{{ number_format($statistics['pending_earnings'], 2) }}</h3>
+                                <h3 class="mb-0 text-warning">₹{{ number_format($pendingEarnings ?? 0, 2) }}</h3>
                                 <small class="">Will be available soon</small>
                             </div>
                             <div class="widgets-icons bg-light-warning text-warning">
@@ -66,7 +67,7 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-grow-1">
                                 <p class="mb-0 ">Lifetime Earnings</p>
-                                <h3 class="mb-0 text-primary">₹{{ number_format($lifetimeEarnings, 2) }}</h3>
+                                <h3 class="mb-0 text-primary">₹{{ number_format($lifetimeEarnings ?? 0, 2) }}</h3>
                                 <small class="">Total all time</small>
                             </div>
                             <div class="widgets-icons bg-light-primary text-primary">
@@ -83,7 +84,7 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-grow-1">
                                 <p class="mb-0 ">Total Withdrawn</p>
-                                <h3 class="mb-0 text-info">₹{{ number_format($totalWithdrawn, 2) }}</h3>
+                                <h3 class="mb-0 text-info">₹{{ number_format($totalWithdrawn ?? 0, 2) }}</h3>
                                 <small class="">Successfully withdrawn</small>
                             </div>
                             <div class="widgets-icons bg-light-info text-info">
@@ -101,7 +102,7 @@
                 <div class="card radius-10">
                     <div class="bg-transparent card-header">
                         <div class="d-flex align-items-center justify-content-between">
-                            <h5 class="mb-0">Earnings Overview</h5>
+                            <h5 class="mb-0">Earnings Overview ({{ $year }})</h5>
                             <div class="gap-2 d-flex">
                                 <select class="form-select form-select-sm" style="width: auto;" id="year-select">
                                     @for($y = now()->year; $y >= now()->year - 2; $y--)
@@ -126,22 +127,24 @@
                         <div class="list-group list-group-flush">
                             <div class="px-0 list-group-item d-flex justify-content-between align-items-center">
                                 <span>Sales Today</span>
-                                <strong class="text-primary">₹{{ number_format($statistics['today_sales'], 2) }}</strong>
+                                <strong class="text-primary">₹{{ number_format($statistics['today_sales'] ?? 0, 2) }}</strong>
                             </div>
                             <div class="px-0 list-group-item d-flex justify-content-between align-items-center">
                                 <span>Net Earnings Today</span>
-                                <strong class="text-success">₹{{ number_format($statistics['today_net'], 2) }}</strong>
+                                <strong class="text-success">₹{{ number_format($statistics['today_net'] ?? 0, 2) }}</strong>
                             </div>
                             <div class="px-0 list-group-item d-flex justify-content-between align-items-center">
                                 <span>Orders Today</span>
-                                <strong>{{ $statistics['today_orders'] }}</strong>
+                                <strong>{{ $statistics['today_orders'] ?? 0 }}</strong>
                             </div>
                             <div class="px-0 list-group-item d-flex justify-content-between align-items-center">
                                 <span>vs Yesterday</span>
                                 @php
-                                    $change = $statistics['yesterday_sales'] > 0 
-                                        ? round((($statistics['today_sales'] - $statistics['yesterday_sales']) / $statistics['yesterday_sales']) * 100, 1)
-                                        : 100;
+                                    $todaySales = $statistics['today_sales'] ?? 0;
+                                    $yesterdaySales = $statistics['yesterday_sales'] ?? 0;
+                                    $change = $yesterdaySales > 0 
+                                        ? round((($todaySales - $yesterdaySales) / $yesterdaySales) * 100, 1)
+                                        : ($todaySales > 0 ? 100 : 0);
                                 @endphp
                                 <strong class="{{ $change >= 0 ? 'text-success' : 'text-danger' }}">
                                     {{ $change >= 0 ? '+' : '' }}{{ $change }}%
@@ -159,19 +162,28 @@
                         <div class="list-group list-group-flush">
                             <div class="px-0 list-group-item d-flex justify-content-between align-items-center">
                                 <span>Sales</span>
-                                <strong class="text-primary">₹{{ number_format($statistics['month_sales'], 2) }}</strong>
+                                <strong class="text-primary">₹{{ number_format($statistics['month_sales'] ?? 0, 2) }}</strong>
                             </div>
                             <div class="px-0 list-group-item d-flex justify-content-between align-items-center">
                                 <span>Net Earnings</span>
-                                <strong class="text-success">₹{{ number_format($statistics['month_net'], 2) }}</strong>
+                                <strong class="text-success">₹{{ number_format($statistics['month_net'] ?? 0, 2) }}</strong>
                             </div>
                             <div class="px-0 list-group-item d-flex justify-content-between align-items-center">
                                 <span>Orders</span>
-                                <strong>{{ $statistics['month_orders'] }}</strong>
+                                <strong>{{ $statistics['month_orders'] ?? 0 }}</strong>
                             </div>
                             <div class="px-0 list-group-item d-flex justify-content-between align-items-center">
-                                <span>Commission Rate</span>
-                                <strong>{{ $commissionRate }}%</strong>
+                                <span>vs Last Month</span>
+                                @php
+                                    $monthSales = $statistics['month_sales'] ?? 0;
+                                    $lastMonthSales = $statistics['last_month_sales'] ?? 0;
+                                    $monthChange = $lastMonthSales > 0 
+                                        ? round((($monthSales - $lastMonthSales) / $lastMonthSales) * 100, 1)
+                                        : ($monthSales > 0 ? 100 : 0);
+                                @endphp
+                                <strong class="{{ $monthChange >= 0 ? 'text-success' : 'text-danger' }}">
+                                    {{ $monthChange >= 0 ? '+' : '' }}{{ $monthChange }}%
+                                </strong>
                             </div>
                         </div>
                     </div>
@@ -186,6 +198,7 @@
                     <div class="bg-transparent card-header">
                         <div class="d-flex align-items-center justify-content-between">
                             <h5 class="mb-0">Recent Earnings</h5>
+                            <!-- FIXED: Using earnings.report route -->
                             <a href="{{ route('seller.earnings.report') }}" class="btn btn-sm btn-primary">View Full Report</a>
                         </div>
                     </div>
@@ -218,7 +231,7 @@
                                         </td>
                                         <td>
                                             @if($earning->orderItem && $earning->orderItem->product)
-                                            {{ $earning->orderItem->product->name }}
+                                            {{ Str::limit($earning->orderItem->product->name, 30) }}
                                             @else
                                             -
                                             @endif
@@ -240,7 +253,7 @@
                                     @empty
                                     <tr>
                                         <td colspan="7" class="py-4 text-center">
-                                            <i class="mb-2 bx bx-data fs-3 d-block"></i>
+                                            <i class="mb-2 bx bx-data fs-1 d-block"></i>
                                             <p class="mb-0 ">No earnings yet</p>
                                         </td>
                                     </tr>
@@ -265,7 +278,9 @@
                                 <img src="{{ asset('storage/' . $product->product->images->first()->image_path) }}" 
                                      alt="" width="40" height="40" class="rounded me-3" style="object-fit: cover;">
                                 @else
-                                <div class="rounded bg-light me-3" style="width: 40px; height: 40px;"></div>
+                                <div class="rounded bg-light me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="bx bx-image "></i>
+                                </div>
                                 @endif
                                 <div class="flex-grow-1">
                                     <h6 class="mb-0">{{ $product->product->name ?? 'Product' }}</h6>
@@ -290,15 +305,19 @@
                     </div>
                     <div class="card-body">
                         <div class="gap-2 d-grid">
-                            <a href="{{ route('seller.earnings.withdrawal') }}" class="btn btn-success">
+                            <!-- FIXED: Using withdrawals.create route -->
+                            <a href="{{ route('seller.withdrawals.create') }}" class="btn btn-success">
                                 <i class="bx bx-money"></i> Request Withdrawal
                             </a>
-                            <a href="{{ route('seller.earnings.withdrawals') }}" class="btn btn-outline-primary">
+                            <!-- FIXED: Using withdrawals.history route -->
+                            <a href="{{ route('seller.withdrawals.history') }}" class="btn btn-outline-primary">
                                 <i class="bx bx-history"></i> View Withdrawal History
                             </a>
+                            <!-- FIXED: Using earnings.report route -->
                             <a href="{{ route('seller.earnings.report') }}" class="btn btn-outline-info">
                                 <i class="bx bx-file"></i> Generate Report
                             </a>
+                            <!-- FIXED: Using earnings.export route -->
                             <a href="{{ route('seller.earnings.export') }}" class="btn btn-outline-secondary">
                                 <i class="bx bx-download"></i> Export Data
                             </a>
@@ -319,20 +338,26 @@
         // Earnings Chart
         const ctx = document.getElementById('earningsChart').getContext('2d');
         
+        const monthlyData = @json($monthlyEarnings ?? []);
+        const labels = monthlyData.length ? monthlyData.map(item => item.month) : 
+                      ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const salesData = monthlyData.length ? monthlyData.map(item => item.sales) : Array(12).fill(0);
+        const netData = monthlyData.length ? monthlyData.map(item => item.net) : Array(12).fill(0);
+        
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: {!! json_encode(array_column($monthlyEarnings, 'month')) !!},
+                labels: labels,
                 datasets: [{
                     label: 'Sales (₹)',
-                    data: {!! json_encode(array_column($monthlyEarnings, 'sales')) !!},
+                    data: salesData,
                     borderColor: '#0d6efd',
                     backgroundColor: 'rgba(13, 110, 253, 0.1)',
                     tension: 0.4,
                     fill: true
                 }, {
                     label: 'Net Earnings (₹)',
-                    data: {!! json_encode(array_column($monthlyEarnings, 'net')) !!},
+                    data: netData,
                     borderColor: '#198754',
                     backgroundColor: 'rgba(25, 135, 84, 0.1)',
                     tension: 0.4,
@@ -354,7 +379,7 @@
                                 if (label) {
                                     label += ': ';
                                 }
-                                label += '₹' + context.raw.toFixed(2);
+                                label += '₹' + (context.raw || 0).toFixed(2);
                                 return label;
                             }
                         }
@@ -419,6 +444,16 @@
     .badge {
         padding: 5px 10px;
         font-weight: 500;
+    }
+    
+    .card {
+        border: none;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+    
+    .card-header {
+        border-bottom: 1px solid #f0f0f0;
+        padding: 1.25rem 1.5rem;
     }
 </style>
 @endpush

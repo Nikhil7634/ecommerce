@@ -33,6 +33,14 @@ class User extends Authenticatable
         'gst_no',
         'seller_verified_at',
         'email_verified_at',
+        
+        'account_holder_name',
+        'account_number',
+        'bank_name',
+        'ifsc_code',
+        'account_type',
+        'upi_id',
+        'upi_qr',
     ];
 
     /**
