@@ -313,6 +313,32 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])
             Route::post('/withdrawals/{id}/reject', [App\Http\Controllers\Admin\PaymentController::class, 'rejectWithdrawal'])->name('withdrawals.reject');
         });
 
+
+        // Search
+        Route::get('/search', [App\Http\Controllers\Admin\SearchController::class, 'search'])->name('search');
+
+       
+ 
+        // Messages
+        Route::prefix('messages')->name('messages.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\MessageController::class, 'index'])->name('index');
+            Route::get('/recent', [App\Http\Controllers\Admin\MessageController::class, 'getRecentMessages'])->name('recent');
+            Route::get('/{id}', [App\Http\Controllers\Admin\MessageController::class, 'show'])->name('show');
+            Route::post('/mark-all-read', [App\Http\Controllers\Admin\MessageController::class, 'markAllAsRead'])->name('mark-all-read');
+        });
+     
+
+        
+        // Profile
+        Route::prefix('profile')->name('profile.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\ProfileController::class, 'index'])->name('index');
+            Route::put('/', [App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('update');
+            Route::put('/password', [App\Http\Controllers\Admin\ProfileController::class, 'updatePassword'])->name('password');
+            Route::post('/avatar', [App\Http\Controllers\Admin\ProfileController::class, 'uploadAvatar'])->name('avatar');
+            Route::delete('/avatar', [App\Http\Controllers\Admin\ProfileController::class, 'removeAvatar'])->name('avatar.remove');
+            Route::post('/notifications', [App\Http\Controllers\Admin\ProfileController::class, 'updateNotifications'])->name('notifications');
+            Route::post('/activity', [App\Http\Controllers\Admin\ProfileController::class, 'updateActivity'])->name('activity');
+        });
         // Reports & Settings
         Route::get('/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/export', [App\Http\Controllers\Admin\ReportController::class, 'export'])->name('reports.export');
@@ -329,31 +355,15 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])
         // Orders
         
 
-        // 1. SUPPORT & CHAT ROUTES
+         // Support Chat Routes
         Route::prefix('support')->name('support.')->group(function () {
-            // Chat Interface
             Route::get('/chat', [App\Http\Controllers\Admin\SupportChatController::class, 'index'])->name('chat');
-            
-            // Get chat messages for a specific user
-            Route::get('/chat/messages/{userId}', [App\Http\Controllers\Admin\SupportChatController::class, 'getMessages'])->name('chat.messages');
-            
-            // Send message
             Route::post('/chat/send', [App\Http\Controllers\Admin\SupportChatController::class, 'sendMessage'])->name('chat.send');
-            
-            // Mark messages as read
-            Route::post('/chat/mark-read/{userId}', [App\Http\Controllers\Admin\SupportChatController::class, 'markAsRead'])->name('chat.mark-read');
-            
-            // Get unread message count
+            Route::get('/chat/messages/{roomId}', [App\Http\Controllers\Admin\SupportChatController::class, 'getMessages'])->name('chat.messages');
+            Route::post('/chat/mark-read/{roomId}', [App\Http\Controllers\Admin\SupportChatController::class, 'markAsRead'])->name('chat.mark-read');
             Route::get('/chat/unread-count', [App\Http\Controllers\Admin\SupportChatController::class, 'unreadCount'])->name('chat.unread-count');
-            
-            // Get online users
-            Route::get('/chat/online-users', [App\Http\Controllers\Admin\SupportChatController::class, 'onlineUsers'])->name('chat.online-users');
-            
-            // Support Tickets
-            Route::get('/tickets', [App\Http\Controllers\Admin\SupportTicketController::class, 'index'])->name('tickets');
-            Route::get('/tickets/{ticket}', [App\Http\Controllers\Admin\SupportTicketController::class, 'show'])->name('tickets.show');
-            Route::post('/tickets/{ticket}/reply', [App\Http\Controllers\Admin\SupportTicketController::class, 'reply'])->name('tickets.reply');
-            Route::patch('/tickets/{ticket}/status', [App\Http\Controllers\Admin\SupportTicketController::class, 'updateStatus'])->name('tickets.update-status');
+            Route::post('/chat/close/{roomId}', [App\Http\Controllers\Admin\SupportChatController::class, 'closeRoom'])->name('chat.close');
+            Route::post('/chat/upload', [App\Http\Controllers\Admin\SupportChatController::class, 'uploadAttachment'])->name('chat.upload');
         });
 
         // 2. CATEGORIES CREATE ROUTE (Missing from resource)

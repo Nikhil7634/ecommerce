@@ -1,5 +1,5 @@
-
     <script src="{{ asset('admin-assets/assets/vendor/js/jquery-3.6.0.min.js') }}"></script>
+
     <script src="{{ asset('admin-assets/assets/vendor/js/jquery.overlayScrollbars.min.js') }}"></script>
     <script src="{{ asset('admin-assets/assets/vendor/js/apexcharts.js') }}"></script>
     <script src="{{ asset('admin-assets/assets/vendor/js/jquery.dataTables.min.js') }}"></script>
@@ -8,6 +8,11 @@
     <script src="{{ asset('admin-assets/assets/js/dashboard.js') }}"></script>
     <script src="{{ asset('admin-assets/assets/vendor/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('admin-assets/assets/vendor/js/bootstrap.bundle.min.js') }}"></script>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     
     <script src="{{ asset('admin-assets/assets/js/main.js') }}"></script>
     <!-- for demo purpose -->

@@ -65,8 +65,14 @@ class User extends Authenticatable
      */
     protected function setPasswordAttribute($value)
     {
-        if ($value && strlen($value) < 60) {
-            $this->attributes['password'] = bcrypt($value);
+        // Only hash if the value is not empty and not already hashed
+        if (!empty($value)) {
+            // Check if it's already hashed (bcrypt hashes are 60 chars and start with $2y$)
+            if (strlen($value) === 60 && preg_match('/^\$2y\$/', $value)) {
+                $this->attributes['password'] = $value;
+            } else {
+                $this->attributes['password'] = bcrypt($value);
+            }
         }
     }
 

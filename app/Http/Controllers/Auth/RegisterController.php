@@ -46,11 +46,15 @@ class RegisterController extends Controller
             DB::beginTransaction();
             Log::info('Database transaction started');
 
+            // Hash the password before saving
+            $hashedPassword = Hash::make($request->password);
+            Log::info('Password hashed successfully');
+
             // Create user - Use 'inactive' status for new sellers
             $userData = [
                 'name'              => $request->first_name . ' ' . $request->last_name,
                 'email'             => $request->email,
-                'password'          => $request->password,
+                'password'          => $hashedPassword, // Use the hashed password
                 'phone'             => $request->phone,
                 'address'           => $request->address,
                 'country'           => 'India',
@@ -64,7 +68,7 @@ class RegisterController extends Controller
                 'email_verified_at' => now(),
             ];
 
-            Log::info('Attempting to create user with data:', $userData);
+            Log::info('Attempting to create user with data:', array_merge($userData, ['password' => '[HIDDEN]']));
 
             $user = User::create($userData);
             Log::info('User created successfully. User ID: ' . $user->id);

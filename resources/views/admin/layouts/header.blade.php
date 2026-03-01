@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{ asset('admin-assets/assets/css/style.css') }}">
     <link rel="stylesheet" id="primaryColor" href="{{ asset('admin-assets/assets/css/blue-color.css') }}">
     <link rel="stylesheet" id="rtlStyle" href="#">
+    
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
@@ -148,6 +149,186 @@
     .panel-body {
         padding: 1.5rem;
     }
+
+
+    .main-menu {
+  
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+/* Remove arrows (Chrome, Edge, Safari) */
+.main-menu::-webkit-scrollbar-button {
+    display: none;
+    height: 0;
+    width: 0;
+}
+
+/* Scrollbar width */
+.main-menu::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Transparent track */
+.main-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Premium glass thumb */
+.main-menu::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.7); /* Indigo glass */
+    backdrop-filter: blur(6px);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.main-menu::-webkit-scrollbar-thumb:hover {
+    background: rgba(79, 70, 229, 0.9);
+}
+
+/* Firefox support */
+.main-menu {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(99, 102, 241, 0.7) transparent;
+}
 </style>
-</head>
+
+
+ <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        loadRecentMessages();
+        
+        // Refresh messages every 30 seconds
+        setInterval(loadRecentMessages, 30000);
+        
+        // Load messages when dropdown is opened
+        const messageDropdown = document.getElementById('messageDropdown');
+        if (messageDropdown) {
+            messageDropdown.addEventListener('show.bs.dropdown', function() {
+                loadRecentMessages();
+            });
+        }
+    });
+
+    function loadRecentMessages() {
+        fetch('{{ route("admin.messages.recent") }}')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    updateMessagesDropdown(data.messages);
+                    updateMessageCount(data.unread_count);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading messages:', error);
+                const container = document.querySelector('#messageDropdownMenu .message-list-container');
+                if (container) {
+                    container.innerHTML = `
+                        <div class="p-4 text-center">
+                            <i class="mb-2 fa-light fa-exclamation-triangle text-danger fa-2x"></i>
+                            <p class="mb-0 text-muted">Error loading messages</p>
+                        </div>
+                    `;
+                }
+            });
+    }
+
+    function updateMessagesDropdown(messages) {
+        const container = document.querySelector('#messageDropdownMenu .message-list-container');
+        if (!container) return;
+
+        if (!messages || messages.length === 0) {
+            container.innerHTML = `
+                <div class="p-4 text-center">
+                    <i class="mb-2 fa-light fa-inbox fa-2x text-muted"></i>
+                    <p class="mb-0 text-muted">No messages</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+        messages.forEach(message => {
+            const messagePreview = message.message ? message.message.substring(0, 50) : '';
+            const displayPreview = messagePreview + (message.message && message.message.length > 50 ? '...' : '');
+            
+            html += `
+                <a href="{{ url('admin/messages') }}/${message.id}" class="p-3 d-flex text-decoration-none border-bottom">
+                    <div class="flex-shrink-0 avatar me-2">
+                        <img src="${message.sender.avatar}" alt="${message.sender.name}" 
+                             width="40" height="40" class="rounded-circle" style="object-fit: cover;">
+                    </div>
+                    <div class="min-w-0 flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold small">${escapeHtml(message.sender.name)}</span>
+                            <small class="text-muted ms-2">${escapeHtml(message.time)}</small>
+                        </div>
+                        <div class="small text-muted text-truncate">${escapeHtml(displayPreview)}</div>
+                        ${!message.is_read && !message.is_outgoing ? '<span class="mt-1 badge bg-danger">New</span>' : ''}
+                    </div>
+                </a>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function updateMessageCount(count) {
+        const badge = document.querySelector('.message-count');
+        if (badge) {
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'inline-block' : 'none';
+        }
+        
+        // Also update the notification badge if it exists
+        const notificationBadge = document.querySelector('.notification-badge');
+        if (notificationBadge) {
+            // You can update notification count here if needed
+        }
+    }
+
+    function markAllMessagesAsRead() {
+        fetch('{{ route("admin.messages.mark-all-read") }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateMessageCount(0);
+                loadRecentMessages();
+                
+                // Optional: Show a small notification
+                showToast('All messages marked as read', 'success');
+            }
+        })
+        .catch(error => {
+            console.error('Error marking messages as read:', error);
+            showToast('Error marking messages as read', 'error');
+        });
+    }
+
+    function showToast(message, type = 'info') {
+        // You can implement a toast notification here
+        console.log(`${type}: ${message}`);
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+</script>
+ </head>
 <body class="body-padding body-p-top light-theme">

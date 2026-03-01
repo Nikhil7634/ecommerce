@@ -160,12 +160,7 @@
                             @endif
                         </a>
                     </li>
-                    <li class="sidebar-dropdown-item">
-                        <a href="{{ route('admin.support.tickets') }}" class="sidebar-link {{ request()->is('admin/support/tickets') ? 'active' : '' }}">
-                            <span class="nav-icon"><i class="fa-light fa-ticket"></i></span>
-                            <span class="sidebar-txt">Support Tickets</span>
-                        </a>
-                    </li>
+                     
                 </ul>
             </li>
 
